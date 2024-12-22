@@ -78,14 +78,19 @@ export default function MainPage() {
   const handlePIDAdd = async (newPID) => {
     try {
       const token = localStorage.getItem('token');
-      console.log('Sending PID data:', newPID);
+      console.log('MainPage - About to send PID data to server:', {
+        name: newPID.name,
+        pid: newPID.pid
+      });
+      
       const response = await axios.post('http://localhost:4000/pids', newPID, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
-      console.log('Server response for new PID:', response.data);
+      
+      console.log('MainPage - Server response for new PID:', response.data);
       setPids(prevPids => [...prevPids, response.data]);
       setSelectedPID(response.data);
     } catch (error) {

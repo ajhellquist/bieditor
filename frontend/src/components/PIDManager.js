@@ -23,7 +23,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
       pid: newPIDValue.trim()
     };
     
-    console.log('Submitting new PID:', newPID);
+    console.log('PIDManager - Submitting new PID:', newPID);
     onPIDAdd(newPID);
     
     setNewPIDName('');

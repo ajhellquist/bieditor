@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const PID = require('../models/pid');
+const PID = require('../models/PID');
 const mongoose = require('mongoose');
 
 // Get all PIDs for the logged-in user
@@ -17,8 +17,8 @@ router.get('/', auth, async (req, res) => {
     
     const formattedPids = pids.map(pid => ({
       _id: pid._id,
-      name: pid.name,
-      pid: pid.pid,
+      name: pid.pidName,
+      pid: pid.pidId,
       userId: pid.userId
     }));
 
@@ -34,48 +34,55 @@ router.post('/', auth, async (req, res) => {
   try {
     const { name, pid } = req.body;
     
-    console.log('Creating PID with data:', {
-      name,
-      pid,
-      userId: req.user.id
-    });
+    console.log('Received PID creation request:', { name, pid });
 
-    // Validate input
     if (!name || !pid) {
-      return res.status(400).json({
+      console.log('Validation failed - missing required fields');
+      return res.status(400).json({ 
         message: 'Name and PID are required',
         received: { name, pid }
       });
     }
 
-    // Create document
-    const pidDoc = {
-      name: name.trim(),
-      pid: pid.trim(),
+    const pidData = {
+      pidName: name.trim(),
+      pidId: pid.trim(),
       userId: new mongoose.Types.ObjectId(req.user.id)
     };
 
-    // Create and save the new PID
-    const newPID = new PID(pidDoc);
-    
-    console.log('About to save PID document:', newPID);
-    const savedPID = await newPID.save();
-    console.log('Saved PID document:', savedPID);
+    console.log('Creating PID with data:', pidData);
 
-    // Send response
-    res.status(201).json({
+    const pidDoc = new PID(pidData);
+
+    // Validate the document before saving
+    const validationError = pidDoc.validateSync();
+    if (validationError) {
+      console.log('Validation error:', validationError);
+      return res.status(400).json({ 
+        message: 'Validation Error', 
+        details: validationError.errors 
+      });
+    }
+
+    const savedPID = await pidDoc.save();
+    console.log('Successfully saved PID:', savedPID.toObject());
+
+    const response = {
       _id: savedPID._id,
-      name: savedPID.name,
-      pid: savedPID.pid,
+      name: savedPID.pidName,
+      pid: savedPID.pidId,
       userId: savedPID.userId
-    });
+    };
+
+    console.log('Sending response:', response);
+    res.status(201).json(response);
 
   } catch (error) {
     console.error('Error creating PID:', error);
     if (error.name === 'ValidationError') {
-      return res.status(400).json({
-        message: 'Validation Error',
-        details: error.message
+      return res.status(400).json({ 
+        message: 'Validation Error', 
+        details: error.errors 
       });
     }
     res.status(500).json({ message: error.message });
