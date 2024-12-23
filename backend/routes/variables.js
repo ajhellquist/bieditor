@@ -1,91 +1,84 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
+const auth = require('../middleware/auth');
 const Variable = require('../models/Variable');
+const PID = require('../models/PID');
 
-// Middleware to check JWT
-function auth(req, res, next) {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ msg: 'No token' });
+// Get variables for a specific PID
+router.get('/:pidId', auth, async (req, res) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.userId;
-    next();
-  } catch (err) {
-    res.status(401).json({ msg: 'Invalid token' });
-  }
-}
-
-router.post('/', auth, async (req, res) => {
-  try {
-    const { name, value, type } = req.body;
-    console.log('Creating variable:', { name, value, type });
-
-    const variable = new Variable({ 
-      userId: req.userId, 
-      name, 
-      value,
-      type
+    // First verify the PID belongs to the user
+    const pid = await PID.findOne({
+      _id: req.params.pidId,
+      userId: req.user.id
     });
-    
-    await variable.save();
-    console.log('Saved variable:', variable);
-    res.json(variable);
-  } catch (err) {
-    console.error('Error creating variable:', err);
-    res.status(500).json({ msg: 'Failed to create variable' });
-  }
-});
 
-router.get('/', auth, async (req, res) => {
-  try {
-    const variables = await Variable.find({ userId: req.userId });
-    console.log('Fetched variables:', variables);
+    if (!pid) {
+      return res.status(404).json({ message: 'PID not found' });
+    }
+
+    const variables = await Variable.find({ pidId: req.params.pidId });
     res.json(variables);
   } catch (err) {
-    res.status(500).json({ msg: 'Failed to fetch variables' });
+    res.status(500).json({ message: err.message });
   }
 });
 
-router.delete('/:id', auth, async (req, res) => {
+// Create a new variable for a specific PID
+router.post('/:pidId', auth, async (req, res) => {
   try {
-    console.log('Delete request received:', {
-      id: req.params.id,
-      userId: req.userId
+    const { name, value, type, elementId } = req.body;
+    
+    // Verify PID belongs to user
+    const pid = await PID.findOne({
+      _id: req.params.pidId,
+      userId: req.user.id
     });
 
-    const variable = await Variable.findOne({ 
-      _id: req.params.id,
-      userId: req.userId
+    if (!pid) {
+      return res.status(404).json({ message: 'PID not found' });
+    }
+
+    const variable = new Variable({
+      pidId: req.params.pidId,
+      name,
+      value,
+      type,
+      elementId: type === 'Attribute Value' ? elementId : 'NA'
+    });
+
+    const savedVariable = await variable.save();
+    res.status(201).json(savedVariable);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Delete variable
+router.delete('/:pidId/:variableId', auth, async (req, res) => {
+  try {
+    // Verify PID belongs to user
+    const pid = await PID.findOne({
+      _id: req.params.pidId,
+      userId: req.user.id
+    });
+
+    if (!pid) {
+      return res.status(404).json({ message: 'PID not found' });
+    }
+
+    const variable = await Variable.findOneAndDelete({
+      _id: req.params.variableId,
+      pidId: req.params.pidId
     });
 
     if (!variable) {
-      console.log('Variable not found:', {
-        id: req.params.id,
-        userId: req.userId
-      });
-      return res.status(404).json({ 
-        msg: 'Variable not found',
-        details: 'No variable found with the specified ID for this user'
-      });
+      return res.status(404).json({ message: 'Variable not found' });
     }
 
-    await Variable.findOneAndDelete({ 
-      _id: req.params.id,
-      userId: req.userId
-    });
-    
-    console.log('Variable deleted successfully:', req.params.id);
-    res.json({ 
-      msg: 'Variable deleted',
-      id: req.params.id 
-    });
+    res.json({ message: 'Variable deleted' });
   } catch (err) {
-    console.error('Error in delete route:', err);
-    res.status(500).json({ 
-      msg: 'Error deleting variable',
-      error: err.message 
-    });
+    res.status(500).json({ message: err.message });
   }
 });
 

@@ -11,14 +11,21 @@ export default function MainPage() {
   const [selectedPID, setSelectedPID] = useState(null);
 
   useEffect(() => {
-    fetchVariables();
     fetchPIDs();
   }, []);
 
-  const fetchVariables = async () => {
+  useEffect(() => {
+    if (selectedPID) {
+      fetchVariables(selectedPID._id);
+    } else {
+      setVariables([]);
+    }
+  }, [selectedPID]);
+
+  const fetchVariables = async (pidId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:4000/variables', {
+      const response = await axios.get(`http://localhost:4000/variables/${pidId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setVariables(response.data);
@@ -48,30 +55,13 @@ export default function MainPage() {
   const handleDeleteVariable = async (variableId) => {
     try {
       const token = localStorage.getItem('token');
-      console.log('Attempting to delete variable:', {
-        id: variableId,
-        url: `http://localhost:4000/variables/${variableId}`,
-        token: token
-      });
-      
-      const response = await axios.delete(
-        `http://localhost:4000/variables/${variableId}`,
-        { 
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
+      await axios.delete(
+        `http://localhost:4000/variables/${selectedPID._id}/${variableId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      console.log('Delete response:', response.data);
-      
-      // Remove the deleted variable from state
       setVariables(variables.filter(v => v._id !== variableId));
     } catch (error) {
-      console.error('Full error object:', error);
-      console.error('Error status:', error.response?.status);
-      console.error('Error data:', error.response?.data);
+      console.error('Error deleting variable:', error);
     }
   };
 
@@ -121,6 +111,25 @@ export default function MainPage() {
     }
   };
 
+  const getActualReferences = (htmlContent) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    const spans = tempDiv.getElementsByTagName('span');
+    const references = [];
+    
+    for (let span of spans) {
+      references.push(span.getAttribute('data-reference'));
+    }
+    
+    return references;
+  };
+
+  const getDisplayText = (htmlContent) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    return tempDiv.textContent;
+  };
+
   return (
     <div>
       <PIDManager
@@ -136,11 +145,15 @@ export default function MainPage() {
             code={code} 
             setCode={setCode} 
             variables={variables} 
+            selectedPID={selectedPID}
           />
         </div>
         <div style={{ width: 300, marginLeft: 20 }}>
           <h2>Variables</h2>
-          <VariableForm onVariableAdded={handleVariableAdded} />
+          <VariableForm 
+            onVariableAdded={handleVariableAdded} 
+            selectedPID={selectedPID}
+          />
           <div style={{ 
             marginTop: 20, 
             maxHeight: '400px', 
@@ -185,6 +198,7 @@ export default function MainPage() {
           </div>
         </div>
       </div>
+      {console.log('MainPage selectedPID:', selectedPID)}
     </div>
   );
 }
