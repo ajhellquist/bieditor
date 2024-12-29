@@ -188,50 +188,57 @@ export default function MainPage() {
               <div 
                 key={variable._id} 
                 style={{
-                  padding: '10px',
-                  paddingTop: '35px',
+                  padding: '8px',
                   marginBottom: '5px',
                   backgroundColor: '#f5f5f5',
                   borderRadius: '4px',
                   border: '1px solid #ddd',
-                  position: 'relative'
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'space-between'
                 }}
               >
-                <div><strong>Name:</strong> {variable.name}</div>
-                <div><strong>Type:</strong> {variable.type}</div>
-                <div><strong>Value:</strong> {variable.value}</div>
-                <button
-                  onClick={() => handleEdit(variable)}
-                  style={{
-                    position: 'absolute',
-                    top: '5px',
-                    right: '30px',
-                    background: '#4444ff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '3px',
-                    padding: '3px 8px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteVariable(variable._id)}
-                  style={{
-                    position: 'absolute',
-                    top: '5px',
-                    right: '5px',
-                    background: '#ff4444',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '3px',
-                    padding: '3px 8px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  ×
-                </button>
+                <div style={{
+                  flex: 1,
+                  marginRight: '10px',
+                  wordBreak: 'break-word'
+                }}>
+                  <strong>Name:</strong> {variable.name}
+                </div>
+                <div style={{
+                  display: 'flex',
+                  gap: '5px',
+                  flexShrink: 0,
+                  marginLeft: 'auto'
+                }}>
+                  <button
+                    onClick={() => handleEdit(variable)}
+                    style={{
+                      background: '#4444ff',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '3px',
+                      padding: '3px 8px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteVariable(variable._id)}
+                    style={{
+                      background: '#ff4444',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '3px',
+                      padding: '3px 8px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
               </div>
             ))}
           </div>
