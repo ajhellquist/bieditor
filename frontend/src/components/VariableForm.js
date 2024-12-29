@@ -57,8 +57,28 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
   };
 
   return (
-    <div>
-      {error && <div style={{ color: 'red', marginBottom: 10 }}>{error}</div>}
+    <div style={{ 
+      marginTop: '10px', 
+      marginBottom: '20px',
+      border: '1px solid #ddd',
+      borderRadius: '4px',
+      padding: '15px',
+      backgroundColor: '#f9f9f9'
+    }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        marginBottom: '15px',
+        borderBottom: '1px solid #eee',
+        paddingBottom: '10px'
+      }}>
+        <span style={{ fontWeight: '500' }}>
+          {isEditing ? 'Edit Variable' : 'Add New Variable'}
+        </span>
+      </div>
+
+      {error && <div style={{ color: 'red', marginBottom: 10, fontSize: '14px' }}>{error}</div>}
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: 10 }}>
           <input
@@ -66,7 +86,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Variable Name"
-            style={{ width: '100%', padding: '5px' }}
+            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', boxSizing: 'border-box' }}
             required
           />
         </div>
@@ -74,7 +94,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            style={{ width: '100%', padding: '5px' }}
+            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', boxSizing: 'border-box' }}
             required
           >
             <option value="Metric">Metric</option>
@@ -89,7 +109,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
               value={elementId}
               onChange={(e) => setElementId(e.target.value)}
               placeholder="Element ID"
-              style={{ width: '100%', padding: '5px' }}
+              style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', boxSizing: 'border-box' }}
               required
             />
           </div>
@@ -100,13 +120,21 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             value={value}
             onChange={(e) => setValue(e.target.value)}
             placeholder="Value"
-            style={{ width: '100%', padding: '5px' }}
+            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', boxSizing: 'border-box' }}
             required
           />
         </div>
         <button 
           type="submit"
-          style={{ width: '100%', padding: '5px' }}
+          style={{ 
+            width: '100%', 
+            padding: '8px',
+            backgroundColor: '#4444ff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
         >
           {submitButtonText || (isEditing ? 'Save' : 'Add Variable')}
         </button>

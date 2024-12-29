@@ -3,6 +3,7 @@ import axios from 'axios';
 import CodeEditor from '../components/CodeEditor';
 import VariableForm from '../components/VariableForm';
 import PIDManager from '../components/PIDManager';
+import CSVUploader from '../components/CSVUploader';
 
 export default function MainPage() {
   const [code, setCode] = useState('// Start typing...');
@@ -10,6 +11,7 @@ export default function MainPage() {
   const [pids, setPids] = useState([]);
   const [selectedPID, setSelectedPID] = useState(null);
   const [editingVariable, setEditingVariable] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchPIDs();
@@ -152,6 +154,14 @@ export default function MainPage() {
     }
   };
 
+  const filteredVariables = variables.filter(variable => 
+    variable.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleVariablesUploaded = (newVariables) => {
+    setVariables([...variables, ...newVariables]);
+  };
+
   return (
     <div>
       <PIDManager
@@ -176,71 +186,119 @@ export default function MainPage() {
             onVariableAdded={handleVariableAdded} 
             selectedPID={selectedPID}
           />
+          <CSVUploader 
+            selectedPID={selectedPID}
+            onVariablesAdded={handleVariablesUploaded}
+          />
+          
           <div style={{ 
-            marginTop: 20, 
-            maxHeight: '400px', 
-            overflowY: 'auto',
+            marginTop: '10px', 
+            marginBottom: '20px',
             border: '1px solid #ddd',
             borderRadius: '4px',
-            padding: '10px'
+            padding: '15px',
+            backgroundColor: '#f9f9f9'
           }}>
-            {variables.map((variable) => (
-              <div 
-                key={variable._id} 
-                style={{
-                  padding: '8px',
-                  marginBottom: '5px',
-                  backgroundColor: '#f5f5f5',
-                  borderRadius: '4px',
-                  border: '1px solid #ddd',
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  justifyContent: 'space-between'
-                }}
-              >
-                <div style={{
-                  flex: 1,
-                  marginRight: '10px',
-                  wordBreak: 'break-word'
-                }}>
-                  <strong>Name:</strong> {variable.name}
-                </div>
-                <div style={{
-                  display: 'flex',
-                  gap: '5px',
-                  flexShrink: 0,
-                  marginLeft: 'auto'
-                }}>
-                  <button
-                    onClick={() => handleEdit(variable)}
-                    style={{
-                      background: '#4444ff',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '3px',
-                      padding: '3px 8px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteVariable(variable._id)}
-                    style={{
-                      background: '#ff4444',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '3px',
-                      padding: '3px 8px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    ×
-                  </button>
-                </div>
-              </div>
-            ))}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              marginBottom: '15px',
+              borderBottom: '1px solid #eee',
+              paddingBottom: '10px'
+            }}>
+              <span style={{ fontWeight: '500' }}>Search Variables</span>
+            </div>
+
+            <input
+              type="text"
+              placeholder="Type to search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px',
+                borderRadius: '4px',
+                border: '1px solid #ddd',
+                boxSizing: 'border-box',
+                marginBottom: '10px'
+              }}
+            />
+
+            <div style={{ 
+              maxHeight: '400px', 
+              overflowY: 'auto',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              padding: '10px',
+              backgroundColor: 'white'
+            }}>
+              {searchTerm ? (
+                filteredVariables.length > 0 ? (
+                  filteredVariables.map((variable) => (
+                    <div 
+                      key={variable._id} 
+                      style={{
+                        padding: '8px',
+                        marginBottom: '5px',
+                        backgroundColor: '#f5f5f5',
+                        borderRadius: '4px',
+                        border: '1px solid #ddd',
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        justifyContent: 'space-between'
+                      }}
+                    >
+                      <div style={{
+                        flex: 1,
+                        marginRight: '10px',
+                        wordBreak: 'break-word'
+                      }}>
+                        <strong>Name:</strong> {variable.name}
+                      </div>
+                      <div style={{
+                        display: 'flex',
+                        gap: '5px',
+                        flexShrink: 0,
+                        marginLeft: 'auto'
+                      }}>
+                        <button
+                          onClick={() => handleEdit(variable)}
+                          style={{
+                            background: '#4444ff',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '3px',
+                            padding: '3px 8px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteVariable(variable._id)}
+                          style={{
+                            background: '#ff4444',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '3px',
+                            padding: '3px 8px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p>No matching variables found</p>
+                )
+              ) : (
+                <p>Type to search variables</p>
+              )}
+            </div>
           </div>
           
           {editingVariable && (
