@@ -164,40 +164,52 @@ export default function MainPage() {
 
   return (
     <div>
-      <PIDManager
-        pids={pids}
-        selectedPID={selectedPID}
-        onPIDSelect={setSelectedPID}
-        onPIDAdd={handlePIDAdd}
-        onPIDDelete={handlePIDDelete}
-      />
-      <div style={{ display: 'flex' }}>
-        <div style={{ flex: 1 }}>
-          <CodeEditor 
-            code={code} 
-            setCode={setCode} 
-            variables={variables} 
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '20px',
+        marginBottom: '20px'
+      }}>
+        <div style={{ width: '1000px' }}>
+          <PIDManager
+            pids={pids}
             selectedPID={selectedPID}
+            onPIDSelect={setSelectedPID}
+            onPIDAdd={handlePIDAdd}
+            onPIDDelete={handlePIDDelete}
+            style={{ width: '200px' }}
           />
         </div>
-        <div style={{ width: 300, marginLeft: 20 }}>
-          <h2>Variables</h2>
+      </div>
+
+      <div style={{ 
+        display: 'flex', 
+        gap: '20px',
+        marginBottom: '20px',
+        justifyContent: 'flex-start'
+      }}>
+        <div style={{ width: '25%' }}>
           <VariableForm 
             onVariableAdded={handleVariableAdded} 
             selectedPID={selectedPID}
           />
+        </div>
+        <div style={{ width: '25%' }}>
           <CSVUploader 
             selectedPID={selectedPID}
             onVariablesAdded={handleVariablesUploaded}
           />
-          
+        </div>
+        <div style={{ width: '25%' }}>
           <div style={{ 
-            marginTop: '10px', 
-            marginBottom: '20px',
+            marginTop: '0',
             border: '1px solid #ddd',
             borderRadius: '4px',
             padding: '15px',
-            backgroundColor: '#f9f9f9'
+            backgroundColor: '#f9f9f9',
+            height: '300px',
+            display: 'flex',
+            flexDirection: 'column'
           }}>
             <div style={{ 
               display: 'flex', 
@@ -226,7 +238,7 @@ export default function MainPage() {
             />
 
             <div style={{ 
-              maxHeight: '400px', 
+              flex: 1,
               overflowY: 'auto',
               border: '1px solid #ddd',
               borderRadius: '4px',
@@ -236,33 +248,18 @@ export default function MainPage() {
               {searchTerm ? (
                 filteredVariables.length > 0 ? (
                   filteredVariables.map((variable) => (
-                    <div 
-                      key={variable._id} 
-                      style={{
-                        padding: '8px',
-                        marginBottom: '5px',
-                        backgroundColor: '#f5f5f5',
-                        borderRadius: '4px',
-                        border: '1px solid #ddd',
-                        position: 'relative',
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        justifyContent: 'space-between'
-                      }}
-                    >
-                      <div style={{
-                        flex: 1,
-                        marginRight: '10px',
-                        wordBreak: 'break-word'
-                      }}>
-                        <strong>Name:</strong> {variable.name}
-                      </div>
-                      <div style={{
-                        display: 'flex',
-                        gap: '5px',
-                        flexShrink: 0,
-                        marginLeft: 'auto'
-                      }}>
+                    <div key={variable._id} style={{
+                      padding: '8px',
+                      marginBottom: '5px',
+                      backgroundColor: '#f5f5f5',
+                      borderRadius: '4px',
+                      border: '1px solid #ddd',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <span>{variable.name}</span>
+                      <div style={{ display: 'flex', gap: '5px' }}>
                         <button
                           onClick={() => handleEdit(variable)}
                           style={{
@@ -300,28 +297,67 @@ export default function MainPage() {
               )}
             </div>
           </div>
-          
-          {editingVariable && (
-            <div style={{ marginTop: '20px' }}>
-              <h3>Edit Variable</h3>
-              <VariableForm 
-                initialData={editingVariable}
-                onVariableAdded={handleUpdateVariable}
-                selectedPID={selectedPID}
-                isEditing={true}
-                submitButtonText="Save"
-              />
-              <button 
-                onClick={() => setEditingVariable(null)}
-                style={{ marginTop: '10px', padding: '5px 10px' }}
-              >
-                Cancel
-              </button>
-            </div>
-          )}
         </div>
       </div>
-      {console.log('MainPage selectedPID:', selectedPID)}
+
+      <div style={{ display: 'flex' }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ 
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            padding: '15px',
+            backgroundColor: '#f9f9f9'
+          }}>
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              marginBottom: '15px',
+              borderBottom: '1px solid #eee',
+              paddingBottom: '10px'
+            }}>
+              <span style={{ fontWeight: '500' }}>Code Editor</span>
+            </div>
+            
+            <CodeEditor 
+              code={code} 
+              setCode={setCode} 
+              variables={variables} 
+              selectedPID={selectedPID}
+            />
+          </div>
+        </div>
+      </div>
+
+      {editingVariable && (
+        <div style={{ 
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: 'white',
+          padding: '20px',
+          borderRadius: '4px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+          zIndex: 1000,
+          width: '400px'
+        }}>
+          <h3>Edit Variable</h3>
+          <VariableForm 
+            initialData={editingVariable}
+            onVariableAdded={handleUpdateVariable}
+            selectedPID={selectedPID}
+            isEditing={true}
+            submitButtonText="Save"
+          />
+          <button 
+            onClick={() => setEditingVariable(null)}
+            style={{ marginTop: '10px', padding: '5px 10px' }}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
     </div>
   );
 }

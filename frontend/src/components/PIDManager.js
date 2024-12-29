@@ -32,8 +32,16 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
   };
 
   return (
-    <div style={{ marginBottom: '20px' }}>
-      <div style={{ position: 'relative' }}>
+    <div style={{ 
+      marginBottom: '20px',
+      display: 'flex',
+      gap: '20px',
+      alignItems: 'flex-start'
+    }}>
+      <div style={{ 
+        width: '1000px',
+        position: 'relative' 
+      }}>
         <div 
           onClick={() => setShowDropdown(!showDropdown)}
           style={{
@@ -44,7 +52,8 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
             backgroundColor: 'white',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            width: '100%'
           }}
         >
           <span>
@@ -130,30 +139,37 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
             })}
           </div>
         )}
-
-        <button
-          onClick={() => setShowAddForm(true)}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginTop: '8px',
-            width: '100%'
-          }}
-        >
-          Add PID
-        </button>
       </div>
+
+      <button
+        onClick={() => setShowAddForm(true)}
+        style={{
+          padding: '8px 16px',
+          backgroundColor: '#4CAF50',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          width: '200px',
+          height: '35px'
+        }}
+      >
+        Add PID
+      </button>
 
       {showAddForm && (
         <div style={{
-          marginTop: '10px',
+          position: 'absolute',
+          top: '50px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          backgroundColor: 'white',
           padding: '15px',
           border: '1px solid #ddd',
-          borderRadius: '4px'
+          borderRadius: '4px',
+          zIndex: 1001,
+          width: '400px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '10px' }}>
