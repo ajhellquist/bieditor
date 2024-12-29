@@ -1,18 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function VariableForm({ onVariableAdded, selectedPID }) {
-  const [name, setName] = useState('');
-  const [value, setValue] = useState('');
-  const [type, setType] = useState('Metric');
-  const [elementId, setElementId] = useState('');
+function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, submitButtonText }) {
+  const [name, setName] = useState(initialData?.name || '');
+  const [value, setValue] = useState(initialData?.value || '');
+  const [type, setType] = useState(initialData?.type || 'Metric');
+  const [elementId, setElementId] = useState(initialData?.elementId || '');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (initialData) {
+      setName(initialData.name);
+      setValue(initialData.value);
+      setType(initialData.type);
+      setElementId(initialData.elementId);
+    }
+  }, [initialData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    console.log('Current selectedPID:', selectedPID);
 
     if (!selectedPID?._id) {
       setError('Please select a PID first');
@@ -21,28 +28,31 @@ function VariableForm({ onVariableAdded, selectedPID }) {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(
-        `http://localhost:4000/variables/${selectedPID._id}`,
-        { 
-          name, 
-          value, 
-          type,
-          elementId: type === 'Attribute Value' ? elementId : 'NA'
-        },
+      const url = `http://localhost:4000/variables/${selectedPID._id}${
+        isEditing ? `/${initialData._id}` : ''
+      }`;
+      
+      const method = isEditing ? 'put' : 'post';
+      
+      const response = await axios[method](
+        url,
+        { name, value, type, elementId: type === 'Attribute Value' ? elementId : 'NA' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      // Clear form
-      setName('');
-      setValue('');
-      setType('Metric');
-      setElementId('');
+      if (!isEditing) {
+        // Clear form only if creating new variable
+        setName('');
+        setValue('');
+        setType('Metric');
+        setElementId('');
+      }
       
       if (onVariableAdded) {
         onVariableAdded(response.data);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Error adding variable');
+      setError(err.response?.data?.message || `Error ${isEditing ? 'updating' : 'adding'} variable`);
     }
   };
 
@@ -98,7 +108,7 @@ function VariableForm({ onVariableAdded, selectedPID }) {
           type="submit"
           style={{ width: '100%', padding: '5px' }}
         >
-          Add Variable
+          {submitButtonText || (isEditing ? 'Save' : 'Add Variable')}
         </button>
       </form>
     </div>

@@ -82,4 +82,40 @@ router.delete('/:pidId/:variableId', auth, async (req, res) => {
   }
 });
 
+// Update variable
+router.put('/:pidId/:variableId', auth, async (req, res) => {
+  try {
+    // Verify PID belongs to user
+    const pid = await PID.findOne({
+      _id: req.params.pidId,
+      userId: req.user.id
+    });
+
+    if (!pid) {
+      return res.status(404).json({ message: 'PID not found' });
+    }
+
+    const { name, value, type, elementId } = req.body;
+    
+    const variable = await Variable.findOneAndUpdate(
+      { _id: req.params.variableId, pidId: req.params.pidId },
+      { 
+        name, 
+        value, 
+        type,
+        elementId: type === 'Attribute Value' ? elementId : 'NA'
+      },
+      { new: true }
+    );
+
+    if (!variable) {
+      return res.status(404).json({ message: 'Variable not found' });
+    }
+
+    res.json(variable);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

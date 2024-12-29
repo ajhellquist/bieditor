@@ -9,6 +9,7 @@ export default function MainPage() {
   const [variables, setVariables] = useState([]);
   const [pids, setPids] = useState([]);
   const [selectedPID, setSelectedPID] = useState(null);
+  const [editingVariable, setEditingVariable] = useState(null);
 
   useEffect(() => {
     fetchPIDs();
@@ -130,6 +131,27 @@ export default function MainPage() {
     return tempDiv.textContent;
   };
 
+  const handleEdit = (variable) => {
+    setEditingVariable(variable);
+  };
+
+  const handleUpdateVariable = async (updatedVariable) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(
+        `http://localhost:4000/variables/${selectedPID._id}/${updatedVariable._id}`,
+        updatedVariable,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setVariables(variables.map(v => 
+        v._id === updatedVariable._id ? updatedVariable : v
+      ));
+      setEditingVariable(null);
+    } catch (error) {
+      console.error('Error updating variable:', error);
+    }
+  };
+
   return (
     <div>
       <PIDManager
@@ -167,6 +189,7 @@ export default function MainPage() {
                 key={variable._id} 
                 style={{
                   padding: '10px',
+                  paddingTop: '35px',
                   marginBottom: '5px',
                   backgroundColor: '#f5f5f5',
                   borderRadius: '4px',
@@ -177,6 +200,22 @@ export default function MainPage() {
                 <div><strong>Name:</strong> {variable.name}</div>
                 <div><strong>Type:</strong> {variable.type}</div>
                 <div><strong>Value:</strong> {variable.value}</div>
+                <button
+                  onClick={() => handleEdit(variable)}
+                  style={{
+                    position: 'absolute',
+                    top: '5px',
+                    right: '30px',
+                    background: '#4444ff',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '3px',
+                    padding: '3px 8px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Edit
+                </button>
                 <button
                   onClick={() => handleDeleteVariable(variable._id)}
                   style={{
@@ -196,6 +235,25 @@ export default function MainPage() {
               </div>
             ))}
           </div>
+          
+          {editingVariable && (
+            <div style={{ marginTop: '20px' }}>
+              <h3>Edit Variable</h3>
+              <VariableForm 
+                initialData={editingVariable}
+                onVariableAdded={handleUpdateVariable}
+                selectedPID={selectedPID}
+                isEditing={true}
+                submitButtonText="Save"
+              />
+              <button 
+                onClick={() => setEditingVariable(null)}
+                style={{ marginTop: '10px', padding: '5px 10px' }}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
       </div>
       {console.log('MainPage selectedPID:', selectedPID)}
