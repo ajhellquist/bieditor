@@ -164,6 +164,16 @@ export default function MainPage() {
 
   return (
     <div>
+      <h1 style={{
+        fontSize: '24px',
+        fontWeight: '500',
+        color: '#333',
+        marginBottom: '20px',
+        padding: '10px 0'
+      }}>
+        GoodData Advanced Code Editor
+      </h1>
+
       <div style={{ 
         display: 'flex', 
         alignItems: 'center', 
@@ -313,7 +323,7 @@ export default function MainPage() {
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center',
-              marginBottom: '15px',
+              marginBottom: '7px',
               borderBottom: '1px solid #eee',
               paddingBottom: '10px',
               height: '25px'

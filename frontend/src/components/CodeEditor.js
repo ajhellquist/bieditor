@@ -240,7 +240,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       position: 'relative',
       display: 'flex',
       gap: '20px',
-      margin: '50px'
+      margin: '25px'
     }}>
       {/* Suggestions Panel - Always visible */}
       <div style={{
