@@ -93,63 +93,63 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     }}>
       <div style={{ 
         display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        marginBottom: '15px',
-        borderBottom: '1px solid #eee',
-        paddingBottom: '10px'
+        flexDirection: 'column',
+        gap: '10px'
       }}>
-        <span style={{ fontWeight: '500' }}>Upload Variables from CSV</span>
+        <span style={{ fontWeight: '500', marginBottom: '10px' }}>Upload Variables from CSV</span>
+        
+        <form onSubmit={handleUpload}>
+          <div style={{ marginBottom: '10px' }}>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              style={{ width: '100%' }}
+            />
+          </div>
+          {error && (
+            <div style={{ 
+              color: 'red', 
+              marginBottom: '10px',
+              fontSize: '14px'
+            }}>
+              {error}
+            </div>
+          )}
+          <button
+            type="submit"
+            disabled={!file || loading}
+            style={{
+              width: '100%',
+              padding: '8px',
+              backgroundColor: file ? '#4444ff' : '#cccccc',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: file ? 'pointer' : 'not-allowed',
+              marginBottom: '10px'
+            }}
+          >
+            {loading ? 'Uploading...' : 'Upload CSV'}
+          </button>
+        </form>
+
         <button
           onClick={downloadTemplate}
           style={{
-            padding: '4px 8px',
+            width: '100%',
+            padding: '8px',
             backgroundColor: '#4CAF50',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
-            fontSize: '12px'
+            fontSize: '14px'
           }}
         >
           Download Template
         </button>
       </div>
-      
-      <form onSubmit={handleUpload}>
-        <div style={{ marginBottom: '10px' }}>
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-            style={{ width: '100%' }}
-          />
-        </div>
-        {error && (
-          <div style={{ 
-            color: 'red', 
-            marginBottom: '10px',
-            fontSize: '14px'
-          }}>
-            {error}
-          </div>
-        )}
-        <button
-          type="submit"
-          disabled={!file || loading}
-          style={{
-            width: '100%',
-            padding: '8px',
-            backgroundColor: file ? '#4444ff' : '#cccccc',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: file ? 'pointer' : 'not-allowed'
-          }}
-        >
-          {loading ? 'Uploading...' : 'Upload CSV'}
-        </button>
-      </form>
     </div>
   );
 }

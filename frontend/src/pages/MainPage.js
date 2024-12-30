@@ -162,6 +162,10 @@ export default function MainPage() {
     setVariables([...variables, ...newVariables]);
   };
 
+  const handleDownloadTemplate = () => {
+    // Implementation for downloading template
+  };
+
   return (
     <div>
       <h1 style={{
