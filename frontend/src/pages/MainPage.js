@@ -235,7 +235,7 @@ export default function MainPage() {
               borderBottom: '1px solid #eee',
               paddingBottom: '10px'
             }}>
-              <span style={{ fontWeight: '500' }}>Search Variables</span>
+              <span style={{ fontWeight: '500', fontFamily: 'Times New Roman' }}>Search Variables</span>
             </div>
 
             <input
@@ -249,7 +249,8 @@ export default function MainPage() {
                 borderRadius: '4px',
                 border: '1px solid #ddd',
                 boxSizing: 'border-box',
-                marginBottom: '10px'
+                marginBottom: '10px',
+                fontFamily: 'Times New Roman'
               }}
             />
 
@@ -279,7 +280,7 @@ export default function MainPage() {
                         <button
                           onClick={() => handleEdit(variable)}
                           style={{
-                            background: '#4444ff',
+                            background: '#FFC107',
                             color: 'white',
                             border: 'none',
                             borderRadius: '3px',
@@ -334,7 +335,7 @@ export default function MainPage() {
               paddingBottom: '10px',
               height: '25px'
             }}>
-              <span style={{ fontWeight: '500' }}>Code Editor</span>
+              <span style={{ fontWeight: '500', fontFamily: 'Times New Roman' }}>Code Editor</span>
             </div>
             
             <CodeEditor 

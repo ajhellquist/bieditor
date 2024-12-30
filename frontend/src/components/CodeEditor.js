@@ -288,7 +288,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             overflowY: 'auto',
             padding: '10px',
             whiteSpace: 'pre-wrap',
-            fontFamily: 'monospace',
+            fontFamily: 'Times New Roman',
             backgroundColor: 'white',
             marginBottom: '10px'
           }}
@@ -301,7 +301,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             onClick={handleCopyCode}
             style={{
               padding: '6px 12px',
-              backgroundColor: copySuccess ? '#4CAF50' : '#4444ff',
+              backgroundColor: copySuccess ? '#28A745' : '#6C757D',
               color: 'white',
               border: 'none',
               borderRadius: '4px',

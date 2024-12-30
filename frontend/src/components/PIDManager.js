@@ -53,7 +53,8 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            width: '100%'
+            width: '100%',
+            fontFamily: 'Times New Roman'
           }}
         >
           <span>
@@ -145,7 +146,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
         onClick={() => setShowAddForm(true)}
         style={{
           padding: '8px 16px',
-          backgroundColor: '#4CAF50',
+          backgroundColor: '#28A745',
           color: 'white',
           border: 'none',
           borderRadius: '4px',
