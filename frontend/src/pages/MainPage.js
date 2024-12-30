@@ -167,14 +167,13 @@ export default function MainPage() {
   };
 
   return (
-    <div>
+    <div style={{ margin: '5%' }}>
       <h1 style={{
         fontSize: '36px',
         fontWeight: '400',
         color: '#333',
         marginBottom: '20px',
         padding: '10px 0',
-        fontFamily: 'Times New Roman',
         textAlign: 'center'
       }}>
         GoodData Advanced Code Editor
