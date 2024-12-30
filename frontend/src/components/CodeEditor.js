@@ -236,53 +236,82 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   };
 
   return (
-    <div style={{ position: 'relative' }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
-        <button onClick={handleCopyCode}>
-          {copySuccess ? 'Copied!' : 'Copy Code'}
-        </button>
-      </div>
-      <div 
-        ref={editorRef}
-        contentEditable={true}
-        onInput={handleInputChange}
-        onKeyDown={handleKeyDown}
-        style={{
-          border: '1px solid #ccc',
-          minHeight: '200px',
-          padding: '10px',
-          whiteSpace: 'pre-wrap',
-          fontFamily: 'monospace'
-        }}
-      />
-      {showSuggestions && filteredSuggestions.length > 0 && (
-        <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          backgroundColor: 'white',
-          border: '1px solid #ccc',
-          maxHeight: '200px',
-          overflowY: 'auto',
-          width: '200px',
-          zIndex: 1000
-        }}>
-          {filteredSuggestions.map((variable, index) => (
+    <div style={{ 
+      position: 'relative',
+      display: 'flex',
+      gap: '20px',
+      margin: '50px'
+    }}>
+      {/* Suggestions Panel - Always visible */}
+      <div style={{
+        width: '15%',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        backgroundColor: 'white',
+        height: '400px',
+        overflowY: 'auto'
+      }}>
+        {showSuggestions && filteredSuggestions.length > 0 ? (
+          filteredSuggestions.map((variable, index) => (
             <div
               key={variable._id}
               onClick={() => insertSuggestion(variable)}
               style={{
-                padding: '5px 10px',
+                padding: '8px 10px',
                 cursor: 'pointer',
                 backgroundColor: index === selectedIndex ? '#f0f0f0' : 'white',
-                color: getVariableColor(variable.type)
+                color: getVariableColor(variable.type),
+                borderBottom: '1px solid #eee'
               }}
             >
               {variable.name}
             </div>
-          ))}
+          ))
+        ) : (
+          <div style={{ padding: '8px 10px', color: '#666' }}>
+            {currentWord ? 'No matches found' : 'Start typing to see suggestions'}
+          </div>
+        )}
+      </div>
+
+      {/* Main Editor Area */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div 
+          ref={editorRef}
+          contentEditable={true}
+          onInput={handleInputChange}
+          onKeyDown={handleKeyDown}
+          style={{
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            height: '400px',
+            overflowY: 'auto',
+            padding: '10px',
+            whiteSpace: 'pre-wrap',
+            fontFamily: 'monospace',
+            backgroundColor: 'white',
+            marginBottom: '10px'
+          }}
+        />
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'flex-start'
+        }}>
+          <button 
+            onClick={handleCopyCode}
+            style={{
+              padding: '6px 12px',
+              backgroundColor: copySuccess ? '#4CAF50' : '#4444ff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            {copySuccess ? 'Copied!' : 'Copy Code'}
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -306,7 +306,8 @@ export default function MainPage() {
             border: '1px solid #ddd',
             borderRadius: '4px',
             padding: '15px',
-            backgroundColor: '#f9f9f9'
+            backgroundColor: '#f9f9f9',
+            height: '550px'
           }}>
             <div style={{ 
               display: 'flex', 
@@ -314,7 +315,8 @@ export default function MainPage() {
               alignItems: 'center',
               marginBottom: '15px',
               borderBottom: '1px solid #eee',
-              paddingBottom: '10px'
+              paddingBottom: '10px',
+              height: '25px'
             }}>
               <span style={{ fontWeight: '500' }}>Code Editor</span>
             </div>
