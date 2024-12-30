@@ -40,39 +40,52 @@ function LoginPage() {
   };
 
   return (
-    <div style={{ width: 300, margin: '100px auto' }}>
-      <h2>{mode === 'login' ? 'Login' : 'Signup'}</h2>
-      {error && <div style={{ color: 'red', marginBottom: 10 }}>{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <input 
-          type="email"
-          value={email}
-          placeholder="Email"
-          onChange={e => setEmail(e.target.value)}
-          style={{ width: '100%', marginBottom: 10 }}
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          placeholder="Password"
-          onChange={e => setPassword(e.target.value)}
-          style={{ width: '100%', marginBottom: 10 }}
-          required
-        />
+    <div style={{ 
+      backgroundColor: '#FFFDF8',
+      minHeight: '100vh',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    }}>
+      <div style={{ width: 300 }}>
+        <h2>{mode === 'login' ? 'Login' : 'Signup'}</h2>
+        {error && <div style={{ color: 'red', marginBottom: 10 }}>{error}</div>}
+        <form onSubmit={handleSubmit}>
+          <input 
+            type="email"
+            value={email}
+            placeholder="Email"
+            onChange={e => setEmail(e.target.value)}
+            style={{ width: '100%', marginBottom: 10 }}
+            required
+          />
+          <input
+            type="password"
+            value={password}
+            placeholder="Password"
+            onChange={e => setPassword(e.target.value)}
+            style={{ width: '100%', marginBottom: 10 }}
+            required
+          />
+          <button 
+            type="submit"
+            style={{ width: '100%', padding: '5px', marginBottom: 10 }}
+          >
+            {mode === 'login' ? 'Login' : 'Sign Up'}
+          </button>
+        </form>
         <button 
-          type="submit"
-          style={{ width: '100%', padding: '5px', marginBottom: 10 }}
+          onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+          style={{ width: '100%', padding: '5px' }}
         >
-          {mode === 'login' ? 'Login' : 'Sign Up'}
+          Switch to {mode === 'login' ? 'Signup' : 'Login'}
         </button>
-      </form>
-      <button 
-        onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-        style={{ width: '100%', padding: '5px' }}
-      >
-        Switch to {mode === 'login' ? 'Signup' : 'Login'}
-      </button>
+      </div>
     </div>
   );
 }

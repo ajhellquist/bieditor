@@ -167,215 +167,240 @@ export default function MainPage() {
   };
 
   return (
-    <div style={{ margin: '5%' }}>
-      <h1 style={{
-        fontSize: '36px',
-        fontWeight: '400',
-        color: '#333',
-        marginBottom: '20px',
-        padding: '10px 0',
-        textAlign: 'center'
-      }}>
-        GoodData Advanced Code Editor
-      </h1>
-
+    <>
       <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '20px',
-        marginBottom: '20px'
-      }}>
-        <div style={{ width: '1000px' }}>
-          <PIDManager
-            pids={pids}
-            selectedPID={selectedPID}
-            onPIDSelect={setSelectedPID}
-            onPIDAdd={handlePIDAdd}
-            onPIDDelete={handlePIDDelete}
-            style={{ width: '200px' }}
-          />
-        </div>
-      </div>
-
+        backgroundColor: '#FFFDF8',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1
+      }} />
       <div style={{ 
-        display: 'flex', 
-        gap: '20px',
-        marginBottom: '20px',
-        justifyContent: 'flex-start'
+        position: 'fixed',
+        top: '60px',
+        left: 0,
+        right: 0,
+        height: '5px',
+        backgroundColor: 'black',
+        zIndex: 1
+      }} />
+      <div style={{ 
+        marginLeft: '5%',
+        marginRight: '5%',
+        minHeight: '100vh',
+        overflowY: 'auto'
       }}>
-        <div style={{ width: '25%' }}>
-          <VariableForm 
-            onVariableAdded={handleVariableAdded} 
-            selectedPID={selectedPID}
-          />
-        </div>
-        <div style={{ width: '25%' }}>
-          <CSVUploader 
-            selectedPID={selectedPID}
-            onVariablesAdded={handleVariablesUploaded}
-          />
-        </div>
-        <div style={{ width: '25%' }}>
-          <div style={{ 
-            marginTop: '0',
-            border: '1px solid #ddd',
-            borderRadius: '4px',
-            padding: '15px',
-            backgroundColor: '#f9f9f9',
-            height: '300px',
-            display: 'flex',
-            flexDirection: 'column'
-          }}>
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              marginBottom: '15px',
-              borderBottom: '1px solid #eee',
-              paddingBottom: '10px'
-            }}>
-              <span style={{ fontWeight: '500', fontFamily: 'Times New Roman' }}>Search Variables</span>
-            </div>
+        <h1 style={{
+          fontSize: '36px',
+          fontWeight: '400',
+          color: '#333',
+          margin: '20px 0',
+          padding: 0,
+          textAlign: 'left'
+        }}>
+          MAQL Express Editor
+        </h1>
 
-            <input
-              type="text"
-              placeholder="Type to search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px',
-                borderRadius: '4px',
-                border: '1px solid #ddd',
-                boxSizing: 'border-box',
-                marginBottom: '10px',
-                fontFamily: 'Times New Roman'
-              }}
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '20px',
+          marginBottom: '20px'
+        }}>
+          <div style={{ width: '1000px' }}>
+            <PIDManager
+              pids={pids}
+              selectedPID={selectedPID}
+              onPIDSelect={setSelectedPID}
+              onPIDAdd={handlePIDAdd}
+              onPIDDelete={handlePIDDelete}
+              style={{ width: '200px' }}
             />
-
-            <div style={{ 
-              flex: 1,
-              overflowY: 'auto',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              padding: '10px',
-              backgroundColor: 'white'
-            }}>
-              {searchTerm ? (
-                filteredVariables.length > 0 ? (
-                  filteredVariables.map((variable) => (
-                    <div key={variable._id} style={{
-                      padding: '8px',
-                      marginBottom: '5px',
-                      backgroundColor: '#f5f5f5',
-                      borderRadius: '4px',
-                      border: '1px solid #ddd',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between'
-                    }}>
-                      <span>{variable.name}</span>
-                      <div style={{ display: 'flex', gap: '5px' }}>
-                        <button
-                          onClick={() => handleEdit(variable)}
-                          style={{
-                            background: '#FFC107',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '3px',
-                            padding: '3px 8px',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteVariable(variable._id)}
-                          style={{
-                            background: '#ff4444',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '3px',
-                            padding: '3px 8px',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p>No matching variables found</p>
-                )
-              ) : (
-                <p>Type to search variables</p>
-              )}
-            </div>
           </div>
         </div>
-      </div>
 
-      <div style={{ display: 'flex' }}>
-        <div style={{ flex: 1 }}>
-          <div style={{ 
-            border: '1px solid #ddd',
-            borderRadius: '4px',
-            padding: '15px',
-            backgroundColor: '#f9f9f9',
-            height: '550px'
-          }}>
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              marginBottom: '7px',
-              borderBottom: '1px solid #eee',
-              paddingBottom: '10px',
-              height: '25px'
-            }}>
-              <span style={{ fontWeight: '500', fontFamily: 'Times New Roman' }}>Code Editor</span>
-            </div>
-            
-            <CodeEditor 
-              code={code} 
-              setCode={setCode} 
-              variables={variables} 
+        <div style={{ 
+          display: 'flex', 
+          gap: '20px',
+          marginBottom: '20px',
+          justifyContent: 'flex-start'
+        }}>
+          <div style={{ width: '25%' }}>
+            <VariableForm 
+              onVariableAdded={handleVariableAdded} 
               selectedPID={selectedPID}
             />
           </div>
-        </div>
-      </div>
+          <div style={{ width: '25%' }}>
+            <CSVUploader 
+              selectedPID={selectedPID}
+              onVariablesAdded={handleVariablesUploaded}
+            />
+          </div>
+          <div style={{ width: '25%' }}>
+            <div style={{ 
+              marginTop: '0',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              padding: '15px',
+              backgroundColor: '#f9f9f9',
+              height: '300px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                marginBottom: '15px',
+                borderBottom: '1px solid #eee',
+                paddingBottom: '10px'
+              }}>
+                <span style={{ fontWeight: '500', fontFamily: 'Times New Roman' }}>Search Variables</span>
+              </div>
 
-      {editingVariable && (
-        <div style={{ 
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: 'white',
-          padding: '20px',
-          borderRadius: '4px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-          zIndex: 1000,
-          width: '400px'
-        }}>
-          <h3>Edit Variable</h3>
-          <VariableForm 
-            initialData={editingVariable}
-            onVariableAdded={handleUpdateVariable}
-            selectedPID={selectedPID}
-            isEditing={true}
-            submitButtonText="Save"
-          />
-          <button 
-            onClick={() => setEditingVariable(null)}
-            style={{ marginTop: '10px', padding: '5px 10px' }}
-          >
-            Cancel
-          </button>
+              <input
+                type="text"
+                placeholder="Type to search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  borderRadius: '4px',
+                  border: '1px solid #ddd',
+                  boxSizing: 'border-box',
+                  marginBottom: '10px',
+                  fontFamily: 'Times New Roman'
+                }}
+              />
+
+              <div style={{ 
+                flex: 1,
+                overflowY: 'auto',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                padding: '10px',
+                backgroundColor: 'white'
+              }}>
+                {searchTerm ? (
+                  filteredVariables.length > 0 ? (
+                    filteredVariables.map((variable) => (
+                      <div key={variable._id} style={{
+                        padding: '8px',
+                        marginBottom: '5px',
+                        backgroundColor: '#f5f5f5',
+                        borderRadius: '4px',
+                        border: '1px solid #ddd',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                      }}>
+                        <span>{variable.name}</span>
+                        <div style={{ display: 'flex', gap: '5px' }}>
+                          <button
+                            onClick={() => handleEdit(variable)}
+                            style={{
+                              background: '#FFC107',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '3px',
+                              padding: '3px 8px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteVariable(variable._id)}
+                            style={{
+                              background: '#ff4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '3px',
+                              padding: '3px 8px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No matching variables found</p>
+                  )
+                ) : (
+                  <p>Type to search variables</p>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-      )}
-    </div>
+
+        <div style={{ display: 'flex' }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ 
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              padding: '15px',
+              backgroundColor: '#f9f9f9',
+              height: '550px'
+            }}>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                marginBottom: '7px',
+                borderBottom: '1px solid #eee',
+                paddingBottom: '10px',
+                height: '25px'
+              }}>
+                <span style={{ fontWeight: '500', fontFamily: 'Times New Roman' }}>Code Editor</span>
+              </div>
+              
+              <CodeEditor 
+                code={code} 
+                setCode={setCode} 
+                variables={variables} 
+                selectedPID={selectedPID}
+              />
+            </div>
+          </div>
+        </div>
+
+        {editingVariable && (
+          <div style={{ 
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '4px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+            zIndex: 1000,
+            width: '400px'
+          }}>
+            <h3>Edit Variable</h3>
+            <VariableForm 
+              initialData={editingVariable}
+              onVariableAdded={handleUpdateVariable}
+              selectedPID={selectedPID}
+              isEditing={true}
+              submitButtonText="Save"
+            />
+            <button 
+              onClick={() => setEditingVariable(null)}
+              style={{ marginTop: '10px', padding: '5px 10px' }}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
