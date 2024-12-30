@@ -169,11 +169,13 @@ export default function MainPage() {
   return (
     <div>
       <h1 style={{
-        fontSize: '24px',
-        fontWeight: '500',
+        fontSize: '36px',
+        fontWeight: '400',
         color: '#333',
         marginBottom: '20px',
-        padding: '10px 0'
+        padding: '10px 0',
+        fontFamily: 'Times New Roman',
+        textAlign: 'center'
       }}>
         GoodData Advanced Code Editor
       </h1>
