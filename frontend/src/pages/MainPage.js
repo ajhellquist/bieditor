@@ -198,6 +198,13 @@ export default function MainPage() {
 
   return (
     <>
+      <style>
+        {`
+          .search-input::placeholder {
+            color: #666;
+          }
+        `}
+      </style>
       <div style={{ 
         backgroundColor: '#FFFDF8',
         position: 'fixed',
@@ -219,12 +226,13 @@ export default function MainPage() {
         <h1 style={{
           fontSize: '36px',
           fontWeight: '400',
-          color: '#333',
           margin: 0,
           padding: 0,
           textAlign: 'left'
         }}>
-          MAQL Express Editor
+          <span style={{ color: '#FFC380' }}>MAQL</span>
+          <span style={{ color: '#333' }}> Express</span>
+          <span style={{ color: '#333' }}> Editor</span>
         </h1>
 
         <div style={{ position: 'relative' }}>
@@ -367,6 +375,7 @@ export default function MainPage() {
                   marginBottom: '10px',
                   fontFamily: 'Times New Roman'
                 }}
+                className="search-input"
               />
 
               <div style={{ 
@@ -509,6 +518,7 @@ export default function MainPage() {
       <div style={{
         height: '60px',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         fontFamily: 'Roboto, sans-serif',
@@ -516,21 +526,26 @@ export default function MainPage() {
         color: 'black',
         gap: '5px'
       }}>
-        made with ❤️ by andrew hellquist
-        <a 
-          href="https://www.linkedin.com/in/ajhellquist/"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            color: '#0077B5',
-            textDecoration: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            marginLeft: '5px'
-          }}
-        >
-          <FaLinkedin size={20} />
-        </a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          made with ❤️ by andrew hellquist
+          <a 
+            href="https://www.linkedin.com/in/ajhellquist/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: '#0077B5',
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              marginLeft: '5px'
+            }}
+          >
+            <FaLinkedin size={20} />
+          </a>
+        </div>
+        <div style={{ fontSize: '12px', color: '#666' }}>
+          Version 1.0.0
+        </div>
       </div>
     </>
   );

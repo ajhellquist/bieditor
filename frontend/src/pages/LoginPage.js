@@ -53,6 +53,18 @@ function LoginPage() {
       alignItems: 'center'
     }}>
       <div style={{ width: 300 }}>
+        <h1 style={{
+          fontSize: '36px',
+          fontWeight: '400',
+          margin: 0,
+          padding: 0,
+          textAlign: 'center',
+          marginBottom: '20px'
+        }}>
+          <span style={{ color: '#FFC380' }}>MAQL</span>
+          <span style={{ color: '#333' }}> Express</span>
+          <span style={{ color: '#333' }}> Editor</span>
+        </h1>
         <h2>{mode === 'login' ? 'Login' : 'Signup'}</h2>
         {error && <div style={{ color: 'red', marginBottom: 10 }}>{error}</div>}
         <form onSubmit={handleSubmit}>
@@ -74,14 +86,14 @@ function LoginPage() {
           />
           <button 
             type="submit"
-            style={{ width: '100%', padding: '5px', marginBottom: 10 }}
+            style={{ width: '100%', border: '3px solid black', borderRadius: '4px', padding: '5px', marginBottom: 10 }}
           >
             {mode === 'login' ? 'Login' : 'Sign Up'}
           </button>
         </form>
         <button 
           onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-          style={{ width: '100%', padding: '5px' }}
+          style={{ width: '100%', border: '3px solid black', borderRadius: '4px', padding: '5px' }}
         >
           Switch to {mode === 'login' ? 'Signup' : 'Login'}
         </button>

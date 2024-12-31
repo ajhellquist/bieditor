@@ -100,12 +100,31 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
         
         <form onSubmit={handleUpload}>
           <div style={{ marginBottom: '10px' }}>
-            <input
-              type="file"
-              accept=".csv"
-              onChange={handleFileChange}
-              style={{ width: '100%' }}
-            />
+            <label
+              style={{
+                display: 'inline-block',
+                width: '100%',
+                padding: '8px',
+                backgroundColor: 'white',
+                color: 'black',
+                border: '3px solid black',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                textAlign: 'center',
+                boxSizing: 'border-box',
+                fontFamily: 'Roboto'
+              }}
+            >
+              {file ? file.name : 'Choose File'}
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleFileChange}
+                style={{ 
+                  display: 'none'
+                }}
+              />
+            </label>
           </div>
           {error && (
             <div style={{ 

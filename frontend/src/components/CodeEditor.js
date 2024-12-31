@@ -239,29 +239,60 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   };
 
   const handleKeyDown = (e) => {
-    if (!showSuggestions || !filteredSuggestions.length) return;
+    // Handle existing suggestion navigation
+    if (showSuggestions && filteredSuggestions.length) {
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setSelectedIndex(prev => 
+            prev < filteredSuggestions.length - 1 ? prev + 1 : prev
+          );
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setSelectedIndex(prev => prev > 0 ? prev - 1 : prev);
+          break;
+        case 'Tab':
+        case 'Enter':
+          e.preventDefault();
+          if (filteredSuggestions[selectedIndex]) {
+            insertSuggestion(filteredSuggestions[selectedIndex]);
+          }
+          break;
+        case 'Escape':
+          setShowSuggestions(false);
+          break;
+      }
+      return;
+    }
 
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setSelectedIndex(prev => 
-          prev < filteredSuggestions.length - 1 ? prev + 1 : prev
-        );
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setSelectedIndex(prev => prev > 0 ? prev - 1 : prev);
-        break;
-      case 'Tab':
-      case 'Enter':
-        e.preventDefault();
-        if (filteredSuggestions[selectedIndex]) {
-          insertSuggestion(filteredSuggestions[selectedIndex]);
+    // Handle backspace on variable references
+    if (e.key === 'Backspace') {
+      const selection = window.getSelection();
+      if (!selection.rangeCount) return;
+
+      const range = selection.getRangeAt(0);
+      const node = range.startContainer;
+      
+      // Check if we're at the start of a text node that comes right after a variable span
+      if (node.nodeType === Node.TEXT_NODE && range.startOffset === 0) {
+        const previousSibling = node.previousSibling;
+        if (previousSibling && previousSibling.classList?.contains('variable-reference')) {
+          e.preventDefault();
+          previousSibling.remove();
+          setCode(editorRef.current.innerHTML);
+          return;
         }
-        break;
-      case 'Escape':
-        setShowSuggestions(false);
-        break;
+      }
+      
+      // Check if we're inside or right after a variable span
+      let parentSpan = node.parentElement;
+      if (parentSpan && parentSpan.classList?.contains('variable-reference')) {
+        e.preventDefault();
+        parentSpan.remove();
+        setCode(editorRef.current.innerHTML);
+        return;
+      }
     }
   };
 

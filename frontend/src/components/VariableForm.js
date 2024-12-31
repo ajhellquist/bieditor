@@ -7,6 +7,9 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
   const [type, setType] = useState(initialData?.type || 'Metric');
   const [elementId, setElementId] = useState(initialData?.elementId || '');
   const [error, setError] = useState('');
+  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
+
+  const typeOptions = ["Metric", "Attribute", "Attribute Value"];
 
   useEffect(() => {
     if (initialData) {
@@ -97,17 +100,66 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             required
           />
         </div>
-        <div style={{ marginBottom: 10 }}>
-          <select
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid black', boxSizing: 'border-box' }}
-            required
+        <div style={{ marginBottom: 10, position: 'relative' }}>
+          <div 
+            onClick={() => setShowTypeDropdown(!showTypeDropdown)}
+            style={{
+              padding: '8px',
+              borderRadius: '4px',
+              border: '1px solid black',
+              cursor: 'pointer',
+              backgroundColor: 'white',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%',
+              boxSizing: 'border-box',
+              fontFamily: 'Roboto'
+            }}
           >
-            <option value="Metric">Metric</option>
-            <option value="Attribute">Attribute</option>
-            <option value="Attribute Value">Attribute Value</option>
-          </select>
+            <span>{type}</span>
+            <span>{showTypeDropdown ? '▲' : '▼'}</span>
+          </div>
+          
+          {showTypeDropdown && (
+            <div style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              backgroundColor: 'white',
+              border: '1px solid black',
+              borderRadius: '4px',
+              marginTop: '4px',
+              zIndex: 1000,
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}>
+              {typeOptions.map((option, index) => (
+                <div
+                  key={option}
+                  onClick={() => {
+                    setType(option);
+                    setShowTypeDropdown(false);
+                  }}
+                  style={{
+                    padding: '8px',
+                    cursor: 'pointer',
+                    borderBottom: index === typeOptions.length - 1 ? 'none' : '1px solid #eee',
+                    backgroundColor: 'white',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#f5f5f5';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'white';
+                  }}
+                >
+                  {option}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         {type === 'Attribute Value' && (
           <div style={{ marginBottom: 10 }}>
