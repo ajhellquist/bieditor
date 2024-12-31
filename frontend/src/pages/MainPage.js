@@ -252,7 +252,7 @@ export default function MainPage() {
                 fontSize: '14px',
                 color: '#333'
               }}>
-                Metrics Created: {metricsCount}
+                Metrics Created 🚀: {metricsCount}
               </div>
               <button
                 onClick={handleLogout}

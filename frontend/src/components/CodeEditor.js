@@ -265,6 +265,11 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
+  const handleClearCode = () => {
+    setCode('');
+    editorRef.current.innerHTML = '';
+  };
+
   return (
     <div style={{ 
       position: 'relative',
@@ -325,7 +330,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         />
         <div style={{ 
           display: 'flex', 
-          justifyContent: 'flex-start'
+          justifyContent: 'flex-start',
+          gap: '10px'
         }}>
           <button 
             onClick={handleCopyCode}
@@ -339,6 +345,19 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             }}
           >
             {copySuccess ? 'Copied!' : 'Copy Code'}
+          </button>
+          <button 
+            onClick={handleClearCode}
+            style={{
+              padding: '6px 12px',
+              backgroundColor: '#FD495F',
+              color: 'black',
+              border: '3px solid black',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Clear Code
           </button>
         </div>
       </div>
