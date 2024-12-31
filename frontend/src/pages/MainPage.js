@@ -177,35 +177,45 @@ export default function MainPage() {
         bottom: 0,
         zIndex: -1
       }} />
+      
+      <div style={{
+        height: '60px',
+        display: 'flex',
+        alignItems: 'center',
+        paddingLeft: '5%',
+        paddingRight: '5%'
+      }}>
+        <h1 style={{
+          fontSize: '36px',
+          fontWeight: '400',
+          color: '#333',
+          margin: 0,
+          padding: 0,
+          textAlign: 'left'
+        }}>
+          MAQL Express Editor
+        </h1>
+      </div>
+
       <div style={{ 
-        marginTop: '60px',
         left: 0,
         right: 0,
         height: '5px',
         backgroundColor: 'black',
         zIndex: 1
       }} />
+
       <div style={{ 
         marginLeft: '5%',
         marginRight: '5%',
-        minHeight: '100vh',
+        minHeight: 'calc(100vh - 65px)',
         overflowY: 'auto'
       }}>
-        <h1 style={{
-          fontSize: '36px',
-          fontWeight: '400',
-          color: '#333',
-          margin: '20px 0',
-          padding: 0,
-          textAlign: 'left'
-        }}>
-          MAQL Express Editor
-        </h1>
-
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
           gap: '20px',
+          marginTop: '20px',
           marginBottom: '20px'
         }}>
           <div style={{ width: '1000px' }}>
