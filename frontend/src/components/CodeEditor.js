@@ -301,9 +301,9 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             onClick={handleCopyCode}
             style={{
               padding: '6px 12px',
-              backgroundColor: copySuccess ? '#28A745' : '#6C757D',
-              color: 'white',
-              border: 'none',
+              backgroundColor: copySuccess ? '#28A745' : '#cccccc',
+              color: 'black',
+              border: '3px solid black',
               borderRadius: '4px',
               cursor: 'pointer'
             }}

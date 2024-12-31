@@ -4,6 +4,7 @@ import CodeEditor from '../components/CodeEditor';
 import VariableForm from '../components/VariableForm';
 import PIDManager from '../components/PIDManager';
 import CSVUploader from '../components/CSVUploader';
+import { FaLinkedin } from 'react-icons/fa';
 
 export default function MainPage() {
   const [code, setCode] = useState('// Start typing...');
@@ -208,8 +209,9 @@ export default function MainPage() {
       <div style={{ 
         marginLeft: '5%',
         marginRight: '5%',
-        minHeight: 'calc(100vh - 65px)',
-        overflowY: 'auto'
+        minHeight: 'calc(100vh - 130px)',
+        overflowY: 'auto',
+        paddingBottom: '60px'
       }}>
         <div style={{ 
           display: 'flex', 
@@ -411,6 +413,43 @@ export default function MainPage() {
             </button>
           </div>
         )}
+      </div>
+
+      <div style={{ 
+        //position: 'fixed',
+        left: 0,
+        right: 0,
+        bottom: '60px',
+        height: '5px',
+        backgroundColor: 'black',
+        zIndex: 1
+      }} />
+
+      <div style={{
+        height: '60px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'Roboto, sans-serif',
+        fontSize: '13px',
+        color: 'black',
+        gap: '5px'
+      }}>
+        made with ❤️ by andrew hellquist
+        <a 
+          href="https://www.linkedin.com/in/ajhellquist/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: '#0077B5',
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '5px'
+          }}
+        >
+          <FaLinkedin size={20} />
+        </a>
       </div>
     </>
   );
