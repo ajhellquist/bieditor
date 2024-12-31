@@ -152,7 +152,8 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
           borderRadius: '4px',
           cursor: 'pointer',
           width: '200px',
-          height: '35px'
+          height: '40px',
+          marginLeft: '10px' 
         }}
       >
         Add PID

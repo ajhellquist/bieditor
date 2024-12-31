@@ -122,7 +122,7 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
             style={{
               width: '100%',
               padding: '8px',
-              backgroundColor: file ? '#17A2B8' : '#cccccc',
+              backgroundColor: file ? '#FFC380' : '#cccccc',
               color: 'black',
               border: '3px solid black',
               borderRadius: '4px',
@@ -139,7 +139,7 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
           style={{
             width: '100%',
             padding: '8px',
-            backgroundColor: '#007BFF',
+            backgroundColor: '#EADBB7',
             color: 'black',
             border: '3px solid black',
             borderRadius: '4px',
