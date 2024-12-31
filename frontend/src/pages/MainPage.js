@@ -178,8 +178,7 @@ export default function MainPage() {
         zIndex: -1
       }} />
       <div style={{ 
-        position: 'fixed',
-        top: '60px',
+        marginTop: '60px',
         left: 0,
         right: 0,
         height: '5px',
