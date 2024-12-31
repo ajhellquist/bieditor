@@ -15,6 +15,7 @@ export default function MainPage() {
   const [editingVariable, setEditingVariable] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [metricsCount, setMetricsCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +29,10 @@ export default function MainPage() {
       setVariables([]);
     }
   }, [selectedPID]);
+
+  useEffect(() => {
+    fetchMetricsCount();
+  }, []);
 
   const fetchVariables = async (pidId) => {
     try {
@@ -52,6 +57,18 @@ export default function MainPage() {
       setPids(response.data);
     } catch (error) {
       console.error('Error fetching PIDs:', error);
+    }
+  };
+
+  const fetchMetricsCount = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:4000/metrics/copy-count', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setMetricsCount(response.data.count);
+    } catch (error) {
+      console.error('Error fetching metrics:', error);
     }
   };
 
@@ -175,6 +192,10 @@ export default function MainPage() {
     navigate('/');
   };
 
+  const refreshMetricsCount = async () => {
+    await fetchMetricsCount();
+  };
+
   return (
     <>
       <div style={{ 
@@ -223,16 +244,23 @@ export default function MainPage() {
               borderRadius: '4px',
               boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
               zIndex: 1000,
-              minWidth: '120px'
+              minWidth: '180px'
             }}>
+              <div style={{
+                padding: '8px 16px',
+                borderBottom: '1px solid #ddd',
+                fontSize: '14px',
+                color: '#333'
+              }}>
+                Metrics Created: {metricsCount}
+              </div>
               <button
                 onClick={handleLogout}
                 style={{
                   display: 'block',
                   width: '100%',
                   padding: '8px 16px',
-                  border: '3px solid black',
-                  borderRadius: '4px',
+                  border: 'none',
                   background: 'none',
                   textAlign: 'left',
                   cursor: 'pointer',
@@ -431,6 +459,7 @@ export default function MainPage() {
                 setCode={setCode} 
                 variables={variables} 
                 selectedPID={selectedPID}
+                onCopySuccess={refreshMetricsCount}
               />
             </div>
           </div>

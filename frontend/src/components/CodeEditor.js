@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 
 export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -149,63 +150,92 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     setShowSuggestions(false);
   };
 
-  const handleCopyCode = () => {
+  const handleCopyCode = async () => {
     if (!editorRef.current) return;
-    console.log('Starting copy operation...');
-
-    // Create a temporary div
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = editorRef.current.innerHTML;
-
-    // Get all nodes in order (text nodes and variable spans)
-    const walker = document.createTreeWalker(
-      tempDiv,
-      NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
-      {
-        acceptNode: (node) => {
-          if (node.nodeType === Node.TEXT_NODE && 
-              (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))) {
-            // Only accept text nodes that aren't inside variable spans
-            return NodeFilter.FILTER_ACCEPT;
-          }
-          if (node.nodeType === Node.ELEMENT_NODE && 
-              node.classList.contains('variable-reference')) {
-            return NodeFilter.FILTER_ACCEPT;
-          }
-          return NodeFilter.FILTER_SKIP;
-        }
-      }
-    );
-
-    let finalText = '';
-    let node;
-
-    while (node = walker.nextNode()) {
-      if (node.nodeType === Node.TEXT_NODE && 
-          (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))) {
-        // Only process text nodes that aren't inside variable spans
-        const text = node.textContent.trim();
-        if (text) {
-          finalText += text + ' ';
-        }
-      } else if (node.classList.contains('variable-reference')) {
-        // For variable spans, only add their reference
-        const reference = node.getAttribute('data-reference');
-        if (reference) {
-          finalText += reference + ' ';
-        }
-      }
-    }
-
-    // Clean up any extra spaces and trim
-    finalText = finalText.replace(/\s+/g, ' ').trim();
     
-    console.log('Final text to copy:', finalText);
+    try {
+      // Create a temporary div
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = editorRef.current.innerHTML;
 
-    navigator.clipboard.writeText(finalText).then(() => {
+      // Get all nodes in order (text nodes and variable spans)
+      const walker = document.createTreeWalker(
+        tempDiv,
+        NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+        {
+          acceptNode: (node) => {
+            if (node.nodeType === Node.TEXT_NODE && 
+                (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))) {
+              // Only accept text nodes that aren't inside variable spans
+              return NodeFilter.FILTER_ACCEPT;
+            }
+            if (node.nodeType === Node.ELEMENT_NODE && 
+                node.classList.contains('variable-reference')) {
+              return NodeFilter.FILTER_ACCEPT;
+            }
+            return NodeFilter.FILTER_SKIP;
+          }
+        }
+      );
+
+      let finalText = '';
+      let node;
+
+      while (node = walker.nextNode()) {
+        if (node.nodeType === Node.TEXT_NODE && 
+            (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))) {
+          // Only process text nodes that aren't inside variable spans
+          const text = node.textContent.trim();
+          if (text) {
+            finalText += text + ' ';
+          }
+        } else if (node.classList.contains('variable-reference')) {
+          // For variable spans, only add their reference
+          const reference = node.getAttribute('data-reference');
+          if (reference) {
+            finalText += reference + ' ';
+          }
+        }
+      }
+
+      // Clean up any extra spaces and trim
+      finalText = finalText.replace(/\s+/g, ' ').trim();
+      
+      console.log('Final text to copy:', finalText);
+
+      await navigator.clipboard.writeText(finalText);
+      await handleCopy();
+      
       setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
-    });
+      
+      setTimeout(() => {
+        setCopySuccess(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Error in handleCopyCode:', error);
+    }
+  };
+
+  const handleCopy = async () => {
+    try {
+      console.log('Making metrics request...');
+      const token = localStorage.getItem('token');
+      
+      // Log the token (but not in production!)
+      console.log('Token exists:', !!token);
+      
+      const response = await axios.post('http://localhost:4000/metrics', {}, {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('Metric recorded successfully:', response.data);
+    } catch (error) {
+      console.error('Error recording metric:', error);
+      // Continue with copy operation even if metric fails
+    }
   };
 
   const handleKeyDown = (e) => {
