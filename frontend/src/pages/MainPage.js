@@ -4,7 +4,8 @@ import CodeEditor from '../components/CodeEditor';
 import VariableForm from '../components/VariableForm';
 import PIDManager from '../components/PIDManager';
 import CSVUploader from '../components/CSVUploader';
-import { FaLinkedin } from 'react-icons/fa';
+import { FaLinkedin, FaUserCircle } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 export default function MainPage() {
   const [code, setCode] = useState('// Start typing...');
@@ -13,6 +14,8 @@ export default function MainPage() {
   const [selectedPID, setSelectedPID] = useState(null);
   const [editingVariable, setEditingVariable] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPIDs();
@@ -167,6 +170,11 @@ export default function MainPage() {
     // Implementation for downloading template
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+  };
+
   return (
     <>
       <div style={{ 
@@ -183,6 +191,7 @@ export default function MainPage() {
         height: '60px',
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'space-between',
         paddingLeft: '5%',
         paddingRight: '5%'
       }}>
@@ -196,6 +205,49 @@ export default function MainPage() {
         }}>
           MAQL Express Editor
         </h1>
+
+        <div style={{ position: 'relative' }}>
+          <FaUserCircle 
+            size={30} 
+            onClick={() => setShowDropdown(!showDropdown)}
+            style={{ cursor: 'pointer', color: '#333' }}
+          />
+          
+          {showDropdown && (
+            <div style={{
+              position: 'absolute',
+              top: '40px',
+              right: '0',
+              backgroundColor: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+              zIndex: 1000,
+              minWidth: '120px'
+            }}>
+              <button
+                onClick={handleLogout}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  padding: '8px 16px',
+                  border: '3px solid black',
+                  borderRadius: '4px',
+                  background: 'none',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  color: '#333',
+                  ':hover': {
+                    backgroundColor: '#f5f5f5'
+                  }
+                }}
+              >
+                Log Out
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <div style={{ 
