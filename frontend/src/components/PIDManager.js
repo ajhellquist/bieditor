@@ -47,14 +47,14 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
           style={{
             padding: '8px',
             borderRadius: '4px',
-            border: '1px solid #ddd',
+            border: '3px solid black',
             cursor: 'pointer',
             backgroundColor: 'white',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             width: '100%',
-            fontFamily: 'Times New Roman'
+            fontFamily: 'Roboto'
           }}
         >
           <span>
@@ -73,7 +73,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
             left: 0,
             right: 0,
             backgroundColor: 'white',
-            border: '1px solid #ddd',
+            border: '3px solid black',
             borderRadius: '4px',
             marginTop: '4px',
             maxHeight: '200px',
@@ -146,9 +146,9 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
         onClick={() => setShowAddForm(true)}
         style={{
           padding: '8px 16px',
-          backgroundColor: '#28A745',
-          color: 'white',
-          border: 'none',
+          backgroundColor: '#FFC480',
+          color: 'black',
+          border: '3px solid black',
           borderRadius: '4px',
           cursor: 'pointer',
           width: '200px',

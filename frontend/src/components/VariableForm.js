@@ -58,12 +58,12 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
 
   return (
     <div style={{ 
-      marginTop: '10px', 
-      marginBottom: '20px',
-      border: '1px solid #ddd',
-      borderRadius: '4px',
+      border: '3px solid black',
+      borderRadius: '12px',
       padding: '15px',
-      backgroundColor: '#f9f9f9'
+      backgroundColor: '#FFF4DA',
+      height: '300px',
+      boxShadow: '5px 5px 10px rgb(0, 0, 0)'
     }}>
       <div style={{ 
         display: 'flex', 
@@ -90,9 +90,9 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
               width: '100%', 
               padding: '8px', 
               borderRadius: '4px', 
-              border: '1px solid #ddd', 
+              border: '1px solid black', 
               boxSizing: 'border-box',
-              fontFamily: 'Times New Roman'
+              fontFamily: 'Roboto'
             }}
             required
           />
@@ -101,7 +101,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', boxSizing: 'border-box' }}
+            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid black', boxSizing: 'border-box' }}
             required
           >
             <option value="Metric">Metric</option>
@@ -116,7 +116,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
               value={elementId}
               onChange={(e) => setElementId(e.target.value)}
               placeholder="Element ID"
-              style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid black', boxSizing: 'border-box' }}
               required
             />
           </div>
@@ -127,7 +127,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             value={value}
             onChange={(e) => setValue(e.target.value)}
             placeholder="Value"
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', boxSizing: 'border-box' }}
+            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid black', boxSizing: 'border-box' }}
             required
           />
         </div>
@@ -136,9 +136,9 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
           style={{ 
             width: '100%', 
             padding: '8px',
-            backgroundColor: '#28A745',
-            color: 'white',
-            border: 'none',
+            backgroundColor: '#FFC480',
+            color: 'black',
+            border: '3px solid black',
             borderRadius: '4px',
             cursor: 'pointer'
           }}

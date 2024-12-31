@@ -84,12 +84,12 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
 
   return (
     <div style={{ 
-      marginTop: '10px', 
-      marginBottom: '20px',
-      border: '1px solid #ddd',
-      borderRadius: '4px',
+      border: '3px solid black',
+      borderRadius: '12px',
       padding: '15px',
-      backgroundColor: '#f9f9f9'
+      backgroundColor: '#FFF4DA',
+      height: '300px',
+      boxShadow: '5px 5px 10px rgb(0, 0, 0)'
     }}>
       <div style={{ 
         display: 'flex', 
@@ -123,8 +123,8 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
               width: '100%',
               padding: '8px',
               backgroundColor: file ? '#17A2B8' : '#cccccc',
-              color: 'white',
-              border: 'none',
+              color: 'black',
+              border: '3px solid black',
               borderRadius: '4px',
               cursor: file ? 'pointer' : 'not-allowed',
               marginBottom: '10px'
@@ -140,8 +140,8 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
             width: '100%',
             padding: '8px',
             backgroundColor: '#007BFF',
-            color: 'white',
-            border: 'none',
+            color: 'black',
+            border: '3px solid black',
             borderRadius: '4px',
             cursor: 'pointer',
             fontSize: '14px'

@@ -242,13 +242,14 @@ export default function MainPage() {
           <div style={{ width: '25%' }}>
             <div style={{ 
               marginTop: '0',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
+              border: '3px solid black',
+              borderRadius: '12px',
               padding: '15px',
-              backgroundColor: '#f9f9f9',
+              backgroundColor: '#FFF4DA',
               height: '300px',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              boxShadow: '5px 5px 10px rgb(0, 0, 0)'
             }}>
               <div style={{ 
                 display: 'flex', 
@@ -270,7 +271,7 @@ export default function MainPage() {
                   width: '100%',
                   padding: '8px',
                   borderRadius: '4px',
-                  border: '1px solid #ddd',
+                  border: '1px solid black',
                   boxSizing: 'border-box',
                   marginBottom: '10px',
                   fontFamily: 'Times New Roman'
@@ -280,10 +281,10 @@ export default function MainPage() {
               <div style={{ 
                 flex: 1,
                 overflowY: 'auto',
-                border: '1px solid #ddd',
+                border: '1px solid black',
                 borderRadius: '4px',
                 padding: '10px',
-                backgroundColor: 'white'
+                backgroundColor: '#FFFFFF'
               }}>
                 {searchTerm ? (
                   filteredVariables.length > 0 ? (
@@ -293,7 +294,7 @@ export default function MainPage() {
                         marginBottom: '5px',
                         backgroundColor: '#f5f5f5',
                         borderRadius: '4px',
-                        border: '1px solid #ddd',
+                        border: '1px solid black',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between'
@@ -343,11 +344,12 @@ export default function MainPage() {
         <div style={{ display: 'flex' }}>
           <div style={{ flex: 1 }}>
             <div style={{ 
-              border: '1px solid #ddd',
-              borderRadius: '4px',
+              border: '3px solid black',
+              borderRadius: '12px',
               padding: '15px',
-              backgroundColor: '#f9f9f9',
-              height: '550px'
+              backgroundColor: '#FFF4DA',
+              height: '550px',
+              boxShadow: '5px 5px 10px rgb(0, 0, 0)'
             }}>
               <div style={{ 
                 display: 'flex', 
@@ -377,7 +379,7 @@ export default function MainPage() {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            backgroundColor: 'white',
+            backgroundColor: '#FFFFFF',
             padding: '20px',
             borderRadius: '4px',
             boxShadow: '0 2px 10px rgba(0,0,0,0.1)',

@@ -245,7 +245,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       {/* Suggestions Panel - Always visible */}
       <div style={{
         width: '15%',
-        border: '1px solid #ccc',
+        border: '1px solid black',
         borderRadius: '4px',
         backgroundColor: 'white',
         height: '400px',
@@ -282,7 +282,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
           onInput={handleInputChange}
           onKeyDown={handleKeyDown}
           style={{
-            border: '1px solid #ccc',
+            border: '1px solid black',
             borderRadius: '4px',
             height: '400px',
             overflowY: 'auto',
