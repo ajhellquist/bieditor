@@ -10,6 +10,8 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('login');
   const [error, setError] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -22,10 +24,11 @@ function LoginPage() {
       const endpoint = mode === 'login' ? '/login' : '/signup';
       console.log('Making request to:', `${API_URL}/auth${endpoint}`);
       
-      const { data } = await axios.post(`${API_URL}/auth${endpoint}`, {
-        email,
-        password
-      });
+      const payload = mode === 'login' 
+        ? { email, password }
+        : { email, password, firstName, lastName };
+      
+      const { data } = await axios.post(`${API_URL}/auth${endpoint}`, payload);
 
       console.log('Response:', data);
 
@@ -68,6 +71,26 @@ function LoginPage() {
         <h2>{mode === 'login' ? 'Login' : 'Signup'}</h2>
         {error && <div style={{ color: 'red', marginBottom: 10 }}>{error}</div>}
         <form onSubmit={handleSubmit}>
+          {mode === 'signup' && (
+            <>
+              <input 
+                type="text"
+                value={firstName}
+                placeholder="First Name"
+                onChange={e => setFirstName(e.target.value)}
+                style={{ width: '100%', marginBottom: 10 }}
+                required
+              />
+              <input 
+                type="text"
+                value={lastName}
+                placeholder="Last Name"
+                onChange={e => setLastName(e.target.value)}
+                style={{ width: '100%', marginBottom: 10 }}
+                required
+              />
+            </>
+          )}
           <input 
             type="email"
             value={email}

@@ -7,10 +7,10 @@ const mongoose = require('mongoose');
 // Get all PIDs for the logged-in user
 router.get('/', auth, async (req, res) => {
   try {
-    console.log('Fetching PIDs for user:', req.user.id);
+    console.log('Fetching PIDs for user:', req.user.userId);
     
     const pids = await PID.find({ 
-      userId: new mongoose.Types.ObjectId(req.user.id) 
+      userId: new mongoose.Types.ObjectId(req.user.userId)
     });
     
     console.log('Found PIDs:', pids);
@@ -47,7 +47,7 @@ router.post('/', auth, async (req, res) => {
     const pidData = {
       pidName: name.trim(),
       pidId: pid.trim(),
-      userId: new mongoose.Types.ObjectId(req.user.id)
+      userId: new mongoose.Types.ObjectId(req.user.userId)
     };
 
     console.log('Creating PID with data:', pidData);
@@ -94,7 +94,7 @@ router.delete('/:id', auth, async (req, res) => {
   try {
     const pid = await PID.findOne({ 
       _id: req.params.id,
-      userId: req.user.id 
+      userId: req.user.userId
     });
 
     if (!pid) {

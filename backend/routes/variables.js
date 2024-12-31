@@ -10,7 +10,7 @@ router.get('/:pidId', auth, async (req, res) => {
     // First verify the PID belongs to the user
     const pid = await PID.findOne({
       _id: req.params.pidId,
-      userId: req.user.id
+      userId: req.user.userId
     });
 
     if (!pid) {
@@ -32,7 +32,7 @@ router.post('/:pidId', auth, async (req, res) => {
     // Verify PID belongs to user
     const pid = await PID.findOne({
       _id: req.params.pidId,
-      userId: req.user.id
+      userId: req.user.userId
     });
 
     if (!pid) {
@@ -60,7 +60,7 @@ router.delete('/:pidId/:variableId', auth, async (req, res) => {
     // Verify PID belongs to user
     const pid = await PID.findOne({
       _id: req.params.pidId,
-      userId: req.user.id
+      userId: req.user.userId
     });
 
     if (!pid) {
@@ -88,7 +88,7 @@ router.put('/:pidId/:variableId', auth, async (req, res) => {
     // Verify PID belongs to user
     const pid = await PID.findOne({
       _id: req.params.pidId,
-      userId: req.user.id
+      userId: req.user.userId
     });
 
     if (!pid) {

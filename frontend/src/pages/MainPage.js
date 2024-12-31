@@ -16,10 +16,12 @@ export default function MainPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [metricsCount, setMetricsCount] = useState(0);
+  const [user, setUser] = useState({ firstName: '', lastName: '' });
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchPIDs();
+    fetchUserInfo();
   }, []);
 
   useEffect(() => {
@@ -69,6 +71,20 @@ export default function MainPage() {
       setMetricsCount(response.data.count);
     } catch (error) {
       console.error('Error fetching metrics:', error);
+    }
+  };
+
+  const fetchUserInfo = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      console.log('Fetching user info with token:', token);
+      const response = await axios.get('http://localhost:4000/auth/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      console.log('Received user data:', response.data);
+      setUser(response.data);
+    } catch (error) {
+      console.error('Error fetching user info:', error.response?.data || error);
     }
   };
 
@@ -235,54 +251,66 @@ export default function MainPage() {
           <span style={{ color: '#333' }}> Editor</span>
         </h1>
 
-        <div style={{ position: 'relative' }}>
-          <FaUserCircle 
-            size={30} 
-            onClick={() => setShowDropdown(!showDropdown)}
-            style={{ cursor: 'pointer', color: '#333' }}
-          />
-          
-          {showDropdown && (
-            <div style={{
-              position: 'absolute',
-              top: '40px',
-              right: '0',
-              backgroundColor: 'white',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-              zIndex: 1000,
-              minWidth: '180px'
-            }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '20px' 
+        }}>
+          <span style={{ 
+            color: '#333',
+            fontSize: '16px'
+          }}>
+            Welcome, {user.firstName} {user.lastName}
+          </span>
+          <div style={{ position: 'relative' }}>
+            <FaUserCircle 
+              size={30} 
+              onClick={() => setShowDropdown(!showDropdown)}
+              style={{ cursor: 'pointer', color: '#333' }}
+            />
+            
+            {showDropdown && (
               <div style={{
-                padding: '8px 16px',
-                borderBottom: '1px solid #ddd',
-                fontSize: '14px',
-                color: '#333'
+                position: 'absolute',
+                top: '40px',
+                right: '0',
+                backgroundColor: 'white',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                zIndex: 1000,
+                minWidth: '180px'
               }}>
-                Metrics Created 🚀: {metricsCount}
-              </div>
-              <button
-                onClick={handleLogout}
-                style={{
-                  display: 'block',
-                  width: '100%',
+                <div style={{
                   padding: '8px 16px',
-                  border: 'none',
-                  background: 'none',
-                  textAlign: 'left',
-                  cursor: 'pointer',
+                  borderBottom: '1px solid #ddd',
                   fontSize: '14px',
-                  color: '#333',
-                  ':hover': {
-                    backgroundColor: '#f5f5f5'
-                  }
-                }}
-              >
-                Log Out
-              </button>
-            </div>
-          )}
+                  color: '#333'
+                }}>
+                  Metrics Created 🚀: {metricsCount}
+                </div>
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '8px 16px',
+                    border: 'none',
+                    background: 'none',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    color: '#333',
+                    ':hover': {
+                      backgroundColor: '#f5f5f5'
+                    }
+                  }}
+                >
+                  Log Out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

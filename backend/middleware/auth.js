@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(' ')[1];
+    const token = req.headers.authorization?.split(' ')[1];
     console.log('Processing token:', token ? 'Token exists' : 'No token');
     
     if (!token) {
@@ -12,10 +12,16 @@ module.exports = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log('Decoded token:', decoded);
     
-    // Preserve the original decoded structure and add _id for metrics
+    // Handle both id and userId for backwards compatibility
+    const userId = decoded.userId || decoded.id;
+    
+    if (!userId) {
+      throw new Error('No user ID in token');
+    }
+
     req.user = {
-      ...decoded,      // Keep all original decoded data
-      _id: decoded.id  // Add _id for metrics
+      userId: userId,
+      _id: userId
     };
     
     console.log('Set user:', req.user);
