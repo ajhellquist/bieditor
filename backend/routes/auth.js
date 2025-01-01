@@ -34,43 +34,52 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
+    console.log('Login attempt for email:', req.body.email);
     const { email, password } = req.body;
+    
+    // Find user
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: 'User not found' });
+    if (!user) {
+      console.log('User not found:', email);
+      return res.status(400).json({ msg: 'User not found' });
+    }
 
+    // Verify password
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ msg: 'Invalid credentials' });
+    if (!match) {
+      console.log('Invalid password for user:', email);
+      return res.status(401).json({ msg: 'Invalid credentials' });
+    }
 
+    // Create token with consistent userId field
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: user._id },  // Use userId consistently
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
+
+    console.log('Login successful for user:', email);
     res.json({ token });
   } catch (err) {
     console.error('Login error:', err);
-    res.status(500).json({ msg: 'Login error' });
+    res.status(500).json({ msg: 'Server error during login' });
   }
 });
 
 router.get('/me', auth, async (req, res) => {
   try {
-    console.log('Fetching user with ID:', req.user.userId);
     const user = await User.findById(req.user.userId);
-    console.log('Found user:', user);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    const userData = {
+    res.json({
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email
-    };
-    console.log('Sending user data:', userData);
-    res.json(userData);
+    });
   } catch (error) {
-    console.error('Error in /me route:', error);
-    res.status(500).json({ message: 'Error fetching user info', error: error.message });
+    console.error('Error fetching user info:', error);
+    res.status(500).json({ message: 'Error fetching user info' });
   }
 });
 
