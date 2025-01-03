@@ -1,0 +1,42 @@
+name,type,value,elementId
+Hours Actual,Metric,4904,NA
+Hours Actual: Billable,Metric,5041,NA
+Hours Actual: Non-Billable,Metric,5042,NA
+Hours Allocated,Metric,72084,NA
+Hours Allocated: Hard,Metric,85429,NA
+Hours Allocated: Soft,Metric,85426,NA
+Hours Allocated: Unstaffed Demand,Metric,73715,NA
+Hours EAC: Actual + Allocated,Metric,73874,NA
+Hours EAC: Actual + Scheduled,Metric,9285,NA
+Hours ETC: Allocated,Metric,72089,NA
+Hours ETC: Scheduled,Metric,9271,NA
+Hours Scheduled,Metric,4903,NA
+Hours Scheduled: Billable,Metric,7143,NA
+Hours Scheduled: Non Billable,Metric,10367,NA
+Task Estimated Hours,Metric,60344,NA
+Task Assignment Estimated Hours,Metric,68387,NA
+Default Workday,Metric,85391,NA
+Workday Hours,Metric,68437,NA
+Workday Hours + Time Off + Holidays,Metric,80634,NA
+Fees Actual,Metric,4995,NA
+Fees Allocated,Metric,73869,NA
+Fees EAC: Actual + Scheduled,Metric,15394,NA
+Fees EAC: Actual + Allocated,Metric,115781,NA
+Fees ETC: Allocated,Metric,75220,NA
+Fees ETC: Scheduled,Metric,15582,NA
+Fees Scheduled,Metric,4902,NA
+Fees Invoiced,Metric,60061,NA
+Project Budget: Lifted,Metric,14518,NA
+Task Estimated Budget,Metric,10137,NA
+Expenses,Metric,10428,NA
+"Expenses: Billable, T&M",Metric,10340,NA
+Expenses: Non-Billable,Metric,11033,NA
+Invoice Amount,Metric,4907,NA
+Cost Actual,Metric,4998,NA
+Cost Actual + Expenses: Non-Billable,Metric,8185,NA
+Cost Allocated,Metric,73872,NA
+Cost EAC: Allocated + Non-Billable Expenses,Metric,73880,NA
+Cost EAC: Scheduled,Metric,60777,NA
+Cost EAC: Scheduled + Non-Billable Expenses,Metric,14248,NA
+Cost ETC: Allocated,Metric,73873,NA
+Cost Scheduled,Metric,10194,NA
