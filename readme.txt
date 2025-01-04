@@ -57,3 +57,7 @@ After it’s highlighted, the user should be able to press Ctrl/Command + C to c
 Also, do we want to allow the user to paste it multiple times? Because typically, once it’s in the clipboard, the user can paste as many times as they want—assuming we handle the paste event so it preserves that <span>.
 
 One edge case: if the user tries to paste outside of the editor, do we want to default to the bracket reference, or do we want the actual text “Project Name”? Right now, our “Copy Code” button (the big one) yields bracket references. But normal clipboard copying might behave differently. Just want to confirm if that’s okay.
+
+SELECT [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/4904] WHERE [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/4016] = [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/4042/elements?id=NA]
+
+[/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/4042/elements?id=12345]

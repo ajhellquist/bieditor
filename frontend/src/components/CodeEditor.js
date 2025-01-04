@@ -8,10 +8,12 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [copySuccess, setCopySuccess] = useState(false);
-  const editorRef = useRef(null);
 
-  // We'll store the current selection range here
-  const cursorRangeRef = useRef(null);
+  // NEW: track multiple selected suggestions by their _id
+  const [multiSelected, setMultiSelected] = useState([]);
+
+  const editorRef = useRef(null);
+  const cursorRangeRef = useRef(null); // For restoring cursor on click
 
   // Helper function to get color based on variable type
   const getVariableColor = (type) => {
@@ -70,25 +72,31 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     return reference;
   };
 
+  // PARTIAL MATCH + ALPHABETICAL SORT
   useEffect(() => {
-    // Filter and sort suggestions
-    // Only show variables whose name starts with the currentWord (case-insensitive)
+    // If currentWord is empty, we may choose to hide suggestions or show all. 
+    // But from your existing logic, we show "No matches" when currentWord is empty, 
+    // so let's do it that way:
+    if (!currentWord) {
+      setFilteredSuggestions([]);
+      return;
+    }
+
     const filtered = variables
-      .filter(v => v.name.toLowerCase().startsWith(currentWord.toLowerCase()))
+      .filter((v) => 
+        v.name.toLowerCase().includes(currentWord.toLowerCase())
+      )
       .sort((a, b) => a.name.localeCompare(b.name));
 
     setFilteredSuggestions(filtered);
     setSelectedIndex(0);
   }, [currentWord, variables]);
 
+  // Force typed text color to black, track typed word
   const handleInputChange = (e) => {
-    // Force typed text color to black
     editorRef.current.style.color = 'black';
-
-    // Store the HTML content
     setCode(editorRef.current.innerHTML);
 
-    // Get the current text and cursor position
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
@@ -106,15 +114,21 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       const beforeCursor = text.substring(0, cursorPos);
       const wordMatch = beforeCursor.match(/\S+$/);
       const currentTypedWord = wordMatch ? wordMatch[0] : '';
-      
+
       console.log('Typing word:', currentTypedWord);
       setCurrentWord(currentTypedWord);
       setShowSuggestions(currentTypedWord.length > 0);
       setCursorPosition(cursorPos);
+    } else {
+      // If not a text node, we might want to set currentWord = ''
+      // so suggestions don't show up in weird spots
+      setCurrentWord('');
+      setShowSuggestions(false);
     }
   };
 
-  const insertSuggestion = (variable) => {
+  // Insert a single variable at the current cursor position
+  const insertSuggestion = (variable, addLeadingComma = false) => {
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
@@ -128,19 +142,26 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       const afterCursor = text.substring(cursorPos);
       const wordMatch = beforeCursor.match(/\S+$/);
 
+      // If we requested a leading comma (for multi-insert)
+      let insertionPrefix = '';
+      if (addLeadingComma) {
+        // We'll do ", " before the variable
+        insertionPrefix = ', ';
+      }
+
       if (wordMatch) {
+        // Calculate where this word starts
         const wordStart = cursorPos - wordMatch[0].length;
         const beforeWord = text.substring(0, wordStart);
 
         // Create text nodes for before and after
-        const beforeTextNode = document.createTextNode(beforeWord);
+        const beforeTextNode = document.createTextNode(beforeWord + insertionPrefix);
         const afterTextNode = document.createTextNode(' ' + afterCursor);
 
         // Create the variable span
         const variableSpan = document.createElement('span');
         variableSpan.className = 'variable-reference';
         variableSpan.style.color = getVariableColor(variable.type);
-        // Make the span itself non-editable
         variableSpan.contentEditable = 'false';
         variableSpan.setAttribute('data-reference', getVariableReference(variable));
         variableSpan.textContent = variable.name;
@@ -151,7 +172,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         parentNode.insertBefore(variableSpan, afterTextNode);
         parentNode.insertBefore(beforeTextNode, variableSpan);
 
-        // Set cursor position after the span
+        // Move cursor to the end of the newly inserted text
         const newRange = document.createRange();
         newRange.setStartAfter(afterTextNode);
         newRange.collapse(true);
@@ -161,46 +182,100 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         setCode(editorRef.current.innerHTML);
       }
     }
-    setShowSuggestions(false);
   };
 
-  // When the user clicks a suggestion, restore the saved cursor range first,
-  // then insert the suggestion at that position.
-  const handleSuggestionClick = (variable) => {
-    // Focus back on the editor
+  // SINGLE CLICK: if Alt is not pressed, insert immediately
+  // if Alt is pressed, toggle the selection in `multiSelected`
+  const handleSuggestionClick = (e, variable) => {
+    e.preventDefault();
+    // If Alt is pressed, toggle multi-select
+    if (e.altKey) {
+      toggleMultiSelect(variable);
+      return;
+    }
+
+    // If no Alt, normal single insert
+    // focus + restore cursor
     editorRef.current.focus();
-    // Restore saved range if it exists
     const savedRange = cursorRangeRef.current;
     if (savedRange) {
       const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(savedRange);
     }
-    // Now call the same function as Tab/Enter
     insertSuggestion(variable);
+    // Clear multiSelect in case it had something
+    setMultiSelected([]);
+    // Hide suggestions
+    setShowSuggestions(false);
+    setCurrentWord('');
   };
 
+  // ALT + CLICK toggles the multiSelected array
+  const toggleMultiSelect = (variable) => {
+    if (multiSelected.find((v) => v._id === variable._id)) {
+      // If already selected, unselect
+      const newSelected = multiSelected.filter((v) => v._id !== variable._id);
+      setMultiSelected(newSelected);
+    } else {
+      // If not selected, add
+      setMultiSelected((prev) => [...prev, variable]);
+    }
+  };
+
+  // Insert multiple suggestions in one shot, comma separated
+  const insertMultipleSuggestions = () => {
+    // Sort them by name just in case we want them in alphabetical order 
+    // (or we can preserve the order in which the user clicked them)
+    const sortedMulti = [...multiSelected].sort((a, b) => a.name.localeCompare(b.name));
+
+    // We call insertSuggestion repeatedly
+    // but each time we do it, we restore the cursor at the end
+    // and provide addLeadingComma = true after the first one
+    sortedMulti.forEach((variable, idx) => {
+      // restore cursor
+      restoreCursorRange();
+      insertSuggestion(variable, idx > 0); // addLeadingComma = true if not the first
+    });
+
+    // Clear them out
+    setMultiSelected([]);
+    // hide suggestions
+    setShowSuggestions(false);
+    setCurrentWord('');
+  };
+
+  // Helper to restore cursor
+  const restoreCursorRange = () => {
+    editorRef.current.focus();
+    const savedRange = cursorRangeRef.current;
+    if (savedRange) {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(savedRange);
+    }
+  };
+
+  // The big copy function
   const handleCopyCode = async () => {
     if (!editorRef.current) return;
     
     try {
-      // Create a temporary div
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = editorRef.current.innerHTML;
 
-      // Get all nodes in order (text nodes and variable spans)
       const walker = document.createTreeWalker(
         tempDiv,
         NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
         {
           acceptNode: (node) => {
-            if (node.nodeType === Node.TEXT_NODE && 
-                (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))) {
-              // Only accept text nodes that aren't inside variable spans
+            if (
+              node.nodeType === Node.TEXT_NODE &&
+              (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))
+            ) {
               return NodeFilter.FILTER_ACCEPT;
             }
-            if (node.nodeType === Node.ELEMENT_NODE && 
-                node.classList.contains('variable-reference')) {
+            if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('variable-reference')) {
               return NodeFilter.FILTER_ACCEPT;
             }
             return NodeFilter.FILTER_SKIP;
@@ -212,15 +287,15 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       let node;
 
       while ((node = walker.nextNode())) {
-        if (node.nodeType === Node.TEXT_NODE && 
-            (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))) {
-          // Only process text nodes that aren't inside variable spans
+        if (
+          node.nodeType === Node.TEXT_NODE &&
+          (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))
+        ) {
           const text = node.textContent.trim();
           if (text) {
             finalText += text + ' ';
           }
         } else if (node.classList.contains('variable-reference')) {
-          // For variable spans, only add their reference
           const reference = node.getAttribute('data-reference');
           if (reference) {
             finalText += reference + ' ';
@@ -228,7 +303,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         }
       }
 
-      // Clean up any extra spaces and trim
+      // Clean up
       finalText = finalText.replace(/\s+/g, ' ').trim();
       
       console.log('Final text to copy:', finalText);
@@ -250,8 +325,6 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     try {
       console.log('Making metrics request...');
       const token = localStorage.getItem('token');
-      
-      // Log the token (but not in production!)
       console.log('Token exists:', !!token);
       
       const response = await axios.post('http://localhost:4000/metrics', {}, {
@@ -264,29 +337,39 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       console.log('Metric recorded successfully:', response.data);
     } catch (error) {
       console.error('Error recording metric:', error);
-      // Continue with copy operation even if metric fails
     }
   };
 
+  // Keydown to handle arrow navigation, tab/enter insertion, backspace logic
   const handleKeyDown = (e) => {
-    // Handle existing suggestion navigation
+    // If we have suggestions open, handle arrow up/down, tab/enter
     if (showSuggestions && filteredSuggestions.length) {
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex(prev => 
+          setSelectedIndex((prev) =>
             prev < filteredSuggestions.length - 1 ? prev + 1 : prev
           );
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedIndex(prev => prev > 0 ? prev - 1 : prev);
+          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
           break;
         case 'Tab':
         case 'Enter':
           e.preventDefault();
-          if (filteredSuggestions[selectedIndex]) {
-            insertSuggestion(filteredSuggestions[selectedIndex]);
+          // If we have multiSelected items, insert them all
+          if (multiSelected.length > 0) {
+            restoreCursorRange();
+            insertMultipleSuggestions();
+          } else {
+            // Single suggestion insertion
+            if (filteredSuggestions[selectedIndex]) {
+              restoreCursorRange();
+              insertSuggestion(filteredSuggestions[selectedIndex]);
+              setShowSuggestions(false);
+              setCurrentWord('');
+            }
           }
           break;
         case 'Escape':
@@ -331,6 +414,9 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   const handleClearCode = () => {
     setCode('');
     editorRef.current.innerHTML = '';
+    setMultiSelected([]);
+    setShowSuggestions(false);
+    setCurrentWord('');
   };
 
   return (
@@ -340,7 +426,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       gap: '20px',
       margin: '25px'
     }}>
-      {/* Suggestions Panel - Always visible */}
+      {/* Suggestions Panel */}
       <div style={{
         width: '15%',
         border: '1px solid black',
@@ -350,21 +436,31 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         overflowY: 'auto'
       }}>
         {showSuggestions && filteredSuggestions.length > 0 ? (
-          filteredSuggestions.map((variable, index) => (
-            <div
-              key={variable._id}
-              onClick={() => handleSuggestionClick(variable)}
-              style={{
-                padding: '8px 10px',
-                cursor: 'pointer',
-                backgroundColor: index === selectedIndex ? '#f0f0f0' : 'white',
-                color: getVariableColor(variable.type),
-                borderBottom: '1px solid #eee'
-              }}
-            >
-              {variable.name}
-            </div>
-          ))
+          filteredSuggestions.map((variable, index) => {
+            // check if this variable is multi-selected
+            const isMultiSelected = multiSelected.some((v) => v._id === variable._id);
+
+            return (
+              <div
+                key={variable._id}
+                onMouseDown={(e) => handleSuggestionClick(e, variable)} 
+                style={{
+                  padding: '8px 10px',
+                  cursor: 'pointer',
+                  backgroundColor: 
+                    // If it's the "arrow-selected" item, highlight in #f0f0f0
+                    // If it's also multi-selected, maybe highlight in a different color
+                    index === selectedIndex
+                      ? '#f0f0f0'
+                      : (isMultiSelected ? '#b3e5fc' : 'white'), 
+                  color: getVariableColor(variable.type),
+                  borderBottom: '1px solid #eee'
+                }}
+              >
+                {variable.name}
+              </div>
+            );
+          })
         ) : (
           <div style={{ padding: '8px 10px', color: '#666' }}>
             {currentWord ? 'No matches found' : 'Start typing to see suggestions'}
@@ -389,7 +485,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             fontFamily: 'Times New Roman',
             backgroundColor: 'white',
             marginBottom: '10px',
-            color: 'black', // Force typed text to black
+            color: 'black',
           }}
         />
         <div style={{ 
