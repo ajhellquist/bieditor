@@ -10,6 +10,9 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   const [copySuccess, setCopySuccess] = useState(false);
   const editorRef = useRef(null);
 
+  // We'll store the current selection range here
+  const cursorRangeRef = useRef(null);
+
   // Helper function to get color based on variable type
   const getVariableColor = (type) => {
     switch (type) {
@@ -80,9 +83,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
 
   const handleInputChange = (e) => {
     // Force typed text color to black
-    // We'll do this by setting the contentEditable's style to black, ensuring normal text is black
     editorRef.current.style.color = 'black';
-    
+
     // Store the HTML content
     setCode(editorRef.current.innerHTML);
 
@@ -92,6 +94,9 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
 
     const range = selection.getRangeAt(0);
     const textNode = range.startContainer;
+
+    // Save the current range so we can restore it on suggestion click
+    cursorRangeRef.current = range.cloneRange();
 
     if (textNode.nodeType === Node.TEXT_NODE) {
       const text = textNode.textContent;
@@ -157,6 +162,22 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       }
     }
     setShowSuggestions(false);
+  };
+
+  // When the user clicks a suggestion, restore the saved cursor range first,
+  // then insert the suggestion at that position.
+  const handleSuggestionClick = (variable) => {
+    // Focus back on the editor
+    editorRef.current.focus();
+    // Restore saved range if it exists
+    const savedRange = cursorRangeRef.current;
+    if (savedRange) {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(savedRange);
+    }
+    // Now call the same function as Tab/Enter
+    insertSuggestion(variable);
   };
 
   const handleCopyCode = async () => {
@@ -332,7 +353,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
           filteredSuggestions.map((variable, index) => (
             <div
               key={variable._id}
-              onClick={() => insertSuggestion(variable)}
+              onClick={() => handleSuggestionClick(variable)}
               style={{
                 padding: '8px 10px',
                 cursor: 'pointer',

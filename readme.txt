@@ -6,47 +6,54 @@ ajhellquist GiDuWXYsi2Gg43wJ cluster0
 connection string
 mongodb+srv://ajhellquist:GiDuWXYsi2Gg43wJ@cluster0.jsqhw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
-select [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/90192]
+This is looking great! There's some additional functionalities that I think would be super helpful for you to add. 
 
-You are an expert software engineer debugger. Your job is to look at my instructions and my code and try to debug it and make it work EXACTLY as I have defined in my instructions. If there is anything that is ambiguous to you or if you need more guidance ask follow up questions.
+1. Adding multiple variables into the editor by holding down the ALT button and left clicking to select multiple. if multiple are highlighted, then when you hit tab it will insert all of them, each comma separated.
 
-I am linking you code to a code editor box that I am making as a part of my webpage. The goal for it is to help auto complete "variables" that I have stored in a database. There are 3 types of variables: metrics, attributes and attribute values. 
+2. It would be really nice to be able to start typing one of the words of a variable and have it show up. Right now if I have a variable called "Project Name" I have to type "pro" to get it to show up. It would be nice if I could also type "Nam" to get it to show up as well. Ask me any clarifying questions you might have on this one if my logic isn't comprehensive here.
 
-When auto completing a variable, it should output rich text of the variable name, but really contain a string of text that is defined in the code. If you have any uncertainty about the how this underlying text should be formatted let me know and I will help you but you should be able to decipher in the code provided. For the output for the autocomplete for metrics the text color should be green, the attributes should be purple and the attribute values should be orange. The auto complete rich text should act as a single character...ie...if the cursor is on the right edge of the text and i hit the left arrow the cursor should move to the very left edge of the first letter of the variable. When I hit backspace on a variable it should delete the whole thing. 
+3. When I click on a variable that is already in the text editor it should highlight the rich text and let me hit control/command-c to copy it and let me hit control/command-v to paste it anywhere I want in the text editor. I might need to do this if I am adding the same variable many times, it would be nice to have to copied to the keyboard for quick pasting.
 
-The user will also type in code that is not auto completed as well and that text needs to be black. Anything that is not the result of an autocomplete needs to be black.
+Again, ask me questions if you feel like the logic I have given to you on any of these conflicts with prior instructions and we can work it out.
 
-There is also a auto complete box that has the suggested auto complete options that appear as the user types words in the code editor. These options should appear alphabetically in order according to what the user has typed. Once the user has typed something that doesnt match a variable name that should disappear from the auto complete box. A user should be able to hit tab to insert the auto complete or click on the variable name in the box to insert. Those should be the only two ways to insert.
+1. Multi-select Autocomplete
 
-Lastly, there are "copy code" and "clear code" buttons. The copy code should copy all text in the text box. When I paste in another browser or text area it should paste whatever I've written plus the variables in the same order as written in the box. The paste should not be the rich text variable name but what I have defined as the underlying format instead.
+You want to hold Alt + Left Click on multiple suggestions in that little autocomplete box. Each time you Alt+Left Click one, it becomes “highlighted” (so presumably we’d visually show it’s selected). Then, when you hit Tab, it should insert all the selected variables, separated by commas, into the editor, right?
 
+Answer: Yes that's right
 
-1. Single-Character “Span” Behavior
+After insertion, do you want the autocomplete box to close? Or stay open in case you want to select more?
 
-You mentioned that the autocomplete rich text should act as if it’s a single character, so that when you hit the left arrow from the right edge of the variable, the cursor jumps before the entire variable instead of into the middle. Right now, the code only explicitly handles backspace so that the entire span is removed in one go. For arrow keys, the default behavior may let the cursor move inside the span. Did you want custom logic to prevent the cursor from navigating inside the span and always jump outside it? If so, I’ll need to add some key handling (or possibly contenteditable="false" on the span) so that you can’t place the cursor in the middle of the variable. Let me know if that’s correct.
+Answer: By close you mean be empty because the cursor in the text box would now be on an empty space then yes that's correct.
 
-Answer: That is correct
+Also, if I click a single suggestion without holding Alt, we should assume the user just wants to insert that one, correct?
 
-2. Typed Text Color
+Answer: Yes that's correct
 
-Right now, any user-typed text (which is not inserted as a span) inherits the default color (which is presumably black). Do you want that explicitly set to black with a style, or is the default behavior sufficient?
+2. Partial (Substring) Matching
 
-Answer: If there's not a big risk to creating a bug or hindering performance let's force it black.
+Right now, we do prefix matching by checking if the variable name starts with the typed word. You’d like it to show any variable if the typed text is contained anywhere inside the variable name. For instance, “Project Name” should be suggested if I type Nam (not just Pro).
 
-3. Alphabetical Suggestions
+Answer: Correct
 
-You mentioned the suggestions should appear alphabetically. Currently, the code filters the suggestions but doesn’t appear to sort them. Do you want me to add a .sort((a, b) => a.name.localeCompare(b.name)) so they appear in alphabetical order?
+Should we still do the alphabetical sorting on the final filtered list after we do the substring match?
 
-Answer: Yes they should be alphabetical ie...in order of most likely match to what I am typing. If I have variables called "Variable A", "Variable B", "Variable C", and "Random Variable" and i type "Var" it should show those first three in alphabetical order and not show "Random Variable".
+Answer: I think so. Let's try that and if it looks weird I will come back to you.
 
-4. Underlying Format
+Also, do we want to ensure that if the user types Nam, then “Name” is shown, “My Name” is shown, “Project Name” is shown, etc.? In other words, truly any substring ignoring spaces?
 
-It looks like the underlying format for metrics, attributes, and attribute values is defined in getVariableReference. Let me know if the bracket format is exactly correct or if there’s any subtlety (like spaces or punctuation) that you want changed in that string.
+Answer: correct
 
-Answer: The format that is already specified is exactly how I want it and I do not want to change that.
+Let's hold off on implementing the copy and paste feature mentioning in section 3 for now. I want to get the above correct before we try that.
 
-Also something that I didn't include in the original prompt that I want you to consider. Variables are very commonly multiple words long, so spaces need to be treated properly. For example I might have "Variable A". If i backspace after the "A" it should get rid of the whole thing, not just the "A". The space between words needs to be considered. Same thing goes with moving the cursor across a variable name.
+3. Copy and Paste an Existing Variable in the Editor
 
-SELECT [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/4904] WHERE [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/4042] = [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/4042/elements?id=NA]
+When you say “click on a variable that is already in the text editor,” do you literally mean single-click to highlight? Or do you see the user typically doing a “drag select” around that variable? Right now, the <span> with contentEditable="false" is basically unselectable, so we may need special logic to highlight it.
 
+Answer: I would like them to click it once and it highlights the whole thing.
 
+After it’s highlighted, the user should be able to press Ctrl/Command + C to copy it, and Ctrl/Command + V to paste it with the same rich text formatting (meaning it’s still a <span> with the same color and data-reference)?
+
+Also, do we want to allow the user to paste it multiple times? Because typically, once it’s in the clipboard, the user can paste as many times as they want—assuming we handle the paste event so it preserves that <span>.
+
+One edge case: if the user tries to paste outside of the editor, do we want to default to the bracket reference, or do we want the actual text “Project Name”? Right now, our “Copy Code” button (the big one) yields bracket references. But normal clipboard copying might behave differently. Just want to confirm if that’s okay.
