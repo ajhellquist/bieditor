@@ -68,14 +68,21 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   };
 
   useEffect(() => {
-    const filtered = variables.filter(v => 
-      v.name.toLowerCase().includes(currentWord.toLowerCase())
-    );
+    // Filter and sort suggestions
+    // Only show variables whose name starts with the currentWord (case-insensitive)
+    const filtered = variables
+      .filter(v => v.name.toLowerCase().startsWith(currentWord.toLowerCase()))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
     setFilteredSuggestions(filtered);
     setSelectedIndex(0);
   }, [currentWord, variables]);
 
   const handleInputChange = (e) => {
+    // Force typed text color to black
+    // We'll do this by setting the contentEditable's style to black, ensuring normal text is black
+    editorRef.current.style.color = 'black';
+    
     // Store the HTML content
     setCode(editorRef.current.innerHTML);
 
@@ -128,6 +135,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         const variableSpan = document.createElement('span');
         variableSpan.className = 'variable-reference';
         variableSpan.style.color = getVariableColor(variable.type);
+        // Make the span itself non-editable
+        variableSpan.contentEditable = 'false';
         variableSpan.setAttribute('data-reference', getVariableReference(variable));
         variableSpan.textContent = variable.name;
 
@@ -181,7 +190,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       let finalText = '';
       let node;
 
-      while (node = walker.nextNode()) {
+      while ((node = walker.nextNode())) {
         if (node.nodeType === Node.TEXT_NODE && 
             (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))) {
           // Only process text nodes that aren't inside variable spans
@@ -261,6 +270,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
           break;
         case 'Escape':
           setShowSuggestions(false);
+          break;
+        default:
           break;
       }
       return;
@@ -356,7 +367,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             whiteSpace: 'pre-wrap',
             fontFamily: 'Times New Roman',
             backgroundColor: 'white',
-            marginBottom: '10px'
+            marginBottom: '10px',
+            color: 'black', // Force typed text to black
           }}
         />
         <div style={{ 
