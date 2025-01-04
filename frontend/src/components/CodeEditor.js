@@ -111,7 +111,6 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     // We restore the cursor first if needed
     restoreCursorRange();
 
-    // Now we do the insertion
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
@@ -170,7 +169,6 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     const range = selection.getRangeAt(0);
     const textNode = range.startContainer;
     if (textNode.nodeType !== Node.TEXT_NODE) {
-      // Not a text node, bail
       setMultiSelected([]);
       setShowSuggestions(false);
       setCurrentWord('');
@@ -183,7 +181,6 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     const afterCursor = text.substring(cursorPos);
     const wordMatch = beforeCursor.match(/\S+$/);
     if (!wordMatch) {
-      // No word found, bail
       setMultiSelected([]);
       setShowSuggestions(false);
       setCurrentWord('');
@@ -226,7 +223,6 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
 
     // Move cursor to the end of what we inserted
     const newRange = document.createRange();
-    // We'll put it at the very end of parentNode
     newRange.setStartAfter(parentNode.lastChild);
     newRange.collapse(true);
     selection.removeAllRanges();
@@ -260,9 +256,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       return;
     }
 
-    // If no Alt, normal single insert
     insertSingleSuggestion(variable);
-    // Clear multiSelect in case it had something
     setMultiSelected([]);
     setShowSuggestions(false);
     setCurrentWord('');
@@ -363,9 +357,10 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
-  // Keydown to handle arrow navigation, tab/enter insertion, backspace logic
+  // Keydown to handle arrow navigation, tab insertion, backspace logic
   const handleKeyDown = (e) => {
-    // If we have suggestions open, handle arrow up/down, tab/enter
+    // If we have suggestions open, handle arrow up/down, tab. 
+    // We'll IGNORE Enter for insertion now.
     if (showSuggestions && filteredSuggestions.length) {
       switch (e.key) {
         case 'ArrowDown':
@@ -379,7 +374,6 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
           setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
           break;
         case 'Tab':
-        case 'Enter':
           e.preventDefault();
           // If we have multiSelected items, insert them all at once
           if (multiSelected.length > 0) {
@@ -392,6 +386,9 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
               setCurrentWord('');
             }
           }
+          break;
+        case 'Enter':
+          // Just ignore, let it pass so we can do a line break
           break;
         case 'Escape':
           setShowSuggestions(false);
@@ -464,14 +461,13 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             return (
               <div
                 key={variable._id}
-                // We use onMouseDown so that we don't lose focus on the editor
                 onMouseDown={(e) => handleSuggestionClick(e, variable)}
                 style={{
                   padding: '8px 10px',
                   cursor: 'pointer',
                   backgroundColor: 
                     // If it's the "arrow-selected" item, highlight in #f0f0f0
-                    // If it's also multi-selected, maybe highlight in a different color
+                    // If it's also multi-selected, highlight in #b3e5fc
                     index === selectedIndex
                       ? '#f0f0f0'
                       : (isMultiSelected ? '#b3e5fc' : 'white'),
