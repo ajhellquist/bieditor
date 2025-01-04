@@ -9,7 +9,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [copySuccess, setCopySuccess] = useState(false);
 
-  // NEW: track multiple selected suggestions by their _id
+  // Track multi-selected suggestions
   const [multiSelected, setMultiSelected] = useState([]);
 
   const editorRef = useRef(null);
@@ -45,38 +45,20 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       return '';
     }
     
-    // Debug the incoming data
-    console.log('Creating reference with:', {
-      variable,
-      selectedPID,
-      pidId: selectedPID.pidId || selectedPID.pid,
-      variableValue: variable.value
-    });
-    
-    // Get the PID identifier
     const pidIdentifier = selectedPID.pidId || selectedPID.pid;
     if (!pidIdentifier) {
       console.error('No valid PID identifier found');
       return '';
     }
 
-    // Build the reference string
-    let reference;
     if (variable.type === 'Attribute Value') {
-      reference = `[/gdc/md/${pidIdentifier}/obj/${variable.value}/elements?id=${variable.elementId}]`;
-    } else {
-      reference = `[/gdc/md/${pidIdentifier}/obj/${variable.value}]`;
-    }
-
-    console.log('Generated reference:', reference);
-    return reference;
+      return `[/gdc/md/${pidIdentifier}/obj/${variable.value}/elements?id=${variable.elementId}]`;
+    } 
+    return `[/gdc/md/${pidIdentifier}/obj/${variable.value}]`;
   };
 
   // PARTIAL MATCH + ALPHABETICAL SORT
   useEffect(() => {
-    // If currentWord is empty, we may choose to hide suggestions or show all. 
-    // But from your existing logic, we show "No matches" when currentWord is empty, 
-    // so let's do it that way:
     if (!currentWord) {
       setFilteredSuggestions([]);
       return;
@@ -93,7 +75,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   }, [currentWord, variables]);
 
   // Force typed text color to black, track typed word
-  const handleInputChange = (e) => {
+  const handleInputChange = () => {
     editorRef.current.style.color = 'black';
     setCode(editorRef.current.innerHTML);
 
@@ -115,20 +97,21 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       const wordMatch = beforeCursor.match(/\S+$/);
       const currentTypedWord = wordMatch ? wordMatch[0] : '';
 
-      console.log('Typing word:', currentTypedWord);
       setCurrentWord(currentTypedWord);
       setShowSuggestions(currentTypedWord.length > 0);
       setCursorPosition(cursorPos);
     } else {
-      // If not a text node, we might want to set currentWord = ''
-      // so suggestions don't show up in weird spots
       setCurrentWord('');
       setShowSuggestions(false);
     }
   };
 
-  // Insert a single variable at the current cursor position
-  const insertSuggestion = (variable, addLeadingComma = false) => {
+  // Insert a single variable
+  const insertSingleSuggestion = (variable) => {
+    // We restore the cursor first if needed
+    restoreCursorRange();
+
+    // Now we do the insertion
     const selection = window.getSelection();
     if (!selection.rangeCount) return;
 
@@ -142,20 +125,13 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       const afterCursor = text.substring(cursorPos);
       const wordMatch = beforeCursor.match(/\S+$/);
 
-      // If we requested a leading comma (for multi-insert)
-      let insertionPrefix = '';
-      if (addLeadingComma) {
-        // We'll do ", " before the variable
-        insertionPrefix = ', ';
-      }
-
       if (wordMatch) {
         // Calculate where this word starts
         const wordStart = cursorPos - wordMatch[0].length;
         const beforeWord = text.substring(0, wordStart);
 
         // Create text nodes for before and after
-        const beforeTextNode = document.createTextNode(beforeWord + insertionPrefix);
+        const beforeTextNode = document.createTextNode(beforeWord);
         const afterTextNode = document.createTextNode(' ' + afterCursor);
 
         // Create the variable span
@@ -172,7 +148,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         parentNode.insertBefore(variableSpan, afterTextNode);
         parentNode.insertBefore(beforeTextNode, variableSpan);
 
-        // Move cursor to the end of the newly inserted text
+        // Move cursor to the end
         const newRange = document.createRange();
         newRange.setStartAfter(afterTextNode);
         newRange.collapse(true);
@@ -184,18 +160,88 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
-  // SINGLE CLICK: if Alt is not pressed, insert immediately
-  // if Alt is pressed, toggle the selection in `multiSelected`
-  const handleSuggestionClick = (e, variable) => {
-    e.preventDefault();
-    // If Alt is pressed, toggle multi-select
-    if (e.altKey) {
-      toggleMultiSelect(variable);
+  // Insert multiple variables in one shot, comma-separated
+  const insertMultipleSuggestions = () => {
+    restoreCursorRange();
+
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return;
+
+    const range = selection.getRangeAt(0);
+    const textNode = range.startContainer;
+    if (textNode.nodeType !== Node.TEXT_NODE) {
+      // Not a text node, bail
+      setMultiSelected([]);
+      setShowSuggestions(false);
+      setCurrentWord('');
       return;
     }
 
-    // If no Alt, normal single insert
-    // focus + restore cursor
+    const text = textNode.textContent;
+    const cursorPos = range.startOffset;
+    const beforeCursor = text.substring(0, cursorPos);
+    const afterCursor = text.substring(cursorPos);
+    const wordMatch = beforeCursor.match(/\S+$/);
+    if (!wordMatch) {
+      // No word found, bail
+      setMultiSelected([]);
+      setShowSuggestions(false);
+      setCurrentWord('');
+      return;
+    }
+
+    const wordStart = cursorPos - wordMatch[0].length;
+    const beforeWord = text.substring(0, wordStart);
+
+    // Create a fragment to hold everything
+    const fragment = document.createDocumentFragment();
+
+    // First, add the text node for beforeWord
+    fragment.appendChild(document.createTextNode(beforeWord));
+
+    // Sort them (just to keep a consistent order)
+    const sortedVars = [...multiSelected].sort((a, b) => a.name.localeCompare(b.name));
+
+    sortedVars.forEach((variable, idx) => {
+      // Insert comma before all except the first
+      if (idx > 0) {
+        fragment.appendChild(document.createTextNode(', '));
+      }
+      // Now, create the variable span
+      const variableSpan = document.createElement('span');
+      variableSpan.className = 'variable-reference';
+      variableSpan.style.color = getVariableColor(variable.type);
+      variableSpan.contentEditable = 'false';
+      variableSpan.setAttribute('data-reference', getVariableReference(variable));
+      variableSpan.textContent = variable.name;
+      fragment.appendChild(variableSpan);
+    });
+
+    // Finally, add a space plus the text afterCursor
+    fragment.appendChild(document.createTextNode(' ' + afterCursor));
+
+    // Replace the original textNode with our fragment
+    const parentNode = textNode.parentNode;
+    parentNode.replaceChild(fragment, textNode);
+
+    // Move cursor to the end of what we inserted
+    const newRange = document.createRange();
+    // We'll put it at the very end of parentNode
+    newRange.setStartAfter(parentNode.lastChild);
+    newRange.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(newRange);
+
+    setCode(editorRef.current.innerHTML);
+
+    // Clean up
+    setMultiSelected([]);
+    setShowSuggestions(false);
+    setCurrentWord('');
+  };
+
+  // Restore the saved cursor range if we have one
+  const restoreCursorRange = () => {
     editorRef.current.focus();
     const savedRange = cursorRangeRef.current;
     if (savedRange) {
@@ -203,10 +249,21 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       selection.removeAllRanges();
       selection.addRange(savedRange);
     }
-    insertSuggestion(variable);
+  };
+
+  // SINGLE CLICK: if Alt is not pressed, insert immediately
+  // if Alt is pressed, toggle the selection in `multiSelected`
+  const handleSuggestionClick = (e, variable) => {
+    e.preventDefault();
+    if (e.altKey) {
+      toggleMultiSelect(variable);
+      return;
+    }
+
+    // If no Alt, normal single insert
+    insertSingleSuggestion(variable);
     // Clear multiSelect in case it had something
     setMultiSelected([]);
-    // Hide suggestions
     setShowSuggestions(false);
     setCurrentWord('');
   };
@@ -223,40 +280,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
-  // Insert multiple suggestions in one shot, comma separated
-  const insertMultipleSuggestions = () => {
-    // Sort them by name just in case we want them in alphabetical order 
-    // (or we can preserve the order in which the user clicked them)
-    const sortedMulti = [...multiSelected].sort((a, b) => a.name.localeCompare(b.name));
-
-    // We call insertSuggestion repeatedly
-    // but each time we do it, we restore the cursor at the end
-    // and provide addLeadingComma = true after the first one
-    sortedMulti.forEach((variable, idx) => {
-      // restore cursor
-      restoreCursorRange();
-      insertSuggestion(variable, idx > 0); // addLeadingComma = true if not the first
-    });
-
-    // Clear them out
-    setMultiSelected([]);
-    // hide suggestions
-    setShowSuggestions(false);
-    setCurrentWord('');
-  };
-
-  // Helper to restore cursor
-  const restoreCursorRange = () => {
-    editorRef.current.focus();
-    const savedRange = cursorRangeRef.current;
-    if (savedRange) {
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(savedRange);
-    }
-  };
-
-  // The big copy function
+  // The big copy function (unchanged)
   const handleCopyCode = async () => {
     if (!editorRef.current) return;
     
@@ -303,7 +327,6 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         }
       }
 
-      // Clean up
       finalText = finalText.replace(/\s+/g, ' ').trim();
       
       console.log('Final text to copy:', finalText);
@@ -358,15 +381,13 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         case 'Tab':
         case 'Enter':
           e.preventDefault();
-          // If we have multiSelected items, insert them all
+          // If we have multiSelected items, insert them all at once
           if (multiSelected.length > 0) {
-            restoreCursorRange();
             insertMultipleSuggestions();
           } else {
             // Single suggestion insertion
             if (filteredSuggestions[selectedIndex]) {
-              restoreCursorRange();
-              insertSuggestion(filteredSuggestions[selectedIndex]);
+              insertSingleSuggestion(filteredSuggestions[selectedIndex]);
               setShowSuggestions(false);
               setCurrentWord('');
             }
@@ -443,7 +464,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             return (
               <div
                 key={variable._id}
-                onMouseDown={(e) => handleSuggestionClick(e, variable)} 
+                // We use onMouseDown so that we don't lose focus on the editor
+                onMouseDown={(e) => handleSuggestionClick(e, variable)}
                 style={{
                   padding: '8px 10px',
                   cursor: 'pointer',
@@ -452,7 +474,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
                     // If it's also multi-selected, maybe highlight in a different color
                     index === selectedIndex
                       ? '#f0f0f0'
-                      : (isMultiSelected ? '#b3e5fc' : 'white'), 
+                      : (isMultiSelected ? '#b3e5fc' : 'white'),
                   color: getVariableColor(variable.type),
                   borderBottom: '1px solid #eee'
                 }}
