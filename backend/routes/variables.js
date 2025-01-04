@@ -4,6 +4,28 @@ const auth = require('../middleware/auth');
 const Variable = require('../models/Variable');
 const PID = require('../models/PID');
 
+// Move this route to the top, before other routes that use :pidId
+router.delete('/all/:pidId', auth, async (req, res) => {
+  try {
+    // First verify the PID belongs to the user
+    const pid = await PID.findOne({
+      _id: req.params.pidId,
+      userId: req.user.userId
+    });
+
+    if (!pid) {
+      return res.status(404).json({ message: 'PID not found' });
+    }
+
+    // Delete all variables for this PID
+    await Variable.deleteMany({ pidId: req.params.pidId });
+    res.json({ message: 'All variables deleted' });
+  } catch (err) {
+    console.error('Error deleting variables:', err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Get variables for a specific PID
 router.get('/:pidId', auth, async (req, res) => {
   try {

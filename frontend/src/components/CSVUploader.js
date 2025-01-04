@@ -82,13 +82,45 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     }
   };
 
+  const handleDeleteAll = async () => {
+    if (!selectedPID?._id) {
+      setError('Please select a PID first');
+      return;
+    }
+
+    if (window.confirm('Are you sure you want to delete all variables for this PID? This action cannot be undone.')) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.delete(
+          `http://localhost:4000/variables/all/${selectedPID._id}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
+        );
+        
+        // Update the parent component
+        if (onVariablesAdded) {
+          onVariablesAdded([]);
+        }
+
+        // Refresh the page
+        window.location.reload();
+      } catch (err) {
+        setError(err.response?.data?.message || 'Error deleting variables');
+        console.error('Delete error:', err);
+      }
+    }
+  };
+
   return (
     <div style={{ 
       border: '3px solid black',
       borderRadius: '12px',
       padding: '15px',
       backgroundColor: '#FFF4DA',
-      height: '300px',
+      height: '350px',
       boxShadow: '5px 5px 10px rgb(0, 0, 0)'
     }}>
       <div style={{ 
@@ -163,10 +195,27 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
             border: '3px solid black',
             borderRadius: '4px',
             cursor: 'pointer',
-            fontSize: '14px'
+            fontSize: '14px',
+            marginBottom: '10px'
           }}
         >
           Download Template
+        </button>
+
+        <button
+          onClick={handleDeleteAll}
+          style={{
+            width: '100%',
+            padding: '8px',
+            backgroundColor: '#ff4444',
+            color: 'white',
+            border: '3px solid black',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '14px'
+          }}
+        >
+          Delete All Variables
         </button>
       </div>
     </div>
