@@ -40,3 +40,136 @@ Cost EAC: Scheduled,Metric,60777,NA
 Cost EAC: Scheduled + Non-Billable Expenses,Metric,14248,NA
 Cost ETC: Allocated,Metric,73873,NA
 Cost Scheduled,Metric,10194,NA
+Project: Archived,Attribute,4020,NA
+Project: Billable Default,Attribute,68328,NA
+Project: Billing Mode Default,Attribute,68330,NA
+Project: Color Name,Attribute,75243,NA
+Project: Current Status Color,Attribute,4040,NA
+Project: Current Status Message,Attribute,4042,NA
+Project: Description,Attribute,4022,NA
+Project: ID,Attribute,29363,NA
+Project: Name,Attribute,4016,NA
+Project: Provider Lead,Attribute,4034,NA
+Project: Rate Card Name,Attribute,68332,NA
+Project: Stage,Attribute,10590141,NA
+Project: Title Aggregate,Attribute,66408,NA
+Task: Archived,Attribute,4108,NA
+Task: Billable,Attribute,4114,NA
+Task: Description,Attribute,66228,NA
+Task: Fixed Fee,Attribute,4116,NA
+Task: ID,Attribute,66410,NA
+Task: Name,Attribute,4100,NA
+Task: Status,Attribute,10890741,NA
+Task: Title Aggregate,Attribute,66412,NA
+Task: Top Level,Attribute,66230,NA
+Task: Top Level Title Aggregate,Attribute,10590143,NA
+Task: Type,Attribute,4104,NA
+User: Default Role,Attribute,3988,NA
+User: ID,Attribute,66416,NA
+User: Job Title,Attribute,71364,NA
+User: Manager Name,Attribute,66305,NA
+User: Name,Attribute,3984,NA
+User: Permission,Attribute,3993,NA
+User: Status,Attribute,10590139,NA
+Date (Shared),Attribute,6935,NA
+Month/Year (Shared),Attribute,6961,NA
+Quarter/Year (Shared),Attribute,7001,NA
+Week (Mon-Sun)/Year (Shared),Attribute,6989,NA
+Week (Sun-Sat)/Year (Shared),Attribute,7026,NA
+Year (Shared),Attribute,7065,NA
+Date (Project Start),Attribute,1036,NA
+Month/Year (Project Start),Attribute,1062,NA
+Year (Project Start),Attribute,1166,NA
+Date (Project Due),Attribute,871,NA
+Month/Year (Project Due),Attribute,897,NA
+Year (Project Due),Attribute,1001,NA
+Date (Task Start),Attribute,2686,NA
+Month/Year (Task Start),Attribute,2712,NA
+Year (Task Start),Attribute,2816,NA
+Date (Task Due),Attribute,2521,NA
+Month/Year (Task Due),Attribute,2547,NA
+Year (Task Due),Attribute,2651,NA
+Date (User Deactivated),Attribute,2356,NA
+Month/Year (User Deactivated),Attribute,2382,NA
+Year (User Deactivated),Attribute,2486,NA
+Allocation: Type,Attribute,10812427,NA
+Dynamic Input: Boolean A,Attribute,80723,NA
+Dynamic Input: Boolean B,Attribute,80732,NA
+Dynamic Input: EAC Method,Attribute,3482464,NA
+Dynamic Input: Forecast Source,Attribute,3689567,NA
+Dynamic Input: Option,Attribute,80729,NA
+Expense Budget: Name,Attribute,11024733,NA
+Expense: Billable,Attribute,4125,NA
+Expense: Category,Attribute,4123,NA
+Expense: ID,Attribute,4121,NA
+Expense: Note,Attribute,62379,NA
+Expense: Status,Attribute,66239,NA
+Expense: Vendor,Attribute,73793,NA
+FX: Source Currency,Attribute,936259,NA
+FX: Target Currency,Attribute,936261,NA
+Invoice: Number,Attribute,4003,NA
+Invoice: Title,Attribute,66237,NA
+Project Accounting: ID,Attribute,2335380,NA
+Project Accounting: Type,Attribute,2335392,NA
+Project Active Day: ID,Attribute,2564693,NA
+Project Health: Color,Attribute,72023,NA
+Project Health: Description,Attribute,72025,NA
+Project Health: Report ID,Attribute,72019,NA
+Project Health: Report Type ID,Attribute,72017,NA
+Project Health: Type,Attribute,72021,NA
+Resource: Name Aggregate,Attribute,10500943,NA
+Resource: Title,Attribute,71755,NA
+Resource: Title Aggregate,Attribute,71758,NA
+Role: Name,Attribute,4061,NA
+Resource: Type,Attribute,79457,NA
+Time Entry: ID,Attribute,4064,NA
+Time Entry: Billable,Attribute,4066,NA
+Time Entry: Approved,Attribute,4070,NA
+Time Entry: Notes,Attribute,62377,NA
+Time Entry: Status,Attribute,66222,NA
+Project: Archived: False,Attribute Value,4020,8931
+Project: Archived: True,Attribute Value,4020,8912
+Project: Billable Default: Billable,Attribute Value,68328,1903833
+Project: Billable Default: Non-Billable,Attribute Value,68328,1903905
+Project: Billing Mode Default: Fixed Fee,Attribute Value,68330,1903922
+Project: Billing Mode Default: Time and Material,Attribute Value,68330,1903911
+Project: Current Status Color: Blue,Attribute Value,4040,642300
+Project: Current Status Color: Green,Attribute Value,4040,642316
+Project: Current Status Color: Grey,Attribute Value,4040,642626
+Project: Current Status Message: Active,Attribute Value,4042,1949857
+Project: Current Status Message: Cancelled,Attribute Value,4042,1968326
+Project: Current Status Message: Completed,Attribute Value,4042,1902603
+Project: Current Status Message: Estimate,Attribute Value,4042,642730
+Project: Current Status Message: Not Started,Attribute Value,4042,1905513
+Project: Current Status Message: Proposed,Attribute Value,4042,1949850
+Project: Stage: Estimate,Attribute Value,10590141,642730
+Project: Stage: Project,Attribute Value,10590141,2326328
+Task: Archived: False,Attribute Value,4108,8931
+Task: Archived: True,Attribute Value,4108,8912
+Task: Billable: False,Attribute Value,4114,8931
+Task: Billable: True,Attribute Value,4114,8912
+Task: Fixed Fee: False,Attribute Value,4116,8931
+Task: Fixed Fee: True,Attribute Value,4116,8912
+Task: Status: Completed,Attribute Value,10890741,1902603
+Task: Status: New,Attribute Value,10890741,2503218
+Task: Status: Not Started,Attribute Value,10890741,1905513
+Task: Status: Resolved,Attribute Value,10890741,2503217
+Task: Status: Started,Attribute Value,10890741,2150691
+Task: Type: Deliverable,Attribute Value,4104,18836
+Task: Type: Issue,Attribute Value,4104,1903913
+Task: Type: Milestone,Attribute Value,4104,18863
+Task: Type: Task,Attribute Value,4104,18865
+User: Status: Active,Attribute Value,10590139,1949857
+User: Status: Inactive,Attribute Value,10590139,2326327
+Dynamic Input: Boolean A: False,Attribute Value,80723,1903925
+Dynamic Input: Boolean A: True,Attribute Value,80723,1903924
+Dynamic Input: Boolean B: False,Attribute Value,80732,1903925
+Dynamic Input: Boolean B: True,Attribute Value,80732,1903924
+Dynamic Input: EAC Method: Allocated Cost,Attribute Value,3482464,1982932
+Dynamic Input: EAC Method: Allocated Hours,Attribute Value,3482464,1982933
+Dynamic Input: EAC Method: Scheduled Cost,Attribute Value,3482464,1982934
+Dynamic Input: EAC Method: Scheduled Hours,Attribute Value,3482464,1982935
+Dynamic Input: Option: A,Attribute Value,80729,1903926
+Dynamic Input: Option: B,Attribute Value,80729,1903927
+Dynamic Input: Option: C,Attribute Value,80729,1903928
+Dynamic Input: Option: D,Attribute Value,80729,1903929
