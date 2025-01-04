@@ -120,7 +120,7 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       borderRadius: '12px',
       padding: '15px',
       backgroundColor: '#FFF4DA',
-      height: '350px',
+      height: '300px',
       boxShadow: '5px 5px 10px rgb(0, 0, 0)'
     }}>
       <div style={{ 
