@@ -8,6 +8,7 @@ import { FaLinkedin, FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 export default function MainPage() {
+  // State management for application data
   const [code, setCode] = useState('// Start typing...');
   const [variables, setVariables] = useState([]);
   const [pids, setPids] = useState([]);
@@ -36,6 +37,10 @@ export default function MainPage() {
     fetchMetricsCount();
   }, []);
 
+  /**
+   * Fetches variables associated with the selected PID
+   * @param {string} pidId - The ID of the selected PID
+   */
   const fetchVariables = async (pidId) => {
     try {
       const token = localStorage.getItem('token');
@@ -48,6 +53,9 @@ export default function MainPage() {
     }
   };
 
+  /**
+   * Fetches all PIDs associated with the current user
+   */
   const fetchPIDs = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -62,6 +70,9 @@ export default function MainPage() {
     }
   };
 
+  /**
+   * Retrieves the total count of metrics created by the user
+   */
   const fetchMetricsCount = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -74,6 +85,9 @@ export default function MainPage() {
     }
   };
 
+  /**
+   * Fetches current user's information from the server
+   */
   const fetchUserInfo = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -88,10 +102,15 @@ export default function MainPage() {
     }
   };
 
+  // Variable management handlers
   const handleVariableAdded = (newVariable) => {
     setVariables([...variables, newVariable]);
   };
 
+  /**
+   * Deletes a variable and updates the UI
+   * @param {string} variableId - The ID of the variable to delete
+   */
   const handleDeleteVariable = async (variableId) => {
     try {
       const token = localStorage.getItem('token');
@@ -105,6 +124,10 @@ export default function MainPage() {
     }
   };
 
+  /**
+   * Creates a new PID and updates the UI
+   * @param {Object} newPID - The PID object containing name and pid
+   */
   const handlePIDAdd = async (newPID) => {
     try {
       const token = localStorage.getItem('token');
@@ -129,6 +152,10 @@ export default function MainPage() {
     }
   };
 
+  /**
+   * Deletes a PID and updates the UI
+   * @param {string} pidId - The ID of the PID to delete
+   */
   const handlePIDDelete = async (pidId) => {
     try {
       const token = localStorage.getItem('token');
@@ -151,6 +178,11 @@ export default function MainPage() {
     }
   };
 
+  /**
+   * Utility function to extract references from HTML content
+   * @param {string} htmlContent - The HTML content to parse
+   * @returns {Array} Array of reference attributes
+   */
   const getActualReferences = (htmlContent) => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlContent;
@@ -164,16 +196,26 @@ export default function MainPage() {
     return references;
   };
 
+  /**
+   * Utility function to extract plain text from HTML content
+   * @param {string} htmlContent - The HTML content to parse
+   * @returns {string} The plain text content
+   */
   const getDisplayText = (htmlContent) => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlContent;
     return tempDiv.textContent;
   };
 
+  // Variable editing handlers
   const handleEdit = (variable) => {
     setEditingVariable(variable);
   };
 
+  /**
+   * Updates an existing variable and refreshes the UI
+   * @param {Object} updatedVariable - The modified variable object
+   */
   const handleUpdateVariable = async (updatedVariable) => {
     try {
       const token = localStorage.getItem('token');
@@ -191,23 +233,25 @@ export default function MainPage() {
     }
   };
 
+  // Filter variables based on search term
   const filteredVariables = variables.filter(variable => 
     variable.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // CSV upload handler
   const handleVariablesUploaded = (newVariables) => {
     setVariables([...variables, ...newVariables]);
   };
 
-  const handleDownloadTemplate = () => {
-    // Implementation for downloading template
-  };
-
+  // Authentication handlers
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/');
   };
 
+  /**
+   * Updates the metrics count after successful metric creation
+   */
   const refreshMetricsCount = async () => {
     await fetchMetricsCount();
   };
