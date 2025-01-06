@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+/**
+ * CSVUploader Component
+ * Handles the upload, download, and deletion of variables via CSV files
+ * 
+ * @param {Object} selectedPID - Currently selected Process ID object
+ * @param {Function} onVariablesAdded - Callback function to update parent component when variables change
+ */
 function CSVUploader({ selectedPID, onVariablesAdded }) {
+  // State management for file handling and UI feedback
   const [file, setFile] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles file selection and validates CSV file type
+   * @param {Event} e - File input change event
+   */
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile && selectedFile.type !== 'text/csv') {
@@ -17,6 +29,10 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     }
   };
 
+  /**
+   * Generates and downloads a CSV template file with example data
+   * Format: name, type, value, elementId
+   */
   const downloadTemplate = () => {
     // Create CSV content
     const csvContent =
@@ -34,6 +50,11 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     window.URL.revokeObjectURL(url);
   };
 
+  /**
+   * Handles CSV file upload to the server
+   * Validates PID selection and file presence before upload
+   * @param {Event} e - Form submission event
+   */
   const handleUpload = async (e) => {
     e.preventDefault();
 
@@ -81,6 +102,10 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     }
   };
 
+  /**
+   * Deletes all variables associated with the selected PID
+   * Requires user confirmation before deletion
+   */
   const handleDeleteAll = async () => {
     if (!selectedPID?._id) {
       setError('Please select a PID first');
@@ -117,6 +142,10 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     }
   };
 
+  /**
+   * Render the CSV uploader interface
+   * Includes file selection, upload button, template download, and delete all option
+   */
   return (
     <div
       style={{
