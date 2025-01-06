@@ -7,10 +7,15 @@ const API_URL = 'http://localhost:4000';
 export default function VariablesPage() {
   console.log('VariablesPage component rendering');
   
-  const [variables, setVariables] = useState([]);
-  const [pids, setPids] = useState([]);
-  const [editingVariable, setEditingVariable] = useState(null);
+  // Component for viewing and managing variables across all PIDs
+  // Displays variables in a table format with editing capabilities
 
+  // Track variables, PIDs, and editing state
+  const [variables, setVariables] = useState([]); // All variables
+  const [pids, setPids] = useState([]); // All PIDs
+  const [editingVariable, setEditingVariable] = useState(null); // Currently editing variable
+
+  // Fetch PIDs and their variables on component mount
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem('token');
@@ -22,7 +27,8 @@ export default function VariablesPage() {
       }
 
       try {
-        // First fetch PIDs
+        // Verify authentication token
+        // Fetch PIDs first, then variables for each PID
         console.log('Fetching PIDs...');
         const pidRes = await axios.get(`${API_URL}/pids`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -43,6 +49,7 @@ export default function VariablesPage() {
         console.log('All variables:', allVariables);
         setVariables(allVariables);
       } catch (err) {
+        // Handle API errors
         console.error('Error fetching data:', err.response?.data?.message || err.message);
         console.error('Full error:', err.response || err);
       }
@@ -50,6 +57,7 @@ export default function VariablesPage() {
     fetchData();
   }, []);
 
+  // Variable management handlers
   const handleEdit = (variable) => {
     setEditingVariable(variable);
   };
