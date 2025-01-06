@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+// Component for creating and editing variables associated with a PID
+// Props:
+// - onVariableAdded: Callback function when a variable is added/updated
+// - selectedPID: Currently selected PID object
+// - initialData: Data for editing existing variable
+// - isEditing: Boolean flag for edit mode
+// - submitButtonText: Custom text for submit button
 function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, submitButtonText }) {
+  // State management for form fields and UI
   const [name, setName] = useState(initialData?.name || '');
   const [value, setValue] = useState(initialData?.value || '');
   const [type, setType] = useState(initialData?.type || 'Metric');
@@ -9,8 +17,10 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
   const [error, setError] = useState('');
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
 
+  // Available options for variable type selection
   const typeOptions = ["Metric", "Attribute", "Attribute Value"];
 
+  // Update form fields when initialData changes (editing mode)
   useEffect(() => {
     if (initialData) {
       setName(initialData.name);
@@ -20,16 +30,19 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
     }
   }, [initialData]);
 
+  // Handle form submission for creating/updating variables
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
+    // Validate PID selection
     if (!selectedPID?._id) {
       setError('Please select a PID first');
       return;
     }
 
     try {
+      // Construct API endpoint based on create/edit mode
       const token = localStorage.getItem('token');
       const url = `http://localhost:4000/variables/${selectedPID._id}${
         isEditing ? `/${initialData._id}` : ''
@@ -37,12 +50,14 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
       
       const method = isEditing ? 'put' : 'post';
       
+      // Send request to create/update variable
       const response = await axios[method](
         url,
         { name, value, type, elementId: type === 'Attribute Value' ? elementId : 'NA' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
+      // Reset form fields after successful creation
       if (!isEditing) {
         // Clear form only if creating new variable
         setName('');
@@ -51,6 +66,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
         setElementId('');
       }
       
+      // Notify parent component of successful operation
       if (onVariableAdded) {
         onVariableAdded(response.data);
       }
@@ -60,6 +76,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
   };
 
   return (
+    // Main container with styled border and background
     <div style={{ 
       border: '3px solid black',
       borderRadius: '12px',
@@ -68,6 +85,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
       height: '300px',
       boxShadow: '5px 5px 10px rgb(0, 0, 0)'
     }}>
+      {/* Header section showing form mode (Add/Edit) */}
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
@@ -81,8 +99,11 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
         </span>
       </div>
 
+      {/* Error message display */}
       {error && <div style={{ color: 'red', marginBottom: 10, fontSize: '14px' }}>{error}</div>}
+      
       <form onSubmit={handleSubmit}>
+        {/* Variable name input field */}
         <div style={{ marginBottom: 10 }}>
           <input
             type="text"
@@ -100,6 +121,8 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             required
           />
         </div>
+
+        {/* Custom dropdown for variable type selection */}
         <div style={{ marginBottom: 10, position: 'relative' }}>
           <div 
             onClick={() => setShowTypeDropdown(!showTypeDropdown)}
@@ -161,6 +184,8 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             </div>
           )}
         </div>
+
+        {/* Conditional Element ID input field for Attribute Value type */}
         {type === 'Attribute Value' && (
           <div style={{ marginBottom: 10 }}>
             <input
@@ -173,6 +198,8 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             />
           </div>
         )}
+
+        {/* Variable value input field */}
         <div style={{ marginBottom: 10 }}>
           <input
             type="text"
@@ -183,6 +210,8 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             required
           />
         </div>
+
+        {/* Submit button with dynamic text based on mode */}
         <button 
           type="submit"
           style={{ 
