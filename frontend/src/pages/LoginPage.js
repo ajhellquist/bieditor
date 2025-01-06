@@ -4,6 +4,11 @@ import { useNavigate } from 'react-router-dom';
 
 const API_URL = 'http://localhost:4000';
 
+/**
+ * LoginPage Component
+ * Handles both user login and signup functionality with a togglable form.
+ * Manages user authentication state and redirects to main page upon successful auth.
+ */
 function LoginPage() {
   console.log('LoginPage rendering');
   const [email, setEmail] = useState('');
@@ -14,6 +19,11 @@ function LoginPage() {
   const [lastName, setLastName] = useState('');
   const navigate = useNavigate();
 
+  /**
+   * Handles form submission for both login and signup.
+   * Sends authentication request to the backend and processes the response.
+   * @param {Event} e - The form submission event
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -55,7 +65,9 @@ function LoginPage() {
       justifyContent: 'center',
       alignItems: 'center'
     }}>
+      {/* Authentication form container */}
       <div style={{ width: 300 }}>
+        {/* Application title/logo */}
         <h1 style={{
           fontSize: '36px',
           fontWeight: '400',
@@ -68,9 +80,16 @@ function LoginPage() {
           <span style={{ color: '#333' }}> Express</span>
           <span style={{ color: '#333' }}> Editor</span>
         </h1>
+
+        {/* Dynamic form header based on current mode */}
         <h2>{mode === 'login' ? 'Login' : 'Signup'}</h2>
+
+        {/* Error message display */}
         {error && <div style={{ color: 'red', marginBottom: 10 }}>{error}</div>}
+
+        {/* Authentication form */}
         <form onSubmit={handleSubmit}>
+          {/* Conditional rendering of name fields for signup mode */}
           {mode === 'signup' && (
             <>
               <input 
@@ -91,6 +110,8 @@ function LoginPage() {
               />
             </>
           )}
+          
+          {/* Common authentication fields */}
           <input 
             type="email"
             value={email}
@@ -107,6 +128,8 @@ function LoginPage() {
             style={{ width: '100%', marginBottom: 10 }}
             required
           />
+
+          {/* Submit button with dynamic text based on mode */}
           <button 
             type="submit"
             style={{ width: '100%', border: '3px solid black', borderRadius: '4px', padding: '5px', marginBottom: 10 }}
@@ -114,6 +137,8 @@ function LoginPage() {
             {mode === 'login' ? 'Login' : 'Sign Up'}
           </button>
         </form>
+
+        {/* Mode toggle button to switch between login and signup */}
         <button 
           onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
           style={{ width: '100%', border: '3px solid black', borderRadius: '4px', padding: '5px' }}
