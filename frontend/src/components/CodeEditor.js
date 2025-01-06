@@ -1,19 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
+// Advanced code editor component that provides variable suggestion and insertion functionality
+// Supports both single and multi-variable selection with specialized formatting
 export default function CodeEditor({ code, setCode, variables, selectedPID }) {
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState(0);
-  const [currentWord, setCurrentWord] = useState('');
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
-  const [copySuccess, setCopySuccess] = useState(false);
+  // State management for suggestion system
+  const [showSuggestions, setShowSuggestions] = useState(false);  // Controls suggestion panel visibility
+  const [cursorPosition, setCursorPosition] = useState(0);        // Tracks cursor position for suggestion insertion
+  const [currentWord, setCurrentWord] = useState('');             // Current word being typed
+  const [selectedIndex, setSelectedIndex] = useState(0);          // Currently selected suggestion index
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]); // Filtered list of matching suggestions
+  const [copySuccess, setCopySuccess] = useState(false);          // Controls copy feedback UI
 
-  // Track multi-selected suggestions
+  // Tracks multiple selected variables for batch insertion
   const [multiSelected, setMultiSelected] = useState([]);
 
-  const editorRef = useRef(null);
-  const cursorRangeRef = useRef(null); // For restoring cursor on click
+  // References for DOM manipulation
+  const editorRef = useRef(null);           // Reference to main editor element
+  const cursorRangeRef = useRef(null);      // Stores cursor position for accurate suggestion insertion
 
   // Helper function to get color based on variable type
   const getVariableColor = (type) => {
@@ -39,6 +43,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     console.log('CodeEditor received selectedPID:', selectedPID);
   }, [selectedPID]);
 
+  // Generates the proper reference format for variables based on their type and PID
   const getVariableReference = (variable) => {
     if (!selectedPID) {
       console.warn('No PID selected');
@@ -57,7 +62,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     return `[/gdc/md/${pidIdentifier}/obj/${variable.value}]`;
   };
 
-  // PARTIAL MATCH + ALPHABETICAL SORT
+  // Filters and sorts suggestions based on partial matches with current input
   useEffect(() => {
     if (!currentWord) {
       setFilteredSuggestions([]);
@@ -74,7 +79,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     setSelectedIndex(0);
   }, [currentWord, variables]);
 
-  // Force typed text color to black, track typed word
+  // Handles real-time input changes and cursor position tracking
   const handleInputChange = () => {
     editorRef.current.style.color = 'black';
     setCode(editorRef.current.innerHTML);
@@ -106,7 +111,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
-  // Insert a single variable
+  // Inserts a single variable at the current cursor position with proper formatting
   const insertSingleSuggestion = (variable) => {
     // We restore the cursor first if needed
     restoreCursorRange();
@@ -159,7 +164,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
-  // Insert multiple variables in one shot, comma-separated
+  // Batch inserts multiple selected variables as a comma-separated list
   const insertMultipleSuggestions = () => {
     restoreCursorRange();
 
@@ -236,7 +241,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     setCurrentWord('');
   };
 
-  // Restore the saved cursor range if we have one
+  // Restores cursor position after DOM modifications
   const restoreCursorRange = () => {
     editorRef.current.focus();
     const savedRange = cursorRangeRef.current;
@@ -247,8 +252,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
-  // SINGLE CLICK: if Alt is not pressed, insert immediately
-  // if Alt is pressed, toggle the selection in `multiSelected`
+  // Handles suggestion clicks with Alt-key support for multi-select
   const handleSuggestionClick = (e, variable) => {
     e.preventDefault();
     if (e.altKey) {
@@ -262,7 +266,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     setCurrentWord('');
   };
 
-  // ALT + CLICK toggles the multiSelected array
+  // Toggles variables in multi-select collection
   const toggleMultiSelect = (variable) => {
     if (multiSelected.find((v) => v._id === variable._id)) {
       // If already selected, unselect
@@ -274,7 +278,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
-  // The big copy function (unchanged)
+  // Processes editor content for copying, converting variables to their reference format
   const handleCopyCode = async () => {
     if (!editorRef.current) return;
     
@@ -338,6 +342,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
+  // Records metrics when code is copied
   const handleCopy = async () => {
     try {
       console.log('Making metrics request...');
@@ -357,7 +362,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
-  // Keydown to handle arrow navigation, tab insertion, backspace logic
+  // Manages keyboard navigation and special key handling
+  // Supports: Arrow keys for navigation, Tab for insertion, Backspace for deletion
   const handleKeyDown = (e) => {
     // If we have suggestions open, handle arrow up/down, tab. 
     // We'll IGNORE Enter for insertion now.
@@ -429,6 +435,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
+  // Resets editor state and clears content
   const handleClearCode = () => {
     setCode('');
     editorRef.current.innerHTML = '';
