@@ -1,18 +1,23 @@
+// Component for managing Project IDs (PIDs), including selection, addition, and deletion
 import React, { useState, useEffect } from 'react';
 
 export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, selectedPID }) {
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [newPIDName, setNewPIDName] = useState('');
-  const [newPIDValue, setNewPIDValue] = useState('');
-  const [showDropdown, setShowDropdown] = useState(false);
+  // State management for component
+  const [showAddForm, setShowAddForm] = useState(false);     // Controls visibility of the Add PID form
+  const [newPIDName, setNewPIDName] = useState('');         // Stores new project name input
+  const [newPIDValue, setNewPIDValue] = useState('');       // Stores new PID input
+  const [showDropdown, setShowDropdown] = useState(false);  // Controls visibility of PID selection dropdown
 
+  // Debug logging for PID updates and selection changes
   useEffect(() => {
     console.log('PIDManager - Current pids:', JSON.stringify(pids, null, 2));
     console.log('PIDManager - Selected PID:', JSON.stringify(selectedPID, null, 2));
   }, [pids, selectedPID]);
 
+  // Handles the submission of new PID entries
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Validate that both fields are filled
     if (!newPIDName.trim() || !newPIDValue.trim()) {
       alert('Both Project Name and PID are required');
       return;
@@ -26,22 +31,26 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
     console.log('PIDManager - Submitting new PID:', newPID);
     onPIDAdd(newPID);
     
+    // Reset form state after submission
     setNewPIDName('');
     setNewPIDValue('');
     setShowAddForm(false);
   };
 
   return (
+    // Main container for PID management interface
     <div style={{ 
       marginBottom: '20px',
       display: 'flex',
       gap: '20px',
       alignItems: 'flex-start'
     }}>
+      {/* PID Selection Dropdown Container */}
       <div style={{ 
         width: '1000px',
         position: 'relative' 
       }}>
+        {/* Dropdown Toggle Button */}
         <div 
           onClick={() => setShowDropdown(!showDropdown)}
           style={{
@@ -57,15 +66,18 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
             fontFamily: 'Roboto'
           }}
         >
+          {/* Display selected PID or default text */}
           <span>
             {selectedPID && selectedPID.name ? 
               `${selectedPID.name} (${selectedPID.pid})` : 
               "Select Project"
             }
           </span>
+          {/* Dropdown arrow indicator */}
           <span>{showDropdown ? '▲' : '▼'}</span>
         </div>
 
+        {/* Dropdown Menu */}
         {showDropdown && (
           <div style={{
             position: 'absolute',
@@ -81,9 +93,11 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
             zIndex: 1000,
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}>
+            {/* Map through available PIDs */}
             {Array.isArray(pids) && pids.map((pid, index) => {
               console.log('Rendering PID item:', pid);
               return (
+                // Individual PID list item
                 <div
                   key={pid._id}
                   style={{
@@ -103,6 +117,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
                     e.currentTarget.style.backgroundColor = 'white';
                   }}
                 >
+                  {/* PID Selection Area */}
                   <span
                     onClick={() => {
                       console.log('Selected PID:', pid);
@@ -116,6 +131,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
                   >
                     {pid.name ? `${pid.name} (${pid.pid})` : 'Unnamed PID'}
                   </span>
+                  {/* Delete PID Button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -142,6 +158,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
         )}
       </div>
 
+      {/* Add New PID Button */}
       <button
         onClick={() => setShowAddForm(true)}
         style={{
@@ -159,6 +176,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
         Add PID
       </button>
 
+      {/* Add PID Form Modal */}
       {showAddForm && (
         <div style={{
           position: 'absolute',
@@ -174,6 +192,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
           boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
         }}>
           <form onSubmit={handleSubmit}>
+            {/* Project Name Input Field */}
             <div style={{ marginBottom: '10px' }}>
               <label style={{ display: 'block', marginBottom: '5px' }}>
                 Project Name:
@@ -191,6 +210,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
                 }}
               />
             </div>
+            {/* PID Input Field */}
             <div style={{ marginBottom: '10px' }}>
               <label style={{ display: 'block', marginBottom: '5px' }}>
                 PID:
@@ -208,6 +228,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
                 }}
               />
             </div>
+            {/* Form Action Buttons */}
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
                 type="submit"
