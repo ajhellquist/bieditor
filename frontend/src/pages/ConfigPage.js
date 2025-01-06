@@ -4,8 +4,10 @@ import axios from 'axios';
 const API_URL = 'http://localhost:4000';
 
 export default function ConfigPage() {
+  // State to store configuration values from the server
   const [configs, setConfigs] = useState({ metrics: '', attributes: '', values: '' });
 
+  // Fetch existing configurations on component mount
   useEffect(() => {
     const fetchConfig = async () => {
       try {
@@ -19,6 +21,7 @@ export default function ConfigPage() {
     fetchConfig();
   }, []);
 
+  // Update configurations on the server when user saves changes
   const updateConfig = async () => {
     try {
       const token = localStorage.getItem('token');
