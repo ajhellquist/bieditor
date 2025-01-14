@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const Variable = require('../models/Variable');
 const path = require('path');
-const PID = require(path.join(__dirname, '../models/PID'));
+const PID = require('../models/PID.js');
 const multer = require('multer');
 
 const upload = multer({ dest: 'uploads/' });
