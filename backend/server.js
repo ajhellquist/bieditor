@@ -10,21 +10,18 @@ const variableRoutes = require('./routes/variables');
 const pidRoutes = require('./routes/PIDSroute');
 const configRoutes = require('./routes/config');
 const metricsRouter = require('./routes/metrics');
+const API_URL = process.env.REACT_APP_API_URL;
 
 const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: ['https://bieditor-git-main-ajhellquists-projects.vercel.app'],
+  origin: process.env.CORS_ORIGIN,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true,
-  preflightContinue: true,
   optionsSuccessStatus: 204
 }));
-
-// Add OPTIONS handling for preflight requests
-app.options('*', cors());
 
 // Then your other middleware
 app.use(express.json());

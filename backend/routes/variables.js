@@ -6,8 +6,12 @@ const path = require('path');
 const PID = require('../models/PIDmodel');
 const multer = require('multer');
 const fs = require('fs');
+const cors = require('cors');
 
 const upload = multer({ dest: 'uploads/' });
+
+// Add this before your routes
+router.options('/:pidId/upload', cors());  // Handle preflight for the upload route
 
 // Move this route to the top, before other routes that use :pidId
 router.delete('/all/:pidId', auth, async (req, res) => {
@@ -147,6 +151,10 @@ router.put('/:pidId/:variableId', auth, async (req, res) => {
 
 // Update the file upload route
 router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
+  // Add CORS headers explicitly
+  res.header('Access-Control-Allow-Origin', 'https://bieditor-git-main-ajhellquists-projects.vercel.app');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
   try {
     // Verify PID belongs to user first
     const pid = await PID.findOne({

@@ -79,29 +79,24 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
 
     const token = localStorage.getItem('token');
     
-    // Add token validation
     if (!token) {
       setError('Authentication token not found. Please log in again.');
       setLoading(false);
       return;
     }
 
-    const url = `${API_URL}/variables/${selectedPID._id}/upload`;
+    const url = `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`;
     
-    console.log('Attempting upload to:', url);
-    console.log('Selected PID:', selectedPID);
-
     try {
-      const response = await axios.post(url, formData, {
+      const response = await axios({
+        method: 'POST',
+        url: url,
+        data: formData,
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
-          // Add Accept header
-          'Accept': 'application/json'
         },
-        timeout: 30000,
-        // Add withCredentials
-        withCredentials: true
+        withCredentials: false
       });
 
       if (onVariablesAdded) {
@@ -117,9 +112,6 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
         stack: err.stack,
         response: err.response?.data,
         status: err.response?.status,
-        // Add token debug info (remove in production)
-        tokenPresent: !!token,
-        tokenFirstChars: token ? token.substring(0, 10) + '...' : 'no token'
       });
       
       if (err.response?.status === 401) {
