@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const PID = require('../models/PID');
+const PID = require('../models/PIDmodel');
 const mongoose = require('mongoose');
 
 // Get all PIDs for the logged-in user
