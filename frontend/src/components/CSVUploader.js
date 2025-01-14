@@ -75,7 +75,7 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     formData.append('file', file);
 
     const token = localStorage.getItem('token');
-    const url = `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`;
+    const url = `https://bi-editor.herokuapp.com/variables/${selectedPID._id}/upload`;
     
     console.log('Attempting upload to:', url);
     console.log('Selected PID:', selectedPID);

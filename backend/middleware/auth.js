@@ -9,6 +9,9 @@ module.exports = (req, res, next) => {
       throw new Error('No token provided');
     }
 
+    console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
+    console.log('Token being verified:', token);
+    
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log('Decoded token:', decoded);
     
@@ -29,7 +32,8 @@ module.exports = (req, res, next) => {
   } catch (error) {
     console.error('Auth middleware error:', {
       error: error.message,
-      headers: req.headers.authorization
+      headers: req.headers.authorization,
+      jwtSecretExists: !!process.env.JWT_SECRET
     });
     res.status(401).json({ message: 'Auth failed', error: error.message });
   }
