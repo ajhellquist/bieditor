@@ -77,29 +77,16 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     const token = localStorage.getItem('token');
     const url = `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`;
     
-    console.log('Uploading file:', file.name);
-    console.log('Upload URL:', url);
-    console.log('Token:', token ? 'Present' : 'Missing');
-
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData,
+      const response = await axios.post(url, formData, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        credentials: 'include'
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Upload response:', data);
-
       if (onVariablesAdded) {
-        onVariablesAdded(data);
+        onVariablesAdded(response.data);
       }
 
       setFile(null);

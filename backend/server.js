@@ -15,7 +15,17 @@ const app = express();
 
 // Place this before any other middleware or route handlers
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://bieditor-git-main-ajhellquists-projects.vercel.app');
+  // Update to include both your Vercel and local development URLs
+  const allowedOrigins = [
+    'https://bieditor-git-main-ajhellquists-projects.vercel.app',
+    'http://localhost:3000'
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');

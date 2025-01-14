@@ -5,6 +5,7 @@ const Variable = require('../models/Variable');
 const path = require('path');
 const PID = require('../models/PID');
 const multer = require('multer');
+const fs = require('fs');
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -144,14 +145,47 @@ router.put('/:pidId/:variableId', auth, async (req, res) => {
   }
 });
 
-router.post('/:pid/upload', upload.single('file'), async (req, res) => {
+// Update the file upload route
+router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
   try {
     console.log('File upload request received');
     console.log('Headers:', req.headers);
     console.log('File:', req.file);
     
-    // Your existing upload logic...
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    // Process the uploaded file here
+    const filePath = req.file.path;
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
     
+    // Parse CSV and create variables
+    const lines = fileContent.split('\n');
+    const headers = lines[0].split(',');
+    const variables = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      
+      const values = lines[i].split(',');
+      const variable = {
+        pidId: req.params.pidId,
+        name: values[0],
+        type: values[1],
+        value: values[2],
+        elementId: values[3] || 'NA'
+      };
+
+      const newVariable = new Variable(variable);
+      await newVariable.save();
+      variables.push(newVariable);
+    }
+
+    // Clean up the uploaded file
+    fs.unlinkSync(filePath);
+
+    res.status(201).json(variables);
   } catch (error) {
     console.error('Upload error:', error);
     res.status(500).json({ message: error.message });
