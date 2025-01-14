@@ -86,6 +86,10 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
           },
+          withCredentials: true,
+          validateStatus: function (status) {
+            return status >= 200 && status < 500; // Resolve only if status is between 200 and 499
+          }
         }
       );
 
