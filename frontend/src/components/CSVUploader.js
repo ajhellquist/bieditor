@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+// Import environment variables
+const API_URL = process.env.REACT_APP_API_URL;
+
 /**
  * CSVUploader Component
  * Handles the upload, download, and deletion of variables via CSV files
@@ -75,7 +78,7 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     formData.append('file', file);
 
     const token = localStorage.getItem('token');
-    const url = `https://bi-editor.herokuapp.com/variables/${selectedPID._id}/upload`;
+    const url = `${API_URL}/variables/${selectedPID._id}/upload`;
     
     console.log('Attempting upload to:', url);
     console.log('Selected PID:', selectedPID);

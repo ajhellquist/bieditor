@@ -7,24 +7,5 @@
     ],
     "env": {
       "REACT_APP_API_URL": "https://bi-editor-b17f5497912d.herokuapp.com"
-    },
-    "headers": [
-      {
-        "source": "/(.*)",
-        "headers": [
-          {
-            "key": "Access-Control-Allow-Origin",
-            "value": "https://bi-editor.herokuapp.com"
-          },
-          {
-            "key": "Access-Control-Allow-Methods",
-            "value": "GET,POST,PUT,DELETE,OPTIONS"
-          },
-          {
-            "key": "Access-Control-Allow-Headers",
-            "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
-          }
-        ]
-      }
-    ]
+    }
 }
