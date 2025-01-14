@@ -6,7 +6,8 @@
         "node": "18.x"
     },
     "scripts": {
-        "start": "node server.js"
+        "start": "node server.js",
+        "heroku-postbuild": "npm install"
     },
     "dependencies": {
         "bcrypt": "^5.1.0",
