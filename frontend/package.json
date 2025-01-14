@@ -24,5 +24,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "https://bi-editor-b17f5497912d.herokuapp.com"
 }

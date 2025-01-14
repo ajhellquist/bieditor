@@ -11,14 +11,31 @@ const metricsRouter = require('./routes/metrics');
 
 const app = express();
 
-// Simpler CORS configuration
+// CORS configuration
 app.use(cors({
-  origin: true, // Allow all origins temporarily for debugging
+  origin: [
+    'https://bieditor-git-main-ajhellquists-projects.vercel.app',
+    'https://www.maqlexpress.com',
+    'http://localhost:3000'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
+
+// Add this before your routes
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && origin.match(/^https:\/\/.*\.vercel\.app$/) || 
+      origin === 'https://www.maqlexpress.com' || 
+      origin === 'http://localhost:3000') {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 app.use(express.json());
 

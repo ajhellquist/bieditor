@@ -77,6 +77,7 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     try {
       const token = localStorage.getItem('token');
       console.log('Uploading file:', file.name);
+      console.log('Upload URL:', `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`);
       
       const response = await axios({
         method: 'post',
@@ -84,7 +85,8 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
         data: formData,
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json'
         },
         withCredentials: true
       });
@@ -103,7 +105,8 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
         status: err.response?.status,
         statusText: err.response?.statusText,
         data: err.response?.data,
-        message: err.message
+        message: err.message,
+        url: err.config?.url
       });
       
       const errorMessage = err.response?.data?.message 
