@@ -7,7 +7,7 @@ const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const variableRoutes = require('./routes/variables');
-const pidRoutes = require('./routes/pids');
+const pidRoutes = require('./routes/PIDSroute');
 const configRoutes = require('./routes/config');
 const metricsRouter = require('./routes/metrics');
 
@@ -35,6 +35,22 @@ mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI)
     console.error('MongoDB connection error:', err);
     console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Defined' : 'Undefined');
   });
+
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+});
 
 // Mount routes
 app.use('/auth', authRoutes);
