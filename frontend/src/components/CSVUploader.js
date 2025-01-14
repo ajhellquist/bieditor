@@ -81,6 +81,11 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     console.log('Selected PID:', selectedPID);
 
     try {
+      // Test CORS configuration
+      console.log('Testing CORS configuration...');
+      const corsTest = await axios.get(`${process.env.REACT_APP_API_URL}/debug-cors`);
+      console.log('CORS Debug Response:', corsTest.data);
+
       const response = await axios.post(url, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
