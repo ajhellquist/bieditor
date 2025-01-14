@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const corsConfig = require('./config/cors');
 
 const authRoutes = require('./routes/auth');
 const variableRoutes = require('./routes/variables');
@@ -14,14 +15,17 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 const app = express();
 
-// CORS configuration
-app.use(cors({
-  origin: 'https://bieditor-git-main-ajhellquists-projects.vercel.app',  // Your Vercel frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  credentials: true,
-  optionsSuccessStatus: 204
-}));
+// Apply CORS middleware with configuration
+app.use(cors(corsConfig));
+
+// Add OPTIONS handling for preflight requests
+app.options('*', cors(corsConfig));
+
+// Log all incoming requests for debugging
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  next();
+});
 
 // Then your other middleware
 app.use(express.json());

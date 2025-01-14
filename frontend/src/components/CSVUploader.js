@@ -147,6 +147,7 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
             headers: {
               Authorization: `Bearer ${token}`,
             },
+            withCredentials: true
           }
         );
 

@@ -15,6 +15,12 @@ router.options('/:pidId/upload', cors());  // Handle preflight for the upload ro
 
 // Move this route to the top, before other routes that use :pidId
 router.delete('/all/:pidId', auth, async (req, res) => {
+  // Add CORS headers explicitly
+  res.header('Access-Control-Allow-Origin', 'https://bieditor-git-main-ajhellquists-projects.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
   try {
     // First verify the PID belongs to the user
     const pid = await PID.findOne({
