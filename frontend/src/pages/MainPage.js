@@ -7,6 +7,8 @@ import CSVUploader from '../components/CSVUploader';
 import { FaLinkedin, FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = process.env.REACT_APP_API_URL || 'https://bi-editor.herokuapp.com';
+
 export default function MainPage() {
   // State management for application data
   const [code, setCode] = useState('// Start typing...');
@@ -44,7 +46,7 @@ export default function MainPage() {
   const fetchVariables = async (pidId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:4000/variables/${pidId}`, {
+      const response = await axios.get(`${API_URL}/variables/${pidId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setVariables(response.data);
@@ -60,7 +62,7 @@ export default function MainPage() {
     try {
       const token = localStorage.getItem('token');
       console.log('Fetching PIDs with token:', token);
-      const response = await axios.get('http://localhost:4000/pids', {
+      const response = await axios.get(`${API_URL}/pids`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('Fetched PIDs from server:', response.data);
@@ -76,7 +78,7 @@ export default function MainPage() {
   const fetchMetricsCount = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:4000/metrics/copy-count', {
+      const response = await axios.get(`${API_URL}/metrics/copy-count`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMetricsCount(response.data.count);
@@ -92,7 +94,7 @@ export default function MainPage() {
     try {
       const token = localStorage.getItem('token');
       console.log('Fetching user info with token:', token);
-      const response = await axios.get('http://localhost:4000/auth/me', {
+      const response = await axios.get(`${API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('Received user data:', response.data);
@@ -115,7 +117,7 @@ export default function MainPage() {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(
-        `http://localhost:4000/variables/${selectedPID._id}/${variableId}`,
+        `${API_URL}/variables/${selectedPID._id}/${variableId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setVariables(variables.filter(v => v._id !== variableId));
@@ -136,7 +138,7 @@ export default function MainPage() {
         pid: newPID.pid
       });
       
-      const response = await axios.post('http://localhost:4000/pids', newPID, {
+      const response = await axios.post(`${API_URL}/pids`, newPID, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -159,7 +161,7 @@ export default function MainPage() {
   const handlePIDDelete = async (pidId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:4000/pids/${pidId}`, {
+      await axios.delete(`${API_URL}/pids/${pidId}`, {
         headers: { 
           Authorization: `Bearer ${token}`
         }
@@ -220,7 +222,7 @@ export default function MainPage() {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:4000/variables/${selectedPID._id}/${updatedVariable._id}`,
+        `${API_URL}/variables/${selectedPID._id}/${updatedVariable._id}`,
         updatedVariable,
         { headers: { Authorization: `Bearer ${token}` } }
       );
