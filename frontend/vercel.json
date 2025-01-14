@@ -6,7 +6,7 @@
       }
     ],
     "env": {
-      "REACT_APP_API_URL": "https://bi-editor-b17f5497912d.herokuapp.com/"
+      "REACT_APP_API_URL": "https://bi-editor-b17f5497912d.herokuapp.com"
     },
     "headers": [
       {

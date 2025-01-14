@@ -14,7 +14,7 @@ const app = express();
 // Update CORS configuration for production
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? 'https://bieditor-ajhellquists-projects.vercel.app'
+    ? ['https://bieditor-ajhellquists-projects.vercel.app', 'https://your-custom-domain.com']
     : 'http://localhost:3000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
