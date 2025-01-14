@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const variableRoutes = require('./routes/variables');
@@ -57,6 +59,9 @@ app.use((err, req, res, next) => {
     error: process.env.NODE_ENV === 'development' ? err.message : undefined 
   });
 });
+
+console.log('Current directory:', __dirname);
+console.log('Files in models:', fs.readdirSync(path.join(__dirname, 'models')));
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
