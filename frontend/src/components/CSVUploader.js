@@ -76,8 +76,10 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
 
     try {
       const token = localStorage.getItem('token');
+      console.log('Uploading file:', file.name);
+      
       const response = await axios.post(
-        `http://localhost:4000/variables/${selectedPID._id}/upload`,
+        `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`,
         formData,
         {
           headers: {
@@ -87,6 +89,8 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
         }
       );
 
+      console.log('Upload response:', response.data);
+
       if (onVariablesAdded) {
         onVariablesAdded(response.data);
       }
@@ -95,8 +99,20 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       setFile(null);
       e.target.reset();
     } catch (err) {
-      setError(err.response?.data?.message || 'Error uploading variables');
-      console.error('Upload error:', err);
+      console.error('Upload error details:', {
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        data: err.response?.data,
+        message: err.message
+      });
+      
+      // More detailed error message
+      const errorMessage = err.response?.data?.message 
+        || err.response?.data 
+        || err.message 
+        || 'Error uploading variables';
+      
+      setError(`Upload failed: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -120,7 +136,7 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       try {
         const token = localStorage.getItem('token');
         await axios.delete(
-          `http://localhost:4000/variables/all/${selectedPID._id}`,
+          `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
