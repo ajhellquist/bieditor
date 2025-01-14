@@ -16,7 +16,7 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.CORS_ORIGIN,
+  origin: 'https://bieditor-git-main-ajhellquists-projects.vercel.app',  // Your Vercel frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true,
