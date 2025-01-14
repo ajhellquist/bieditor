@@ -78,20 +78,16 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       const token = localStorage.getItem('token');
       console.log('Uploading file:', file.name);
       
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-          withCredentials: true,
-          validateStatus: function (status) {
-            return status >= 200 && status < 500; // Resolve only if status is between 200 and 499
-          }
-        }
-      );
+      const response = await axios({
+        method: 'post',
+        url: `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`,
+        data: formData,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        },
+        withCredentials: true
+      });
 
       console.log('Upload response:', response.data);
 
@@ -110,7 +106,6 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
         message: err.message
       });
       
-      // More detailed error message
       const errorMessage = err.response?.data?.message 
         || err.response?.data 
         || err.message 
