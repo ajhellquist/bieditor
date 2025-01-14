@@ -349,7 +349,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       const token = localStorage.getItem('token');
       console.log('Token exists:', !!token);
       
-      const response = await axios.post('http://localhost:4000/metrics', {}, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/metrics`, {}, {
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
