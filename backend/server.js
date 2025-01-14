@@ -15,14 +15,16 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: [
-    'https://bieditor-git-main-ajhellquists-projects.vercel.app',
-    'http://localhost:3000'
-  ],
+  origin: ['https://bieditor-git-main-ajhellquists-projects.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  credentials: true,
+  preflightContinue: true,
+  optionsSuccessStatus: 204
 }));
+
+// Add OPTIONS handling for preflight requests
+app.options('*', cors());
 
 // Then your other middleware
 app.use(express.json());

@@ -84,10 +84,8 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       const response = await axios.post(url, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-          'Access-Control-Allow-Origin': '*'
+          'Content-Type': 'multipart/form-data'
         },
-        withCredentials: true,
         timeout: 30000
       });
 
