@@ -1,1 +1,1 @@
-web: cd backend && ls -la && echo "Models directory contents:" && ls -la models/ && npm install && npm start 
+web: cd backend && npm install && npm start 
