@@ -10,18 +10,25 @@ const cors = require('cors');
 
 const upload = multer({ dest: 'uploads/' });
 
-// Add this before your routes
-router.options('/:pidId/upload', cors());  // Handle preflight for the upload route
-
-// Move this route to the top, before other routes that use :pidId
-router.delete('/all/:pidId', auth, async (req, res) => {
-  // Add CORS headers explicitly
+// Add CORS middleware specifically for this route
+router.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://bieditor-git-main-ajhellquists-projects.vercel.app');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle OPTIONS method
+  if (req.method === 'OPTIONS') {
+    return res.status(200).send();
+  }
+  next();
+});
 
+// Move this route to the top, before other routes that use :pidId
+router.delete('/all/:pidId', auth, async (req, res) => {
   try {
+    console.log('Delete request received for PID:', req.params.pidId);
+    
     // First verify the PID belongs to the user
     const pid = await PID.findOne({
       _id: req.params.pidId,
@@ -33,8 +40,10 @@ router.delete('/all/:pidId', auth, async (req, res) => {
     }
 
     // Delete all variables for this PID
-    await Variable.deleteMany({ pidId: req.params.pidId });
-    res.json({ message: 'All variables deleted' });
+    const result = await Variable.deleteMany({ pidId: req.params.pidId });
+    console.log('Delete result:', result);
+    
+    res.json({ message: 'All variables deleted', count: result.deletedCount });
   } catch (err) {
     console.error('Error deleting variables:', err);
     res.status(500).json({ message: err.message });

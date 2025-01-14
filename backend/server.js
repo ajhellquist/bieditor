@@ -15,15 +15,29 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 const app = express();
 
-// Apply CORS middleware with configuration
-app.use(cors(corsConfig));
+// CORS Configuration
+app.use(cors({
+  origin: ['https://bieditor-git-main-ajhellquists-projects.vercel.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  preflightContinue: true
+}));
 
-// Add OPTIONS handling for preflight requests
-app.options('*', cors(corsConfig));
+// Handle preflight requests
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'https://bieditor-git-main-ajhellquists-projects.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.status(200).send();
+});
 
-// Log all incoming requests for debugging
+// Add this middleware to log requests
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  console.log('Origin:', req.headers.origin);
+  console.log('Headers:', req.headers);
   next();
 });
 

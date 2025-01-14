@@ -134,22 +134,21 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       return;
     }
 
-    if (
-      window.confirm(
-        'Are you sure you want to delete all variables for this PID? This action cannot be undone.'
-      )
-    ) {
+    if (window.confirm('Are you sure you want to delete all variables for this PID? This action cannot be undone.')) {
       try {
         const token = localStorage.getItem('token');
-        await axios.delete(
-          `${process.env.REACT_APP_API_URL}/variables/all/${selectedPID._id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            withCredentials: true
-          }
-        );
+        const response = await axios({
+          method: 'DELETE',
+          url: `${process.env.REACT_APP_API_URL}/variables/all/${selectedPID._id}`,
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          withCredentials: true
+        });
+
+        console.log('Delete response:', response);
 
         // Update the parent component
         if (onVariablesAdded) {
@@ -159,8 +158,8 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
         // Refresh the page
         window.location.reload();
       } catch (err) {
+        console.error('Full error details:', err);
         setError(err.response?.data?.message || 'Error deleting variables');
-        console.error('Delete error:', err);
       }
     }
   };
