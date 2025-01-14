@@ -11,15 +11,24 @@ const metricsRouter = require('./routes/metrics');
 
 const app = express();
 
-app.use(cors());
+// Update CORS configuration for production
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? 'https://bieditor-ajhellquists-projects.vercel.app'
+    : 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => {
     console.error('MongoDB connection error:', err);
-    console.log('MONGO_URI:', process.env.MONGO_URI ? 'Defined' : 'Undefined');
+    console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Defined' : 'Undefined');
   });
 
 // Mount routes
@@ -34,7 +43,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Server is running!' });
 });
 
-// Add error handler middleware at the end of your middleware chain
+// Error handler middleware
 app.use((err, req, res, next) => {
   console.error('Server error:', err);
   res.status(500).json({ 
@@ -46,10 +55,4 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log('Available routes:');
-  console.log('- /auth');
-  console.log('- /variables');
-  console.log('- /pids');
-  console.log('- /config');
-  console.log('- /metrics');
 });
