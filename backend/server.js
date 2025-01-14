@@ -8,7 +8,7 @@ const corsConfig = require('./config/cors');
 
 const authRoutes = require('./routes/auth');
 const variableRoutes = require('./routes/variables');
-const pidRoutes = require('./routes/PIDSroute');
+const pidRoutes = require('./routes/pids');
 const configRoutes = require('./routes/config');
 const metricsRouter = require('./routes/metrics');
 const API_URL = process.env.REACT_APP_API_URL;
