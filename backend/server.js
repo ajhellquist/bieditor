@@ -13,16 +13,15 @@ const metricsRouter = require('./routes/metrics');
 
 const app = express();
 
-// Add cors middleware with specific configuration
+// CORS configuration
 app.use(cors({
   origin: [
     'https://bieditor-git-main-ajhellquists-projects.vercel.app',
     'http://localhost:3000'
   ],
-  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With', 'Content-Range'],
-  exposedHeaders: ['Content-Range']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 // Then your other middleware
