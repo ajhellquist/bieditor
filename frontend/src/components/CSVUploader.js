@@ -86,7 +86,6 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         },
-        withCredentials: true,
         timeout: 30000, // 30 second timeout
       });
 
