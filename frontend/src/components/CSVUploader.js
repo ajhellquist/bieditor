@@ -142,7 +142,7 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       try {
         const token = localStorage.getItem('token');
         await axios.delete(
-          `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`,
+          `${process.env.REACT_APP_API_URL}/variables/all/${selectedPID._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
