@@ -61,11 +61,14 @@ app.use('/config', configRoutes);
 app.use('/metrics', metricsRouter);
 
 // Add debug route to check CORS
+app.options('/debug-cors', cors());
 app.get('/debug-cors', (req, res) => {
   res.json({
     headers: req.headers,
-    origin: req.headers.origin,
-    corsEnabled: true
+    corsConfig: {
+      origin: req.headers.origin,
+      method: req.method
+    }
   });
 });
 
