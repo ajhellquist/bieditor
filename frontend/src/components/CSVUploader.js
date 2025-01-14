@@ -77,12 +77,17 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     const token = localStorage.getItem('token');
     const url = `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`;
     
+    console.log('Attempting upload to:', url);
+    console.log('Selected PID:', selectedPID);
+
     try {
       const response = await axios.post(url, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        withCredentials: true,
+        timeout: 30000, // 30 second timeout
       });
 
       if (onVariablesAdded) {
@@ -95,10 +100,12 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       console.error('Upload error details:', {
         name: err.name,
         message: err.message,
-        stack: err.stack
+        stack: err.stack,
+        response: err.response?.data,
+        status: err.response?.status
       });
       
-      setError(`Upload failed: ${err.message}`);
+      setError(`Upload failed: ${err.response?.data?.message || err.message}`);
     } finally {
       setLoading(false);
     }

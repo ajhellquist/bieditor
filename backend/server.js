@@ -13,9 +13,8 @@ const metricsRouter = require('./routes/metrics');
 
 const app = express();
 
-// Place this before any other middleware or route handlers
+// Update CORS configuration
 app.use((req, res, next) => {
-  // Update to include both your Vercel and local development URLs
   const allowedOrigins = [
     'https://bieditor-git-main-ajhellquists-projects.vercel.app',
     'http://localhost:3000'
@@ -29,14 +28,33 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Expose-Headers', 'Content-Range');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Content-Range');
   
-  // Handle preflight requests
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
   
   next();
 });
+
+// Add cors middleware with specific configuration
+app.use(cors({
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      'https://bieditor-git-main-ajhellquists-projects.vercel.app',
+      'http://localhost:3000'
+    ];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With', 'Content-Range']
+}));
 
 // Then your other middleware
 app.use(express.json());

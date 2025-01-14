@@ -148,6 +148,16 @@ router.put('/:pidId/:variableId', auth, async (req, res) => {
 // Update the file upload route
 router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
   try {
+    // Verify PID belongs to user first
+    const pid = await PID.findOne({
+      _id: req.params.pidId,
+      userId: req.user.userId
+    });
+
+    if (!pid) {
+      return res.status(404).json({ message: 'PID not found' });
+    }
+
     console.log('File upload request received');
     console.log('Headers:', req.headers);
     console.log('File:', req.file);
@@ -188,7 +198,11 @@ router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
     res.status(201).json(variables);
   } catch (error) {
     console.error('Upload error:', error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      message: error.message,
+      details: error.stack,
+      type: error.name
+    });
   }
 });
 
