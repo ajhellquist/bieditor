@@ -78,6 +78,14 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     formData.append('file', file);
 
     const token = localStorage.getItem('token');
+    
+    // Add token validation
+    if (!token) {
+      setError('Authentication token not found. Please log in again.');
+      setLoading(false);
+      return;
+    }
+
     const url = `${API_URL}/variables/${selectedPID._id}/upload`;
     
     console.log('Attempting upload to:', url);
@@ -87,9 +95,13 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       const response = await axios.post(url, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
+          // Add Accept header
+          'Accept': 'application/json'
         },
-        timeout: 30000
+        timeout: 30000,
+        // Add withCredentials
+        withCredentials: true
       });
 
       if (onVariablesAdded) {
@@ -104,10 +116,17 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
         message: err.message,
         stack: err.stack,
         response: err.response?.data,
-        status: err.response?.status
+        status: err.response?.status,
+        // Add token debug info (remove in production)
+        tokenPresent: !!token,
+        tokenFirstChars: token ? token.substring(0, 10) + '...' : 'no token'
       });
       
-      setError(`Upload failed: ${err.response?.data?.message || err.message}`);
+      if (err.response?.status === 401) {
+        setError('Authentication failed. Please try logging in again.');
+      } else {
+        setError(`Upload failed: ${err.response?.data?.message || err.message}`);
+      }
     } finally {
       setLoading(false);
     }
