@@ -3,6 +3,9 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const Variable = require('../models/Variable');
 const PID = require('../models/PID');
+const multer = require('multer');
+
+const upload = multer({ dest: 'uploads/' });
 
 // Move this route to the top, before other routes that use :pidId
 router.delete('/all/:pidId', auth, async (req, res) => {
@@ -137,6 +140,20 @@ router.put('/:pidId/:variableId', auth, async (req, res) => {
     res.json(variable);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+router.post('/:pid/upload', upload.single('file'), async (req, res) => {
+  try {
+    console.log('File upload request received');
+    console.log('Headers:', req.headers);
+    console.log('File:', req.file);
+    
+    // Your existing upload logic...
+    
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ message: error.message });
   }
 });
 

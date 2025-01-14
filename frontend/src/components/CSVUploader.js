@@ -74,47 +74,44 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
     const formData = new FormData();
     formData.append('file', file);
 
+    const token = localStorage.getItem('token');
+    const url = `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`;
+    
+    console.log('Uploading file:', file.name);
+    console.log('Upload URL:', url);
+    console.log('Token:', token ? 'Present' : 'Missing');
+
     try {
-      const token = localStorage.getItem('token');
-      console.log('Uploading file:', file.name);
-      console.log('Upload URL:', `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`);
-      
-      const response = await axios({
-        method: 'post',
-        url: `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}/upload`,
-        data: formData,
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-          'Accept': 'application/json'
+          'Authorization': `Bearer ${token}`
         },
-        withCredentials: true
+        credentials: 'include'
       });
 
-      console.log('Upload response:', response.data);
-
-      if (onVariablesAdded) {
-        onVariablesAdded(response.data);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // Reset file input
+      const data = await response.json();
+      console.log('Upload response:', data);
+
+      if (onVariablesAdded) {
+        onVariablesAdded(data);
+      }
+
       setFile(null);
       e.target.reset();
     } catch (err) {
       console.error('Upload error details:', {
-        status: err.response?.status,
-        statusText: err.response?.statusText,
-        data: err.response?.data,
+        name: err.name,
         message: err.message,
-        url: err.config?.url
+        stack: err.stack
       });
       
-      const errorMessage = err.response?.data?.message 
-        || err.response?.data 
-        || err.message 
-        || 'Error uploading variables';
-      
-      setError(`Upload failed: ${errorMessage}`);
+      setError(`Upload failed: ${err.message}`);
     } finally {
       setLoading(false);
     }
