@@ -8,7 +8,8 @@ import axios from 'axios';
 // - initialData: Data for editing existing variable
 // - isEditing: Boolean flag for edit mode
 // - submitButtonText: Custom text for submit button
-function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, submitButtonText }) {
+// - onCancel: Callback function when cancel button is clicked
+function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, submitButtonText, onCancel }) {
   // State management for form fields and UI
   const [name, setName] = useState(initialData?.name || '');
   const [value, setValue] = useState(initialData?.value || '');
@@ -236,7 +237,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             style={{ 
               width: '100%', 
               padding: '8px',
-              backgroundColor: '#E0E0E0',
+              backgroundColor: '#CCCCCC',
               color: 'black',
               border: '3px solid black',
               borderRadius: '4px',

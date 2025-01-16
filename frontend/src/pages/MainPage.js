@@ -568,13 +568,8 @@ export default function MainPage() {
               selectedPID={selectedPID}
               isEditing={true}
               submitButtonText="Save"
+              onCancel={() => setEditingVariable(null)}
             />
-            <button 
-              onClick={() => setEditingVariable(null)}
-              style={{ marginTop: '10px', padding: '5px 10px' }}
-            >
-              Cancel
-            </button>
           </div>
         )}
       </div>
