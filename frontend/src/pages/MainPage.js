@@ -556,8 +556,9 @@ export default function MainPage() {
             transform: 'translate(-50%, -50%)',
             backgroundColor: '#FFFFFF',
             padding: '20px',
-            borderRadius: '4px',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+            borderRadius: '12px',
+            border: '3px solid black',
+            boxShadow: '5px 5px 10px rgb(0, 0, 0)',
             zIndex: 1000,
             width: '400px'
           }}>
@@ -613,7 +614,7 @@ export default function MainPage() {
           </a>
         </div>
         <div style={{ fontSize: '12px', color: '#666' }}>
-          Version 1.1.0
+          Version 1.1.1
         </div>
       </div>
     </>
