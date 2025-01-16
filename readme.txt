@@ -1,28 +1,11 @@
-go to back end folder and npm start
-go to front end folder and npm start
+# Version Log
 
-ajhellquist GiDuWXYsi2Gg43wJ cluster0
+## Version 1.1.1
 
-connection string
-mongodb+srv://ajhellquist:GiDuWXYsi2Gg43wJ@cluster0.jsqhw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+### Enhancements
+- Added shadowing on the "Edit Variable" box to match the rest of the app
+- Added a new cancel button on the "Edit Variable" box 
 
-Dynamic Input: Boolean A: False [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/80723/elements?id=1903925]
-Dynamic Input: Boolean A: True [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/80723/elements?id=1903924]
-Dynamic Input: Boolean B: False [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/80732/elements?id=1903925]
-Dynamic Input: Boolean B: False [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/80732/elements?id=1903924]
-Dynamic Input: EAC Method: Allocated Cost [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/3482464/elements?id=1982932]
-Dynamic Input: EAC Method: Allocated Hours [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/3482464/elements?id=1982933]
-Dynamic Input: EAC Method: Scheduled Cost [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/3482464/elements?id=1982934]
-Dynamic Input: EAC Method: Scheduled Hours [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/3482464/elements?id=1982935]
-Dynamic Input: Option: A [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/80729/elements?id=1903926]
-Dynamic Input: Option: B [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/80729/elements?id=1903927]
-Dynamic Input: Option: C [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/80729/elements?id=1903928]
-Dynamic Input: Option: D [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/80729/elements?id=1903929]
-
-project: [/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/4040/elements?id=642300 ]
-
-[/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/456/elements?id=123]
-
-[/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/4042/elements?id=1949857 ]
-
-[/gdc/md/vyfe74jrhva0hwwcm30y9m8enafaeag9/obj/4042/elements?id=1949857
+### Bug Fixes
+- Fixed a bug where attribute values added through the CSV uploader were errantly putting spaces into the generated URI rendering them invalid in GoodData
+- Fixed a bug where the Add New Variable section would send the new variable to local server instead of the hosted server
