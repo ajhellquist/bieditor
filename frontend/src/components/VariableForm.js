@@ -44,7 +44,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
     try {
       // Construct API endpoint based on create/edit mode
       const token = localStorage.getItem('token');
-      const url = `http://localhost:4000/variables/${selectedPID._id}${
+      const url = `${process.env.REACT_APP_API_URL}/variables/${selectedPID._id}${
         isEditing ? `/${initialData._id}` : ''
       }`;
       
