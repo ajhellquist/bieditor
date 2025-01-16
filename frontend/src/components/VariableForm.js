@@ -223,10 +223,11 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             border: '3px solid black',
             borderRadius: '4px',
             cursor: 'pointer',
-            marginBottom: '10px'
+            marginBottom: '10px',
+            height: '40px'
           }}
         >
-          {submitButtonText}
+          {submitButtonText || 'Save'}
         </button>
 
         {/* Cancel button */}
@@ -236,11 +237,12 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
           style={{ 
             width: '100%', 
             padding: '8px',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: '#CCCCCC',
             color: 'black',
             border: '3px solid black',
             borderRadius: '4px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            height: '40px'
           }}
         >
           Cancel
