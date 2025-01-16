@@ -27,8 +27,30 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       setError('Please select a CSV file');
       setFile(null);
     } else {
+      // Clean the CSV data before setting the file
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const csvContent = event.target.result;
+        // Split into lines and process
+        const lines = csvContent.split('\n');
+        const header = lines[0];
+        // Process all lines after header
+        const cleanedLines = lines.slice(1).map(line => {
+          const columns = line.split(',');
+          if (columns.length >= 4 && columns[1].trim() === 'Attribute Value') {
+            // Trim whitespace from elementId for attribute values
+            columns[3] = columns[3].trim();
+          }
+          return columns.join(',');
+        });
+        
+        // Reconstruct CSV with cleaned data
+        const cleanedCSV = [header, ...cleanedLines].join('\n');
+        const cleanedFile = new File([cleanedCSV], selectedFile.name, { type: 'text/csv' });
+        setFile(cleanedFile);
+      };
+      reader.readAsText(selectedFile);
       setError('');
-      setFile(selectedFile);
     }
   };
 
