@@ -221,11 +221,31 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
             color: 'black',
             border: '3px solid black',
             borderRadius: '4px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            marginBottom: '10px'
           }}
         >
           {submitButtonText || (isEditing ? 'Save' : 'Add Variable')}
         </button>
+
+        {/* Cancel button - only show in edit mode */}
+        {isEditing && (
+          <button 
+            type="button"
+            onClick={() => onVariableAdded(null)}
+            style={{ 
+              width: '100%', 
+              padding: '8px',
+              backgroundColor: '#E0E0E0',
+              color: 'black',
+              border: '3px solid black',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Cancel
+          </button>
+        )}
       </form>
     </div>
   );
