@@ -499,7 +499,7 @@ export default function MainPage() {
                               cursor: 'pointer'
                             }}
                           >
-                            🗑
+                            ␡
                           </button>
                         </div>
                       </div>
