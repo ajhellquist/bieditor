@@ -82,7 +82,7 @@ function LoginPage() {
             objectFit: 'cover'
           }}
         >
-          <source src={require('../assets/preview.mp4')} type="video/mp4" />
+          <source src={require('../assets/previewVideo.mp4')} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>
