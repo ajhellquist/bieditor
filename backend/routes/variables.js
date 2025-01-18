@@ -12,7 +12,17 @@ const upload = multer({ dest: 'uploads/' });
 
 // Add CORS middleware specifically for this route
 router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', ['https://bieditor-git-main-ajhellquists-projects.vercel.app', 'https://www.maqlexpress.com']);
+  const allowedOrigins = [
+    'https://bieditor-git-main-ajhellquists-projects.vercel.app',
+    'https://www.maqlexpress.com',
+    'http://localhost:3000'
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
