@@ -480,7 +480,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
                       : (isMultiSelected ? '#f0f0f0' : 'white'),
                   color: getVariableColor(variable.type),
                   borderBottom: '1px solid #eee',
-                  fontSize: '10px'
+                  fontSize: '12px'
                 }}
               >
                 {variable.name}
