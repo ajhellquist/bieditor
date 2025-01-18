@@ -114,6 +114,11 @@ export default function MainPage() {
    * @param {string} variableId - The ID of the variable to delete
    */
   const handleDeleteVariable = async (variableId) => {
+    // Add confirmation dialog
+    if (!window.confirm('Are you sure you want to delete this variable?')) {
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       await axios.delete(
