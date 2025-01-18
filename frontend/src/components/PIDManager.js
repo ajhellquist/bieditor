@@ -1,5 +1,5 @@
 // Component for managing Project IDs (PIDs), including selection, addition, and deletion
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, selectedPID }) {
   // State management for component
@@ -7,6 +7,26 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
   const [newPIDName, setNewPIDName] = useState('');         // Stores new project name input
   const [newPIDValue, setNewPIDValue] = useState('');       // Stores new PID input
   const [showDropdown, setShowDropdown] = useState(false);  // Controls visibility of PID selection dropdown
+
+  // Add ref for the dropdown container
+  const dropdownRef = useRef(null);
+
+  // Add click outside handler
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+
+    // Add event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    // Cleanup
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Debug logging for PID updates and selection changes
   useEffect(() => {
@@ -46,7 +66,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
       alignItems: 'flex-start'
     }}>
       {/* PID Selection Dropdown Container */}
-      <div style={{ 
+      <div ref={dropdownRef} style={{ 
         width: '1000px',
         position: 'relative' 
       }}>
