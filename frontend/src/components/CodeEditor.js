@@ -477,10 +477,10 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
                     // If it's also multi-selected, highlight in #b3e5fc
                     index === selectedIndex
                       ? '#f0f0f0'
-                      : (isMultiSelected ? '#b3e5fc' : 'white'),
+                      : (isMultiSelected ? '#f0f0f0' : 'white'),
                   color: getVariableColor(variable.type),
                   borderBottom: '1px solid #eee',
-                  fontSize: '14px'
+                  fontSize: '10px'
                 }}
               >
                 {variable.name}
@@ -488,7 +488,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             );
           })
         ) : (
-          <div style={{ padding: '8px 10px', color: '#666', fontSize: '14px' }}>
+          <div style={{ padding: '8px 10px', color: '#666', fontSize: '10px' }}>
             {currentWord ? 'No matches found' : 'Start typing to see suggestions'}
           </div>
         )}
