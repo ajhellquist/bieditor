@@ -69,7 +69,7 @@ function LoginPage() {
       <div style={{ width: 300 }}>
         {/* Logo image */}
         <img 
-          src={require('../assets/logo.png')}
+          src={require('../assets/MAQLExpressLogo.png')}
           alt="MAQL Express Editor Logo"
           style={{
             width: '100px',
