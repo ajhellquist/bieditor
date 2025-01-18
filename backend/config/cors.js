@@ -1,6 +1,7 @@
 module.exports = {
   origin: [
     'https://bieditor-git-main-ajhellquists-projects.vercel.app',
+    'www.maqlexpress.com',
     'http://localhost:3000'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

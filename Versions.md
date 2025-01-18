@@ -7,6 +7,7 @@
 - Updated multiselect coloring to gray
 - Updated X buttons to delete PID and variables to now say "Del" to reflect deletion instead of cancellation
 - Added a confirmation box when deleting a single variable
+- Added functionality on drop down menus to always close when you click outside of them
 
 ### Bug Fixes
 - Updated multi-select button from Alt to Command/Ctrl for a more natural multi-select experience that matches common OS conventions

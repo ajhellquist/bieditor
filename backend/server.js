@@ -17,7 +17,7 @@ const app = express();
 
 // CORS Configuration
 app.use(cors({
-  origin: ['https://bieditor-git-main-ajhellquists-projects.vercel.app', 'http://localhost:3000'],
+  origin: ['https://bieditor-git-main-ajhellquists-projects.vercel.app', 'maqlexpress.com', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -26,7 +26,7 @@ app.use(cors({
 
 // Handle preflight requests
 app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'https://bieditor-git-main-ajhellquists-projects.vercel.app');
+  res.header('Access-Control-Allow-Origin', 'https://bieditor-git-main-ajhellquists-projects.vercel.app', 'www.maqlexpress.com');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
