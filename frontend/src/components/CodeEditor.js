@@ -255,7 +255,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   // Handles suggestion clicks with Alt-key support for multi-select
   const handleSuggestionClick = (e, variable) => {
     e.preventDefault();
-    if (e.altKey) {
+    if (e.metaKey || e.ctrlKey) {
       toggleMultiSelect(variable);
       return;
     }
@@ -488,7 +488,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             );
           })
         ) : (
-          <div style={{ padding: '8px 10px', color: '#666', fontSize: '10px' }}>
+          <div style={{ padding: '8px 10px', color: '#666', fontSize: '14px' }}>
             {currentWord ? 'No matches found' : 'Start typing to see suggestions'}
           </div>
         )}
