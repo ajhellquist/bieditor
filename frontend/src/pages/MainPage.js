@@ -322,17 +322,28 @@ export default function MainPage() {
         paddingLeft: '5%',
         paddingRight: '5%'
       }}>
-        <h1 style={{
-          fontSize: '36px',
-          fontWeight: '400',
-          margin: 0,
-          padding: 0,
-          textAlign: 'left'
-        }}>
-          <span style={{ color: '#FFC380' }}>MAQL</span>
-          <span style={{ color: '#333' }}> Express</span>
-          <span style={{ color: '#333' }}> Editor</span>
-        </h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img 
+            src={require('../assets/MAQLExpressLogo.png')}
+            alt="MAQL Express Editor Logo"
+            style={{
+              height: '36px', // Match the font size of the banner text
+              width: 'auto',
+              objectFit: 'contain'
+            }}
+          />
+          <h1 style={{
+            fontSize: '36px',
+            fontWeight: '400',
+            margin: 0,
+            padding: 0,
+            textAlign: 'left'
+          }}>
+            <span style={{ color: '#FFC380' }}>MAQL</span>
+            <span style={{ color: '#333' }}> Express</span>
+            <span style={{ color: '#333' }}> Editor</span>
+          </h1>
+        </div>
 
         <div style={{ 
           display: 'flex', 
