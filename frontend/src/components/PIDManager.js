@@ -149,7 +149,7 @@ export default function PIDManager({ pids, onPIDSelect, onPIDAdd, onPIDDelete, s
                       marginLeft: '8px'
                     }}
                   >
-                    ␡
+                    Del
                   </button>
                 </div>
               );

@@ -499,7 +499,7 @@ export default function MainPage() {
                               cursor: 'pointer'
                             }}
                           >
-                            ␡
+                            Del
                           </button>
                         </div>
                       </div>
