@@ -53,6 +53,24 @@ export default function MainPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (pids.length > 0) {
+      const lastSelectedPIDId = localStorage.getItem('lastSelectedPID');
+      if (lastSelectedPIDId) {
+        const foundPID = pids.find(pid => pid._id === lastSelectedPIDId);
+        if (foundPID) {
+          setSelectedPID(foundPID);
+        }
+      }
+    }
+  }, [pids]);
+
+  useEffect(() => {
+    if (selectedPID?._id) {
+      localStorage.setItem('lastSelectedPID', selectedPID._id);
+    }
+  }, [selectedPID]);
+
   /**
    * Fetches variables associated with the selected PID
    * @param {string} pidId - The ID of the selected PID
