@@ -61,25 +61,30 @@ function LoginPage() {
       bottom: 0,
       overflow: 'hidden'
     }}>
-      {/* Background GIF container */}
+      {/* Background Video container */}
       <div style={{
         position: 'absolute',
         top: '50%',
         left: '50%',
-        width: '95%',
+        width: '70%',
         height: '70%',
         transform: 'translate(-50%, -50%)',
         zIndex: 1
       }}>
-        <img 
-          src={require('../assets/MEpreview.gif')}
-          alt="Application Preview"
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           style={{
             width: '100%',
             height: '100%',
             objectFit: 'cover'
           }}
-        />
+        >
+          <source src={require('../assets/preview.mp4')} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
 
       {/* Semi-transparent overlay */}
