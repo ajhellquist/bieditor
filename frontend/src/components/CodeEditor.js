@@ -453,7 +453,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }}>
       {/* Suggestions Panel */}
       <div style={{
-        width: '15%',
+        width: '20%',
         border: '1px solid black',
         borderRadius: '4px',
         backgroundColor: 'white',
@@ -479,7 +479,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
                       ? '#f0f0f0'
                       : (isMultiSelected ? '#b3e5fc' : 'white'),
                   color: getVariableColor(variable.type),
-                  borderBottom: '1px solid #eee'
+                  borderBottom: '1px solid #eee',
+                  fontSize: '14px'
                 }}
               >
                 {variable.name}
@@ -487,7 +488,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             );
           })
         ) : (
-          <div style={{ padding: '8px 10px', color: '#666' }}>
+          <div style={{ padding: '8px 10px', color: '#666', fontSize: '14px' }}>
             {currentWord ? 'No matches found' : 'Start typing to see suggestions'}
           </div>
         )}
