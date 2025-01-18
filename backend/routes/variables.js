@@ -75,7 +75,6 @@ router.post('/:pidId', auth, async (req, res) => {
   try {
     const { name, value, type, elementId } = req.body;
     
-    // Verify PID belongs to user
     const pid = await PID.findOne({
       _id: req.params.pidId,
       userId: req.user.userId
@@ -83,6 +82,19 @@ router.post('/:pidId', auth, async (req, res) => {
 
     if (!pid) {
       return res.status(404).json({ message: 'PID not found' });
+    }
+
+    // Check for existing variable with same name
+    const existingVariable = await Variable.findOne({
+      pidId: req.params.pidId,
+      name: name
+    });
+
+    if (existingVariable) {
+      return res.status(409).json({ 
+        message: 'Variable with this name already exists',
+        duplicate: true
+      });
     }
 
     const variable = new Variable({
@@ -181,30 +193,39 @@ router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
       return res.status(404).json({ message: 'PID not found' });
     }
 
-    console.log('File upload request received');
-    console.log('Headers:', req.headers);
-    console.log('File:', req.file);
-    
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    // Process the uploaded file here
+    // Get existing variables for this PID
+    const existingVariables = await Variable.find({ pidId: req.params.pidId });
+    
     const filePath = req.file.path;
     const fileContent = fs.readFileSync(filePath, 'utf-8');
     
-    // Parse CSV and create variables
     const lines = fileContent.split('\n');
     const headers = lines[0].split(',');
     const variables = [];
+    const skippedDuplicates = [];
 
     for (let i = 1; i < lines.length; i++) {
       if (!lines[i].trim()) continue;
       
       const values = lines[i].split(',');
+      const variableName = values[0].trim();
+      
+      // Check if variable with same name already exists
+      const isDuplicate = existingVariables.some(v => v.name === variableName) ||
+                         variables.some(v => v.name === variableName);
+      
+      if (isDuplicate) {
+        skippedDuplicates.push(variableName);
+        continue;
+      }
+
       const variable = {
         pidId: req.params.pidId,
-        name: values[0],
+        name: variableName,
         type: values[1],
         value: values[2],
         elementId: values[3] || 'NA'
@@ -215,10 +236,15 @@ router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
       variables.push(newVariable);
     }
 
-    // Clean up the uploaded file
     fs.unlinkSync(filePath);
 
-    res.status(201).json(variables);
+    res.status(201).json({
+      variables,
+      skippedDuplicates,
+      message: skippedDuplicates.length > 0 
+        ? `Added ${variables.length} variables. Skipped ${skippedDuplicates.length} duplicates.`
+        : `Added ${variables.length} variables.`
+    });
   } catch (error) {
     console.error('Upload error:', error);
     res.status(500).json({ 
