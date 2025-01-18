@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import CodeEditor from '../components/CodeEditor';
 import VariableForm from '../components/VariableForm';
@@ -21,6 +21,7 @@ export default function MainPage() {
   const [metricsCount, setMetricsCount] = useState(0);
   const [user, setUser] = useState({ firstName: '', lastName: '' });
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     fetchPIDs();
@@ -37,6 +38,19 @@ export default function MainPage() {
 
   useEffect(() => {
     fetchMetricsCount();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   /**
@@ -313,7 +327,7 @@ export default function MainPage() {
           }}>
             Welcome, {user.firstName} {user.lastName}
           </span>
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative' }} ref={dropdownRef}>
             <FaUserCircle 
               size={30} 
               onClick={() => setShowDropdown(!showDropdown)}
