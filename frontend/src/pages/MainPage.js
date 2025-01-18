@@ -614,7 +614,7 @@ export default function MainPage() {
           </a>
         </div>
         <div style={{ fontSize: '12px', color: '#666' }}>
-          Version 1.1.1
+          Version 1.2.0
         </div>
       </div>
     </>

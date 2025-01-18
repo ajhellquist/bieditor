@@ -1,6 +1,16 @@
 # Version Log
 
-## Version 1.1.1
+## Version 1.2.0 - Jan 18 2025
+
+### Enhancements
+- Made the suggestion panel wider and reduced text size to fit more variables in a single view
+- Updated multiselect coloring to gray
+- Updated X buttons to delete PID and variables to now say "Del" to reflect deletion instead of cancellation
+
+### Bug Fixes
+- Updated multi-select button from Alt to Command/Ctrl for a more natural multi-select experience that matches common OS conventions
+
+## Version 1.1.1 - Jan 16 2025
 
 ### Enhancements
 - Added shadowing on the "Edit Variable" box to match the rest of the app
