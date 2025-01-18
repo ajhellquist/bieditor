@@ -3,14 +3,17 @@
 ## Version 1.2.0 - Jan 18 2025
 
 ### Enhancements
+- Updated URL to MAQLExpress.com
 - Made the suggestion panel wider and reduced text size to fit more variables in a single view
 - Updated multiselect coloring to gray
 - Updated X buttons to delete PID and variables to now say "Del" to reflect deletion instead of cancellation
 - Added a confirmation box when deleting a single variable
 - Added functionality on drop down menus to always close when you click outside of them
+- Added functionality to not include duplicate variables when adding solo or via CSV Upload
 
 ### Bug Fixes
 - Updated multi-select button from Alt to Command/Ctrl for a more natural multi-select experience that matches common OS conventions
+- Fixed a bug that would cause the PID you are selected on to deselect when the page is refreshed or loaded
 
 ## Version 1.1.1 - Jan 16 2025
 

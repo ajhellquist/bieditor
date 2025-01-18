@@ -54,109 +54,152 @@ function LoginPage() {
 
   return (
     <div style={{ 
-      backgroundColor: '#FFFDF8',
-      minHeight: '100vh',
       position: 'fixed',
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center'
+      overflow: 'hidden'
     }}>
-      {/* Authentication form container */}
-      <div style={{ width: 300 }}>
-        {/* Logo image */}
+      {/* Background GIF container */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 1
+      }}>
         <img 
-          src={require('../assets/MAQLExpressLogo.png')}
-          alt="MAQL Express Editor Logo"
+          src={require('../assets/MEpreview.gif')}
+          alt="Application Preview"
           style={{
-            width: '100px',
-            height: 'auto',
-            display: 'block',
-            margin: '0 auto 20px auto'
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
           }}
         />
-        
-        {/* Application title/logo */}
-        <h1 style={{
-          fontSize: '36px',
-          fontWeight: '400',
-          margin: 0,
-          padding: 0,
-          textAlign: 'center',
-          marginBottom: '20px'
+      </div>
+
+      {/* Semi-transparent overlay */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(255, 253, 248, 0.85)',
+        zIndex: 2
+      }} />
+
+      {/* Login form container */}
+      <div style={{
+        position: 'relative',
+        zIndex: 3,
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        {/* Form container */}
+        <div style={{ 
+          width: 300,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          padding: '20px',
+          borderRadius: '8px',
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'
         }}>
-          <span style={{ color: '#FFC380' }}>MAQL</span>
-          <span style={{ color: '#333' }}> Express</span>
-          <span style={{ color: '#333' }}> Editor</span>
-        </h1>
-
-        {/* Dynamic form header based on current mode */}
-        <h2>{mode === 'login' ? 'Login' : 'Signup'}</h2>
-
-        {/* Error message display */}
-        {error && <div style={{ color: 'red', marginBottom: 10 }}>{error}</div>}
-
-        {/* Authentication form */}
-        <form onSubmit={handleSubmit}>
-          {/* Conditional rendering of name fields for signup mode */}
-          {mode === 'signup' && (
-            <>
-              <input 
-                type="text"
-                value={firstName}
-                placeholder="First Name"
-                onChange={e => setFirstName(e.target.value)}
-                style={{ width: '100%', marginBottom: 10 }}
-                required
-              />
-              <input 
-                type="text"
-                value={lastName}
-                placeholder="Last Name"
-                onChange={e => setLastName(e.target.value)}
-                style={{ width: '100%', marginBottom: 10 }}
-                required
-              />
-            </>
-          )}
+          {/* Logo image */}
+          <img 
+            src={require('../assets/MAQLExpressLogo.png')}
+            alt="MAQL Express Editor Logo"
+            style={{
+              width: '100px',
+              height: 'auto',
+              display: 'block',
+              margin: '0 auto 20px auto'
+            }}
+          />
           
-          {/* Common authentication fields */}
-          <input 
-            type="email"
-            value={email}
-            placeholder="Email"
-            onChange={e => setEmail(e.target.value)}
-            style={{ width: '100%', marginBottom: 10 }}
-            required
-          />
-          <input
-            type="password"
-            value={password}
-            placeholder="Password"
-            onChange={e => setPassword(e.target.value)}
-            style={{ width: '100%', marginBottom: 10 }}
-            required
-          />
+          {/* Application title/logo */}
+          <h1 style={{
+            fontSize: '36px',
+            fontWeight: '400',
+            margin: 0,
+            padding: 0,
+            textAlign: 'center',
+            marginBottom: '20px'
+          }}>
+            <span style={{ color: '#FFC380' }}>MAQL</span>
+            <span style={{ color: '#333' }}> Express</span>
+            <span style={{ color: '#333' }}> Editor</span>
+          </h1>
 
-          {/* Submit button with dynamic text based on mode */}
+          {/* Dynamic form header based on current mode */}
+          <h2>{mode === 'login' ? 'Login' : 'Signup'}</h2>
+
+          {/* Error message display */}
+          {error && <div style={{ color: 'red', marginBottom: 10 }}>{error}</div>}
+
+          {/* Authentication form */}
+          <form onSubmit={handleSubmit}>
+            {/* Conditional rendering of name fields for signup mode */}
+            {mode === 'signup' && (
+              <>
+                <input 
+                  type="text"
+                  value={firstName}
+                  placeholder="First Name"
+                  onChange={e => setFirstName(e.target.value)}
+                  style={{ width: '100%', marginBottom: 10 }}
+                  required
+                />
+                <input 
+                  type="text"
+                  value={lastName}
+                  placeholder="Last Name"
+                  onChange={e => setLastName(e.target.value)}
+                  style={{ width: '100%', marginBottom: 10 }}
+                  required
+                />
+              </>
+            )}
+            
+            {/* Common authentication fields */}
+            <input 
+              type="email"
+              value={email}
+              placeholder="Email"
+              onChange={e => setEmail(e.target.value)}
+              style={{ width: '100%', marginBottom: 10 }}
+              required
+            />
+            <input
+              type="password"
+              value={password}
+              placeholder="Password"
+              onChange={e => setPassword(e.target.value)}
+              style={{ width: '100%', marginBottom: 10 }}
+              required
+            />
+
+            {/* Submit button with dynamic text based on mode */}
+            <button 
+              type="submit"
+              style={{ width: '100%', border: '3px solid black', borderRadius: '4px', padding: '5px', marginBottom: 10 }}
+            >
+              {mode === 'login' ? 'Login' : 'Sign Up'}
+            </button>
+          </form>
+
+          {/* Mode toggle button to switch between login and signup */}
           <button 
-            type="submit"
-            style={{ width: '100%', border: '3px solid black', borderRadius: '4px', padding: '5px', marginBottom: 10 }}
+            onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+            style={{ width: '100%', border: '3px solid black', borderRadius: '4px', padding: '5px' }}
           >
-            {mode === 'login' ? 'Login' : 'Sign Up'}
+            Switch to {mode === 'login' ? 'Signup' : 'Login'}
           </button>
-        </form>
-
-        {/* Mode toggle button to switch between login and signup */}
-        <button 
-          onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-          style={{ width: '100%', border: '3px solid black', borderRadius: '4px', padding: '5px' }}
-        >
-          Switch to {mode === 'login' ? 'Signup' : 'Login'}
-        </button>
+        </div>
       </div>
     </div>
   );
