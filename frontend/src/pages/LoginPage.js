@@ -64,10 +64,11 @@ function LoginPage() {
       {/* Background GIF container */}
       <div style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '50%',
-        height: '50%',
+        top: '50%',
+        left: '50%',
+        width: '70%',
+        height: '70%',
+        transform: 'translate(-50%, -50%)',
         zIndex: 1
       }}>
         <img 
