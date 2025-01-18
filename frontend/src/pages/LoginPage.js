@@ -67,6 +67,18 @@ function LoginPage() {
     }}>
       {/* Authentication form container */}
       <div style={{ width: 300 }}>
+        {/* Logo image */}
+        <img 
+          src={require('../assets/logo.png')}
+          alt="MAQL Express Editor Logo"
+          style={{
+            width: '100px',
+            height: 'auto',
+            display: 'block',
+            margin: '0 auto 20px auto'
+          }}
+        />
+        
         {/* Application title/logo */}
         <h1 style={{
           fontSize: '36px',
