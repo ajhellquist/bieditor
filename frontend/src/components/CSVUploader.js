@@ -121,8 +121,14 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
         withCredentials: false
       });
 
-      if (onVariablesAdded) {
-        onVariablesAdded(response.data);
+      // Check if we have a message about skipped duplicates
+      if (response.data.message) {
+        setError(response.data.message); // Using setError to display the info message
+      }
+
+      // Make sure we're passing the variables array to the callback
+      if (onVariablesAdded && Array.isArray(response.data.variables)) {
+        onVariablesAdded(response.data.variables);
       }
 
       setFile(null);
