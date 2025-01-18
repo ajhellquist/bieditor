@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 // Component for creating and editing variables associated with a PID
@@ -17,6 +17,23 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
   const [elementId, setElementId] = useState(initialData?.elementId || '');
   const [error, setError] = useState('');
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
+  
+  // Add ref for the type dropdown container
+  const typeDropdownRef = useRef(null);
+
+  // Add click outside handler
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (typeDropdownRef.current && !typeDropdownRef.current.contains(event.target)) {
+        setShowTypeDropdown(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Available options for variable type selection
   const typeOptions = ["Metric", "Attribute", "Attribute Value"];
@@ -124,7 +141,7 @@ function VariableForm({ onVariableAdded, selectedPID, initialData, isEditing, su
         </div>
 
         {/* Custom dropdown for variable type selection */}
-        <div style={{ marginBottom: 10, position: 'relative' }}>
+        <div ref={typeDropdownRef} style={{ marginBottom: 10, position: 'relative' }}>
           <div 
             onClick={() => setShowTypeDropdown(!showTypeDropdown)}
             style={{
