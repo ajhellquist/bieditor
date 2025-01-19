@@ -66,8 +66,8 @@ function LoginPage() {
         position: 'absolute',
         top: '50%',
         left: '50%',
-        width: '70%',
-        height: '70%',
+        width: '90%',
+        height: '90%',
         transform: 'translate(-50%, -50%)',
         zIndex: 1
       }}>
