@@ -79,7 +79,7 @@ function LoginPage() {
           style={{
             width: '100%',
             height: '100%',
-            objectFit: 'cover'
+            objectFit: 'contain'
           }}
         >
           <source src={require('../assets/previewVideo.mp4')} type="video/mp4" />
