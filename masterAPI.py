@@ -23,7 +23,7 @@ LOGIN_PAYLOAD = {
     }
 }
 
-# Patterns to skip for attribute names
+# Patterns that skip attribute values (NOT the attribute row).
 SKIP_PATTERNS = [
     "Date (",
     "Day of Week (Mon-Sun) (",
@@ -44,15 +44,21 @@ SKIP_PATTERNS = [
     "Quarter/Year (",
     "Year (",
     ": ID",
+    ": Id",
     ": Name"
 ]
 
-def should_skip_attribute(attr_title: str) -> bool:
-    """Return True if 'attr_title' starts with any of the date/time patterns in SKIP_PATTERNS."""
+
+def should_skip_values(attr_title: str) -> bool:
+    """
+    Return True if 'attr_title' starts with any pattern,
+    meaning we won't fetch or write attribute values for it.
+    """
     for pattern in SKIP_PATTERNS:
         if attr_title.startswith(pattern):
             return True
     return False
+
 
 # ------------------------------------------------------------------------------
 # 2. CREATE A SESSION & LOG IN
@@ -74,7 +80,7 @@ with requests.Session() as session:
     data = resp.json()
     attributes = data["query"]["entries"]  # each has "link", "title", etc.
 
-    # If CSV exists, remove so we start fresh
+    # If CSV exists, remove it so we start fresh
     if os.path.exists(CSV_FILENAME):
         os.remove(CSV_FILENAME)
 
@@ -83,84 +89,71 @@ with requests.Session() as session:
         writer = csv.writer(csvfile)
         writer.writerow(["name", "type", "value", "elementId"])  # columns
 
-        # Filter out attributes whose name starts with any skip pattern
-        filtered_attributes = []
+        # --------------------------------------------------------------------------
+        # 4. WRITE ALL ATTRIBUTES INTO CSV
+        # --------------------------------------------------------------------------
         for attr in attributes:
             attr_title = attr.get("title", "")
-            if should_skip_attribute(attr_title):
-                # Skip date/time-like attribute
-                continue
-            
-            # Otherwise, store it & write the "attribute" row
-            filtered_attributes.append(attr)
+            link = attr.get("link", "")
+            obj_id = link.split("/obj/")[-1]  # numeric part
 
-            link = attr.get("link")
-            obj_id = link.split("/obj/")[-1]
+            # Write the attribute row: name => attribute title
             writer.writerow([attr_title, "attribute", obj_id, "NA"])
 
-        # ------------------------------------------------------------------------------
-        # 4. For each "kept" attribute, fetch distinct values if total records <= 20
-        # ------------------------------------------------------------------------------
-        for attr in filtered_attributes:
-            attr_title = attr.get("title", "")
-            link = attr.get("link", "")
-            obj_id = link.split("/obj/")[-1]
+            # If skip-values pattern => do NOT fetch attribute values
+            if should_skip_values(attr_title):
+                continue
 
-            # 4A) Retrieve the attribute object
+            # ----------------------------------------------------------------------
+            # 5. Fetch attribute values if not skipping
+            # ----------------------------------------------------------------------
+            # Retrieve the attribute object
             attribute_url = f"{GOODDATA_HOST}{link}"
-            resp = session.get(attribute_url)
-            resp.raise_for_status()
-            attribute_data = resp.json()
+            resp_attr = session.get(attribute_url)
+            resp_attr.raise_for_status()
+            attribute_data = resp_attr.json()
 
             display_forms = attribute_data["attribute"]["content"].get("displayForms", [])
             if not display_forms:
-                continue  # no labels => skip
+                continue
 
-            # 4B) For each label, check the total "records"
+            # For each label, fetch distinct elements
             for dform in display_forms:
-                label_uri = dform["meta"]["uri"]  # e.g. /gdc/md/<proj>/obj/1234
-                label_elements_url = f"{GOODDATA_HOST}{label_uri}/elements?limit=1&offset=0"
+                label_uri = dform["meta"]["uri"]  # e.g. /gdc/md/.../obj/1234
+                label_elements_url = f"{GOODDATA_HOST}{label_uri}/elements"
 
-                # First, do a 'light' request just to see how many total records
-                r = session.get(label_elements_url)
-                r.raise_for_status()
-                elem_data = r.json()
-
-                elements_info = elem_data["attributeElements"]
-                # overall record count for the entire label
-                # stored in elementsMeta["records"]
-                record_count = int(elements_info["elementsMeta"]["records"])
-
-                if record_count > 20:
-                    # skip fetching all values
-                    continue
-
-                # If record_count <= 20, do paging & fetch them all
                 offset = 0
                 limit = 100
                 while True:
-                    # Build full paging URL
-                    page_url = f"{GOODDATA_HOST}{label_uri}/elements?limit={limit}&offset={offset}"
-                    pr = session.get(page_url)
-                    pr.raise_for_status()
-                    page_data = pr.json()
+                    page_url = f"{label_elements_url}?limit={limit}&offset={offset}"
+                    r = session.get(page_url)
+                    r.raise_for_status()
+                    page_data = r.json()
 
-                    page_elements_info = page_data["attributeElements"]
-                    items = page_elements_info["elements"]
-                    paging = page_elements_info["paging"]
+                    elements_info = page_data["attributeElements"]
+                    items = elements_info["elements"]
+                    paging = elements_info["paging"]
                     total_count = int(paging["total"])
 
                     for elem in items:
                         val_title = elem["title"]
                         val_uri = elem["uri"]
 
-                        # parse element ID from "?id="
+                        # If attribute value name is blank, replace with "empty value"
+                        if not val_title.strip():
+                            val_title = "empty value"
+
+                        # The final "name" column => "AttributeTitle: ValueTitle"
+                        combined_name = f"{attr_title}: {val_title}"
+
+                        # parse the element ID from "?id="
                         if "?id=" in val_uri:
                             element_id = val_uri.split("?id=")[-1]
                         else:
                             element_id = "UNKNOWN"
 
-                        writer.writerow([val_title, "attribute value", obj_id, element_id])
+                        # CSV row => name, type=attribute value, value=obj_id, elementId=the element_id
+                        writer.writerow([combined_name, "attribute value", obj_id, element_id])
 
                     offset += len(items)
                     if offset >= total_count:
