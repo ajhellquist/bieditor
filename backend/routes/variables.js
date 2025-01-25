@@ -188,7 +188,7 @@ router.put('/:pidId/:variableId', auth, async (req, res) => {
 
 // Update the file upload route
 router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
-  // Get the origin from the request
+  // CORS handling from previous fix
   const origin = req.headers.origin;
   const allowedOrigins = [
     'https://bieditor-git-main-ajhellquists-projects.vercel.app',
@@ -196,7 +196,6 @@ router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
     'http://localhost:3000'
   ];
 
-  // Set the CORS header only if the origin is allowed
   if (allowedOrigins.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
   }
@@ -219,15 +218,19 @@ router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
 
     // Get existing variables for this PID
     const existingVariables = await Variable.find({ pidId: req.params.pidId });
+    const existingNames = new Set(existingVariables.map(v => v.name));
     
     const filePath = req.file.path;
     const fileContent = fs.readFileSync(filePath, 'utf-8');
-    
     const lines = fileContent.split('\n');
     const headers = lines[0].split(',');
+    
     const variables = [];
     const skippedDuplicates = [];
+    const BATCH_SIZE = 100; // Process 100 records at a time
+    let batch = [];
 
+    // Process records in batches
     for (let i = 1; i < lines.length; i++) {
       if (!lines[i].trim()) continue;
       
@@ -235,10 +238,7 @@ router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
       const variableName = values[0].trim();
       
       // Check if variable with same name already exists
-      const isDuplicate = existingVariables.some(v => v.name === variableName) ||
-                         variables.some(v => v.name === variableName);
-      
-      if (isDuplicate) {
+      if (existingNames.has(variableName)) {
         skippedDuplicates.push(variableName);
         continue;
       }
@@ -251,26 +251,44 @@ router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
         elementId: values[3] || 'NA'
       };
 
-      const newVariable = new Variable(variable);
-      await newVariable.save();
-      variables.push(newVariable);
+      batch.push(variable);
+
+      // When batch is full or it's the last record, save the batch
+      if (batch.length === BATCH_SIZE || i === lines.length - 1) {
+        try {
+          const savedVariables = await Variable.insertMany(batch, { ordered: false });
+          variables.push(...savedVariables);
+        } catch (error) {
+          console.error('Batch insert error:', error);
+          // Continue processing even if some records fail
+        }
+        batch = []; // Reset batch
+      }
     }
 
+    // Clean up the uploaded file
     fs.unlinkSync(filePath);
 
-    res.status(201).json({
+    // Send response
+    let message = variables.length > 0 ? 
+      `Successfully added ${variables.length} variables.` : 
+      'No new variables were added.';
+    
+    if (skippedDuplicates.length > 0) {
+      message += ` Skipped ${skippedDuplicates.length} duplicate variables.`;
+    }
+
+    res.json({ 
+      message, 
       variables,
-      skippedDuplicates,
-      message: skippedDuplicates.length > 0 
-        ? `Added ${variables.length} variables. Skipped ${skippedDuplicates.length} duplicates.`
-        : `Added ${variables.length} variables.`
+      skippedCount: skippedDuplicates.length 
     });
+
   } catch (error) {
     console.error('Upload error:', error);
     res.status(500).json({ 
-      message: error.message,
-      details: error.stack,
-      type: error.name
+      message: 'Error processing upload',
+      error: error.message 
     });
   }
 });

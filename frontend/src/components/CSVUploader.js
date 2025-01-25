@@ -93,6 +93,13 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       return;
     }
 
+    // Add file size check
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB limit
+    if (file.size > MAX_FILE_SIZE) {
+      setError('File size exceeds 10MB limit. Please split into smaller files.');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -118,6 +125,10 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
+        // Add timeout and max content length configs
+        timeout: 300000, // 5 minute timeout
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
         withCredentials: false
       });
 
@@ -144,6 +155,8 @@ function CSVUploader({ selectedPID, onVariablesAdded }) {
       
       if (err.response?.status === 401) {
         setError('Authentication failed. Please try logging in again.');
+      } else if (err.response?.status === 503) {
+        setError('Server is busy. Please try uploading a smaller file or try again later.');
       } else {
         setError(`Upload failed: ${err.response?.data?.message || err.message}`);
       }
