@@ -188,8 +188,18 @@ router.put('/:pidId/:variableId', auth, async (req, res) => {
 
 // Update the file upload route
 router.post('/:pidId/upload', auth, upload.single('file'), async (req, res) => {
-  // Add CORS headers explicitly
-  res.header('Access-Control-Allow-Origin', ['https://bieditor-git-main-ajhellquists-projects.vercel.app', 'https://www.maqlexpress.com']);
+  // Get the origin from the request
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    'https://bieditor-git-main-ajhellquists-projects.vercel.app',
+    'https://www.maqlexpress.com',
+    'http://localhost:3000'
+  ];
+
+  // Set the CORS header only if the origin is allowed
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
   res.header('Access-Control-Allow-Credentials', 'true');
   
   try {

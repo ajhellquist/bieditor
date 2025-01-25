@@ -2984,14 +2984,14 @@ Hours Actual,metric,4904,NA
 ͺHours Available [sum] - Scheduled,metric,4906,NA
 Invoice Amount,metric,4907,NA
 ͺDays Sales Outstanding [lift] (Invoice Project),metric,4908,NA
-"Invoice Amount: Expenses, Paid",metric,4941,NA
-"Invoice Amount: Expenses, Unpaid",metric,4942,NA
+Invoice Amount: Expenses Paid,metric,4941,NA
+Invoice Amount: Expenses Unpaid,metric,4942,NA
 Expenses: Uninvoiced,metric,4956,NA
 ͺDays Expense Open [lift] (Expense),metric,4957,NA
-"ͺExpenses Charged: Sum of Unpaid, Paid and Unbilled",metric,4959,NA
+ͺExpenses Charged: Sum of Unpaid Paid and Unbilled,metric,4959,NA
 Fees Actual,metric,4995,NA
 Fees Scheduled: Billable Tasks,metric,4996,NA
-"Cost, Projected: Billable Tasks",metric,4997,NA
+Cost Projected: Billable Tasks,metric,4997,NA
 Cost Actual,metric,4998,NA
 Margin %: Fees,metric,4999,NA
 ͺMargin (simple) Projected [%],metric,5000,NA
@@ -2999,7 +2999,7 @@ Margin %: Fees,metric,4999,NA
 ͺMargin (simple) Projected [sum],metric,5002,NA
 Hours Actual: Billable,metric,5041,NA
 Hours Actual: Non-Billable,metric,5042,NA
-"Fees Actual: T&M Tasks, Uninvoiced",metric,5043,NA
+Fees Actual: T&M Tasks Uninvoiced,metric,5043,NA
 Number of Tasks,metric,5044,NA
 ͺTasks [count]: Type is Task,metric,5045,NA
 Number of Tasks: Milestone,metric,5046,NA
@@ -3007,13 +3007,13 @@ Deliverables [count],metric,5047,NA
 ͺFilter Expense Date by Global Date,metric,5179,NA
 ͺProjects [count] (Participation),metric,5185,NA
 ͺProject Paid [sum],metric,5197,NA
-"Invoice Amount: Unpaid, Future",metric,5321,NA
-"Invoice Amount, Late Outstanding [sum]",metric,5322,NA
+Invoice Amount: Unpaid Future,metric,5321,NA
+Invoice Amount Late Outstanding [sum],metric,5322,NA
 Invoice Amount: Unpaid,metric,5323,NA
-"ͺInvoice Amount, Late Outstanding 1-30 [sum]",metric,5324,NA
-"ͺInvoice Amount, Late Outstanding 31-60 [sum]",metric,5325,NA
-"ͺInvoice Amount, Late Outstanding 61-90 [sum]",metric,5326,NA
-"ͺInvoice Amount, Late Outstanding 91+ [sum]",metric,5327,NA
+ͺInvoice Amount Late Outstanding 1-30 [sum],metric,5324,NA
+ͺInvoice Amount Late Outstanding 31-60 [sum],metric,5325,NA
+ͺInvoice Amount Late Outstanding 61-90 [sum],metric,5326,NA
+ͺInvoice Amount Late Outstanding 91+ [sum],metric,5327,NA
 Number of Users,metric,5423,NA
 ͺSnapshot [First in Period],metric,5732,NA
 ͺSnapshot [Last in Period],metric,5733,NA
@@ -3051,7 +3051,7 @@ Fees Actual: T&M Tasks,metric,7782,NA
 ͺ[Legacy]Utilization: Total,metric,7829,NA
 ͺWork Days in a Period [sum] - SAD,metric,7899,NA
 ͺ[Legacy]_Possible Workday Hours in a Period [sum] - SAD,metric,7902,NA
-"Fees Actual: Invoiced, Unpaid",metric,8024,NA
+Fees Actual: Invoiced Unpaid,metric,8024,NA
 Invoice Amount: Additional Items,metric,8031,NA
 ͺOpportunity cost: Non-Bill time x Default Rate,metric,8102,NA
 ͺOpportunity base (Kevin tinkering),metric,8106,NA
@@ -3071,7 +3071,7 @@ Task % Complete: Actual ÷ Estimated Hours,metric,8262,NA
 Number of Tasks: Past Due,metric,9213,NA
 ͺProjects [count] - Past Due,metric,9230,NA
 ͺAverage Billing Rate,metric,9243,NA
-"Bill Rate: Time Entries, Non-Billable & Billable",metric,9250,NA
+Bill Rate: Time Entries Non-Billable & Billable,metric,9250,NA
 Hours ETC: Scheduled,metric,9271,NA
 Hours EAC: Actual + Scheduled,metric,9285,NA
 ͺHours EAC: via % Complete,metric,9286,NA
@@ -3080,24 +3080,24 @@ Hours EAC: Actual + Scheduled,metric,9285,NA
 ͺWIP Outstanding 61-90 [sum],metric,9527,NA
 ͺWIP Outstanding 90+ [sum],metric,9528,NA
 Invoice Amount: Fixed Fee,metric,9587,NA
-"Fees Actual: Invoiced, Paid",metric,9924,NA
+Fees Actual: Invoiced Paid,metric,9924,NA
 Fees Actual: Fixed Fee Tasks,metric,9984,NA
-"Invoice Amount: Fixed Fee, Unpaid",metric,10091,NA
-"Invoice Amount: Additional Items, Unpaid",metric,10094,NA
+Invoice Amount: Fixed Fee Unpaid,metric,10091,NA
+Invoice Amount: Additional Items Unpaid,metric,10094,NA
 ͺBudget Consumed % :Fees Only,metric,10100,NA
 Task Estimated Budget,metric,10137,NA
 Cost Scheduled,metric,10194,NA
-"Project Budget: Remaining, Fees",metric,10295,NA
+Project Budget: Remaining Fees,metric,10295,NA
 ͺFees Scheduled from Today: Billable,metric,10297,NA
 Margin: Fees,metric,10328,NA
-"Expenses: Billable, T&M",metric,10340,NA
+Expenses: Billable T&M,metric,10340,NA
 Hours Scheduled: Non-Billable,metric,10367,NA
 Expenses,metric,10428,NA
 Task Estimated Budget: T&M,metric,10499,NA
 Task Estimated Budget: Fixed Fee,metric,10500,NA
 ͺBudget Rollup Variance (Project vs Tasks),metric,10505,NA
 Invoice Amount: Paid,metric,10508,NA
-"Invoice Amount: Fixed Fee, Paid",metric,10995,NA
+Invoice Amount: Fixed Fee Paid,metric,10995,NA
 Expenses: Non-Billable,metric,11033,NA
 Expenses Charged: Fixed Fee Tasks,metric,11034,NA
 Fees Scheduled: T&M Tasks,metric,11351,NA
@@ -3106,7 +3106,7 @@ Fees Scheduled: Fixed Fee Tasks,metric,11352,NA
 Cost Actual: Billable,metric,11421,NA
 Cost Actual: Non-Billable,metric,11423,NA
 Hours Variance: Actual: Billable vs Scheduled: Billable,metric,11466,NA
-"ͺPossible Workday Hours in a Period [sum] - Shared by month, all other",metric,12959,NA
+ͺPossible Workday Hours in a Period [sum] - Shared by month all other,metric,12959,NA
 ͺUsers [count] with Time Entry,metric,12971,NA
 ͺ[Legacy] Hours Potential: TE,metric,12974,NA
 ͺUtilization %: Actual,metric,12976,NA
@@ -3121,7 +3121,7 @@ Task Weight %,metric,14207,NA
 ͺTask Weight [Sum] - Completed,metric,14218,NA
 ͺFees Remaining to be Scheduled relative to Budget,metric,14240,NA
 Cost EAC: Scheduled + Non-Billable Expenses,metric,14248,NA
-"Cost ETC: Scheduled, Open Tasks",metric,14250,NA
+Cost ETC: Scheduled Open Tasks,metric,14250,NA
 ͺMargin: EAC Scheduled - Fixed Task,metric,14251,NA
 ͺCost EAC: % Complete Method Estimated : incl expenses,metric,14256,NA
 ͺMargin: % Complete - Fixed Task,metric,14259,NA
@@ -3145,13 +3145,13 @@ Task Status Flag,metric,14591,NA
 ͺOver/Under Budget - % Method,metric,14946,NA
 ͺBilling Rate - Calculated from Time Entry Record,metric,15047,NA
 ͺFees Remaining to be Scheduled relative to Budget(T&M) BY Story,metric,15176,NA
-"Fees EAC: Scheduled, Billable",metric,15394,NA
+Fees EAC: Scheduled Billable,metric,15394,NA
 ͺMargin: EAC Scheduled - T&M,metric,15400,NA
 ͺMargin %: EAC Scheduled - T&M,metric,15401,NA
 Fees Scheduled: Non-billable,metric,15524,NA
 ͺMargin: EAC Scheduled - Fixed plus T&M,metric,15527,NA
 ͺMargin %: EAC Scheduled - Fixed or T&M,metric,15530,NA
-"Fees ETC: Scheduled, Billable",metric,15582,NA
+Fees ETC: Scheduled Billable,metric,15582,NA
 ͺHours Variance: Task Schedule to Budget Variance,metric,15639,NA
 ͺHours Actual: Billable Running Summary,metric,15701,NA
 ͺTask Budgeted Hours Running Summary,metric,15706,NA
@@ -3161,7 +3161,7 @@ Fees Scheduled: Non-billable,metric,15524,NA
 ͺTE Worked Until Today,metric,15772,NA
 ͺTE Worked Until Today [ifnull 0],metric,15776,NA
 ͺTask Budgeted Hours with 0,metric,15781,NA
-"ͺPossible Workday Hours in a Period [sum] - Shared by week, all other",metric,15786,NA
+ͺPossible Workday Hours in a Period [sum] - Shared by week all other,metric,15786,NA
 ͺ[Legacy]Hours Potential: SAD by Week (Shared),metric,15787,NA
 ͺUtilization %: Scheduled by Week,metric,15790,NA
 ͺFees Projected for T&M at EAC: % Complete Method (Compete Tasks taken care by 100%),metric,15923,NA
@@ -3188,26 +3188,26 @@ Availability: Scheduled %,metric,17293,NA
 ͺ[Legacy]Hours Potential: SAD by Week [For open],metric,18231,NA
 ͺ[Legacy]Availability by Week [ForOpen],metric,18232,NA
 ͺWork Days in a Period [sum] - Shared [for open],metric,18236,NA
-"ͺPossible Workday Hours in a Period [sum] - Shared by week, all other [For Open]",metric,18237,NA
+ͺPossible Workday Hours in a Period [sum] - Shared by week all other [For Open],metric,18237,NA
 ͺ[Legacy]Hours Potential: SAD by Week(All Users),metric,18324,NA
 ͺMargin: Revenue Base for Fixed and Completed,metric,18704,NA
-"ͺMargin: Revenue Base for Fixed, Open and Fees<Budget",metric,18734,NA
+ͺMargin: Revenue Base for Fixed Open and Fees<Budget,metric,18734,NA
 ͺMargin: ToDate T&M plus Fixed (task level rollup for fixed),metric,18739,NA
 ͺMargin %: ToDate T&M plus Fixed,metric,18759,NA
-"ͺMargin: Revenue Base for Fixed, Open and Fees>=Budget",metric,18765,NA
+ͺMargin: Revenue Base for Fixed Open and Fees>=Budget,metric,18765,NA
 ͺExpenses Charged: Fixed Fee Tasks: Simple,metric,19048,NA
-"Task Estimated Budget: Fixed Fee, Completed",metric,19051,NA
-"Invoice Amount: Fixed Fee, Remaining",metric,19080,NA
+Task Estimated Budget: Fixed Fee Completed,metric,19051,NA
+Invoice Amount: Fixed Fee Remaining,metric,19080,NA
 ͺWIP Outstanding: Related Labor Cost - All,metric,19220,NA
 ͺFees Charged Running Summary,metric,19374,NA
 ͺTask Budget Estimate  [Sum] by all for Totals,metric,19901,NA
-"ͺCost, Actual Running Summary",metric,19911,NA
+ͺCost Actual Running Summary,metric,19911,NA
 ͺTask Budget Estimate  [Sum] by Story for Running Margins,metric,20039,NA
 ! Gross Margin Runsum_JT,metric,20052,NA
 ͺIs Organization Filtered?,metric,23874,NA
 Filter: Projects by Organization,metric,23875,NA
-"Margin: EAC Project Budget, Scheduled",metric,24035,NA
-"Margin %: EAC Project Budget, Scheduled",metric,24036,NA
+Margin: EAC Project Budget Scheduled,metric,24035,NA
+Margin %: EAC Project Budget Scheduled,metric,24036,NA
 Hours Actual: Pending Approval,metric,24276,NA
 ͺ[Legacy]Hours Potential: TE All Users,metric,24754,NA
 ͺHours Actual: All (All Users Lift),metric,24835,NA
@@ -3220,9 +3220,9 @@ Hours Actual: Pending Approval,metric,24276,NA
 ͺMargin %:  (Fixed Fee) Actual:  Includes Non-Billable Expenses,metric,25938,NA
 ͺExpenses Charged: Non-Billable (Expense Record),metric,25968,NA
 ͺCost ETC: Scheduled,metric,26222,NA
-"ͺCost, Projected Runsum: From Today",metric,26728,NA
-"ͺCost, Actual to date + runsum of projected",metric,26744,NA
-"ͺCost, Actual by all other",metric,26746,NA
+ͺCost Projected Runsum: From Today,metric,26728,NA
+ͺCost Actual to date + runsum of projected,metric,26744,NA
+ͺCost Actual by all other,metric,26746,NA
 ͺFees Charged Actual: All by all other,metric,26751,NA
 ͺFees Combined Actual to date plus projected from today,metric,26752,NA
 ͺFees Scheduled from Today: Billable (runsum),metric,26768,NA
@@ -3259,7 +3259,7 @@ Flag: Task Overdue,metric,30199,NA
 ͺDSO Two Qs Ago,metric,37102,NA
 ͺDSO One Q Ago,metric,37116,NA
 ͺProject Completed Date,metric,37136,NA
-"! Margin: Revenue Base for Fixed, Open and Fees<Budget - JRTest",metric,37385,NA
+! Margin: Revenue Base for Fixed Open and Fees<Budget - JRTest,metric,37385,NA
 ͺFees Charged Actual: Billable T&M by Story,metric,38002,NA
 ͺMargin: Revenue Base,metric,38003,NA
 ͺTasks [count] Past Due < 7 Days,metric,38977,NA
@@ -3288,7 +3288,7 @@ Filter: Tasks by User Assignment,metric,39233,NA
 !JR!TEST Task Budget Estimate  [Sum] -Fixed and Complete,metric,53879,NA
 Hours Actual: Approved,metric,56437,NA
 Hours Actual: Unsubmitted,metric,56438,NA
-"ͺBudget Remaining: Task Rollup, Including Future Scheduled (EAC)",metric,59988,NA
+ͺBudget Remaining: Task Rollup Including Future Scheduled (EAC),metric,59988,NA
 ͺBudget Remaining Runsum for Monthly Burn,metric,59991,NA
 ͺFixed Fees Invoiced Amount: Running Summary for Monthly Burn,metric,59999,NA
 ͺRetainer Remaining,metric,60001,NA
@@ -3324,7 +3324,7 @@ Users [count] with Time Entry by weeek,metric,62672,NA
 Filter: Users by User Skill Name,metric,68386,NA
 Task Assignment Estimated Hours,metric,68387,NA
 ͺTask Hours Estimate: Billable Tasks,metric,68388,NA
-"ͺTask Hours Estimate [Sum] By Task, All Other",metric,68389,NA
+ͺTask Hours Estimate [Sum] By Task All Other,metric,68389,NA
 Flag: Time Entry Requires Approval,metric,68390,NA
 ͺTask Hours Estimate [Sum] with Assignment,metric,68391,NA
 ͺUser Estimated Hours / Task Estimate Hours %,metric,68392,NA
@@ -3356,7 +3356,7 @@ Expenses: Invoiced,metric,68420,NA
 ͺFixed Fees Invoiced Amount: Taxable,metric,68421,NA
 Invoice Tax Rate,metric,68422,NA
 ͺTaxes: Fixed Fee Items,metric,68423,NA
-"Invoice Amount: Additional Items, Paid",metric,68424,NA
+Invoice Amount: Additional Items Paid,metric,68424,NA
 Invoice Amount: By Component,metric,68425,NA
 ͺTask Hours Estimate [Sum] Unassigned,metric,68426,NA
 ͺRemaining Estimated Hours via % Complete: All,metric,68428,NA
@@ -3389,10 +3389,10 @@ Utilization Target: Weighted Average,metric,68488,NA
 ͺNon-Billable/Non-Productive Groups Detect PTO Only,metric,68548,NA
 ͺHours Actual: Non-Billable/Non-Productive Projects PTO Only,metric,68549,NA
 Workday Hours: Net Actual [PTO],metric,68550,NA
-"Utilization Actual: Billable, To Date",metric,68551,NA
+Utilization Actual: Billable To Date,metric,68551,NA
 ͺUtilization Variance: To-Date Billable Actual to Target,metric,68553,NA
 ͺNon-Billable/Non-Productive Groups Detect w/o PTO,metric,68554,NA
-"Hours Actual: Non-Billable, [Admin] & [Internal] Projects",metric,68555,NA
+Hours Actual: Non-Billable [Admin] & [Internal] Projects,metric,68555,NA
 ͺNon-Billable/Non-Productive Groups Detect with PTO,metric,68556,NA
 ͺHours Actual: Non-Billable/Non-Productive Projects with PTO,metric,68557,NA
 ͺHours Actual: Non-Billable/Productive,metric,68558,NA
@@ -3405,22 +3405,22 @@ Workday Hours: Net Actual [PTO],metric,68550,NA
 ͺExpenses Charged: Taxable,metric,68628,NA
 ͺTaxes: Expenses Items,metric,68629,NA
 ͺTaxes: Total Invoice thru Rollup,metric,68630,NA
-"ͺInvoice Amount, Taxes Unpaid [rollup]",metric,68631,NA
+ͺInvoice Amount Taxes Unpaid [rollup],metric,68631,NA
 ͺHours Scheduled past Task Completed Date,metric,68635,NA
-"ͺFilter for Zero WIP, Unpaid and Paid Invoices",metric,68648,NA
+ͺFilter for Zero WIP Unpaid and Paid Invoices,metric,68648,NA
 ͺHours Scheduled: Non-Billable/Non-Productive Projects PTO Only,metric,68656,NA
 ͺPTO Delta: Actual and Scheduled,metric,68659,NA
 Workday Hours: Net Scheduled [PTO],metric,68662,NA
 ͺTarget Billability in Hours by User[net of PTO],metric,68665,NA
 ͺHours Variance: Billable Forecast to Target Variance,metric,68666,NA
-"Utilization Scheduled: Billable, To Date",metric,68667,NA
+Utilization Scheduled: Billable To Date,metric,68667,NA
 ͺTarget Billability in Hours by  [Runsum],metric,68670,NA
 ͺTarget Utilization in Hours by User: PTD,metric,68673,NA
 ͺHours Variance: Billable PTD Actual vs Target,metric,68674,NA
 ͺUtilization %: Scheduled [with ifnull scheduled],metric,68677,NA
 Utilization Scheduled: Billable,metric,68680,NA
 ͺUtilization Variance: To-Date Billable Actual to Scheduled on Billable,metric,68687,NA
-"Hours Scheduled: Non-Billable, [Admin] & [Internal] Projects",metric,68692,NA
+Hours Scheduled: Non-Billable [Admin] & [Internal] Projects,metric,68692,NA
 ͺHours Scheduled: Non-Billable/Productive,metric,68695,NA
 ͺIs User Skill Name Filtered?,metric,69844,NA
 ͺUser Disabled Prior to Selected Period,metric,70148,NA
@@ -3506,9 +3506,9 @@ Utilization: Unlogged Hours %,metric,72053,NA
 ͺHours Scheduled: All Hours Projects PTO Only,metric,72057,NA
 ͺUtilization %: Actual Utilization Project to Date [net PTO],metric,72058,NA
 ͺTime Off Utilization PTD,metric,72060,NA
-"Utilization Actual: Non-Productive, To Date",metric,72062,NA
+Utilization Actual: Non-Productive To Date,metric,72062,NA
 Hours Actual: Productive Hours,metric,72064,NA
-"Utilization Actual: Productive, To Date",metric,72065,NA
+Utilization Actual: Productive To Date,metric,72065,NA
 ͺHours Scheduled: Tasks From 'Today' (shared) and Task not Completed,metric,72070,NA
 ͺHours Actual: by all Dates,metric,72071,NA
 ͺHours Projected Runsum: to-Date plus Scheduled from Today,metric,72072,NA
@@ -3667,18 +3667,18 @@ Date: Project Due Date (MM/DD/YY),metric,72409,NA
 ͺAllocation Hours: Hard without pf,metric,73707,NA
 ͺAllocation Hours: Soft without pf,metric,73710,NA
 Hours Allocated: Unstaffed Demand,metric,73715,NA
-"ͺWorkday Time in Hours by user, without pf",metric,73728,NA
+ͺWorkday Time in Hours by user without pf,metric,73728,NA
 ͺAllocation % (Named Resources),metric,73729,NA
 ͺUsers 75 - 110% of Capacity by Period,metric,73744,NA
 ͺUsers 50-75% of Capacity by Period,metric,73745,NA
 ͺUsers < 50% Capacity by Period,metric,73746,NA
 ͺUsers > 110% Capacity by Period,metric,73747,NA
-"Availability: Allocated Hours, Named Resources Only",metric,73750,NA
+Availability: Allocated Hours Named Resources Only,metric,73750,NA
 ͺUsers [count] with availability,metric,73755,NA
-"Availability: Allocated %, Named Resources",metric,73760,NA
-"Availability: Allocated Hours, Hard Allocations Only",metric,73765,NA
-"Availability: Allocated Hours, All Resources",metric,73770,NA
-"Availability: Allocated %, All Resources",metric,73775,NA
+Availability: Allocated % Named Resources,metric,73760,NA
+Availability: Allocated Hours Hard Allocations Only,metric,73765,NA
+Availability: Allocated Hours All Resources,metric,73770,NA
+Availability: Allocated % All Resources,metric,73775,NA
 Fees Allocated,metric,73869,NA
 ͺFees Projected Allocated: All - (RAD),metric,73870,NA
 ͺFees Projected (T&M base) at EAC: Act+Allocated (Only Not Completed),metric,73871,NA
@@ -3704,7 +3704,7 @@ Fees Allocated: Billable Projects,metric,75122,NA
 ͺAllocated vs. Scheduled Hours Variance,metric,75144,NA
 ͺSchedule vs. Allocated Variance detect (+/- 1 hour range),metric,75145,NA
 Hours Allocated: Non-Billable Projects,metric,75148,NA
-"Hours Allocated: Non-Billable, [Admin] & [Internal] Projects",metric,75149,NA
+Hours Allocated: Non-Billable [Admin] & [Internal] Projects,metric,75149,NA
 Availability: Allocated Hours,metric,75152,NA
 ͺAllocated Hours: Availability %,metric,75153,NA
 Bill Rate: Allocations,metric,75161,NA
@@ -3714,19 +3714,19 @@ Hours Allocated: Billable Projects,metric,75164,NA
 ͺHours Allocated: Non-Billable/Productive,metric,75181,NA
 ͺMargin @ EAC via Allo,metric,75206,NA
 ͺMargin % EAC via Allo,metric,75207,NA
-"Margin %: EAC Project Budget, Allocated",metric,75208,NA
+Margin %: EAC Project Budget Allocated,metric,75208,NA
 ͺFees Allocated from Today: Billable (runsum),metric,75212,NA
 ͺFees Combined Actual to date plus projected from today w/ Allo,metric,75213,NA
-"ͺCost, Projected Runsum: From Today w/ Allo",metric,75214,NA
-"ͺCost, Actual to date + runsum of projected w/ Allo",metric,75215,NA
-"Fees ETC: Allocated, Billable",metric,75220,NA
-"Margin: EAC Project Budget, Allocated",metric,75223,NA
+ͺCost Projected Runsum: From Today w/ Allo,metric,75214,NA
+ͺCost Actual to date + runsum of projected w/ Allo,metric,75215,NA
+Fees ETC: Allocated Billable,metric,75220,NA
+Margin: EAC Project Budget Allocated,metric,75223,NA
 ͺMargin %: EAC Allocated: Project Level,metric,75232,NA
 ͺMargin % Average (Allo),metric,75233,NA
 Out of Office: [PTO] Projects,metric,75287,NA
 ͺHours Allocated: All • Hours Projects PTO Only (All Filters),metric,75288,NA
-"Hours Scheduled: Non-Billable, [PTO] Projects",metric,75289,NA
-"ͺTask Hours Estimate [Sum] By Task, w/o User/Role",metric,75290,NA
+Hours Scheduled: Non-Billable [PTO] Projects,metric,75289,NA
+ͺTask Hours Estimate [Sum] By Task w/o User/Role,metric,75290,NA
 ͺHours Actual: All (Future Dates Only),metric,80479,NA
 Number of Users with Incomplete Timesheets by Week,metric,80480,NA
 ͺWorkweek Variance: Inverted (Actual - WW),metric,80481,NA
@@ -3752,25 +3752,25 @@ Date: Latest Time Entry (MM/DD/YY),metric,101901,NA
 Date: Earliest Time Entry (MM/DD/YY),metric,101902,NA
 Dynamic Input: [Detect Boolean A],metric,101903,NA
 Dynamic Input: [Detect Option],metric,101904,NA
-"ͺFilter Dynamic Input Options A, B, C Only (Available Values Filter)",metric,101905,NA
+ͺFilter Dynamic Input Options A B C Only (Available Values Filter),metric,101905,NA
 ͺEstimate: Average Confidence,metric,101908,NA
-"ͺDynamic Input: Fees (Actual, Allocated, Scheduled)",metric,101909,NA
+ͺDynamic Input: Fees (Actual Allocated Scheduled),metric,101909,NA
 ͺEstimate Margin: T&M,metric,101910,NA
-"ͺDynamic Input: Hours (Actual, Allocated, Scheduled)",metric,101914,NA
-"ͺOption: Allocated Cost, Fees, or Hours",metric,101915,NA
+ͺDynamic Input: Hours (Actual Allocated Scheduled),metric,101914,NA
+ͺOption: Allocated Cost Fees or Hours,metric,101915,NA
 ͺEstimate Scenario: Budget,metric,101916,NA
 ͺEstimate Margin: Fixed Fee,metric,101917,NA
 Date: Latest Allocation (MM/DD/YY),metric,101918,NA
-"ͺDynamic Input: Latest Date (Actual, Allocated, Scheduled)",metric,101919,NA
+ͺDynamic Input: Latest Date (Actual Allocated Scheduled),metric,101919,NA
 Date: Earliest Allocation (MM/DD/YY),metric,101921,NA
-"ͺDynamic Input: Earliest Date (Actual, Allocated, Scheduled)",metric,101922,NA
+ͺDynamic Input: Earliest Date (Actual Allocated Scheduled),metric,101922,NA
 ͺEstimate Scenario: Project Created Flag,metric,101928,NA
 ͺEstimate Budget for Project,metric,101929,NA
 ͺEstimate Scenario: Favorite Flag,metric,101934,NA
 ͺHours Allocated: Projects Only,metric,101937,NA
 ͺEstimate Scenario: Allocated Fees,metric,101940,NA
 ͺEstimate Scenario: Allocated Hours (Estimates Only),metric,101941,NA
-"ͺHours Allocated: Estimates Only, All Time",metric,101944,NA
+ͺHours Allocated: Estimates Only All Time,metric,101944,NA
 ͺFilter Workspace by Estimate Scenario Only,metric,101953,NA
 _Filter Converted Scenarios Only,metric,101958,NA
 ͺFilter Converted Scenarios Option,metric,101971,NA
@@ -3785,13 +3785,13 @@ _Filter Converted Scenarios Only,metric,101958,NA
 ͺWorkday Time in Hours by Resource Id,metric,102000,NA
 ͺAvailability: Resource Hours by Project,metric,102002,NA
 ͺCount of Allocated Days,metric,102011,NA
-"ͺDynamic Input: Cost (Actual, Allocated, Scheduled)",metric,102020,NA
-"ͺDynamic Input: Fixed Fee Margin % (Actual, Allocated, Scheduled)",metric,102021,NA
-"ͺDynamic Input: T&M Margin % (Actual, Allocated, Scheduled)",metric,102022,NA
-"ͺCost + Non-Billable Expenses, Actual by all other",metric,1108254,NA
-"ͺCost + Non-Billable Expenses, Actual to date + runsum of projected w/ Allo",metric,1108255,NA
-"ͺCost + Non-Billable Expenses, Actual to date + runsum of projected",metric,1108256,NA
-"ͺCost + Non-Billable Expenses, Actual Running Summary",metric,1108257,NA
+ͺDynamic Input: Cost (Actual Allocated Scheduled),metric,102020,NA
+ͺDynamic Input: Fixed Fee Margin % (Actual Allocated Scheduled),metric,102021,NA
+ͺDynamic Input: T&M Margin % (Actual Allocated Scheduled),metric,102022,NA
+ͺCost + Non-Billable Expenses Actual by all other,metric,1108254,NA
+ͺCost + Non-Billable Expenses Actual to date + runsum of projected w/ Allo,metric,1108255,NA
+ͺCost + Non-Billable Expenses Actual to date + runsum of projected,metric,1108256,NA
+ͺCost + Non-Billable Expenses Actual Running Summary,metric,1108257,NA
 Out of Office: Time Off + Holidays,metric,1501203,NA
 ͺTop Level % Complete,metric,1651020,NA
 ͺGlobal Date [min] w/ Check,metric,1651021,NA
@@ -3799,7 +3799,7 @@ FX Rate,metric,1651022,NA
 FX Rate by Currency,metric,1651023,NA
 ͺFX Rate Average,metric,1651024,NA
 Fees Actual [FX],metric,1651036,NA
-"Bill Rate: Time Entries, Billable",metric,1651037,NA
+Bill Rate: Time Entries Billable,metric,1651037,NA
 Project % Complete: Top-Level Tasks (% Done),metric,1651038,NA
 ͺTask % Complete: Actual / Estimated Hours Capped,metric,1651039,NA
 ͺRate Card Usage Count,metric,1651040,NA
@@ -3819,9 +3819,9 @@ Dynamic Input: [Detect Boolean B],metric,1651053,NA
 ͺVariance (Actuals vs Project Est. Rev),metric,1651056,NA
 Date: Earliest Task Start Date (MM/DD/YY),metric,1651057,NA
 Date: Latest Task Due Date (MM/DD/YY),metric,1651058,NA
-"ͺForecast Fees (Allocated, Scheduled) [DI]",metric,1651099,NA
-"ͺForecast Fees (Dynamic Input: Allocated, Scheduled) [FX]",metric,1651104,NA
-"ͺFuture Forecast Fees (Allocated, Scheduled) > Global Date",metric,1651115,NA
+ͺForecast Fees (Allocated Scheduled) [DI],metric,1651099,NA
+ͺForecast Fees (Dynamic Input: Allocated Scheduled) [FX],metric,1651104,NA
+ͺFuture Forecast Fees (Allocated Scheduled) > Global Date,metric,1651115,NA
 ͺFees EAC with Global Date,metric,1651118,NA
 ͺBudget Variance (EAC vs Budget),metric,1651119,NA
 ͺFees Burn % EAC to budget,metric,1651122,NA
@@ -3869,7 +3869,7 @@ Tasks Open [Count],metric,1767184,NA
 ! Count Tasks with User Filter,metric,1767214,NA
 ! _Filter Task by User AND Project,metric,1767215,NA
 ! Weekly Status - Select Billable Hrs on T&M Only,metric,1767223,NA
-"Hours Actual All, BY ALL OTHER",metric,1767224,NA
+Hours Actual All BY ALL OTHER,metric,1767224,NA
 ! Hours Scheduled: All,metric,1767225,NA
 ! Hours Available [sum] by scheduled,metric,1767226,NA
 schedule bill rate,metric,1767227,NA
@@ -3966,7 +3966,7 @@ Dura. between min and max task,metric,1911517,NA
 ! CPI,metric,1911536,NA
 ! Estimated Actual Cost (estimated cost / CPI),metric,1911537,NA
 ! Project Due Date for Headline,metric,1911542,NA
-"ͺForecast Fees (Allocated, Scheduled) [Inner]",metric,2071159,NA
+ͺForecast Fees (Allocated Scheduled) [Inner],metric,2071159,NA
 Fees,metric,3469316,NA
 Project Active Days,metric,3469331,NA
 Fees (RUNSUM),metric,3469937,NA
@@ -4041,8 +4041,8 @@ Project Duration: Project Active Days,metric,3859060,NA
 ͺProject Account Hours/Cost EAC within Global Date,metric,3859092,NA
 ͺPA Override Check,metric,3859093,NA
 ͺPA EAC Override Check,metric,3859094,NA
-"! SK Rev Forecast (PA,Allocated, Scheduled) [Inner]",metric,3859103,NA
-"! SK Rev Forecast (PA,Allocated, Scheduled) [DI]",metric,3859104,NA
+! SK Rev Forecast (PAAllocated Scheduled) [Inner],metric,3859103,NA
+! SK Rev Forecast (PAAllocated Scheduled) [DI],metric,3859104,NA
 ͺAllocated Cost > Global Date,metric,3859105,NA
 ͺCost EAC: via Actuals + Allocated Global Date,metric,3859106,NA
 ͺHours Allocated > Global Date,metric,3859107,NA
@@ -4098,7 +4098,7 @@ Running Total (% Comp) by Month,metric,3995210,NA
 Forecast (% Comp) by Month,metric,3995211,NA
 RevRec: % Comp,metric,3995212,NA
 ! Tag Detect: Decision,metric,4088753,NA
-"! Tag Detect: Risk, Issue",metric,4088754,NA
+! Tag Detect: Risk Issue,metric,4088754,NA
 ! Task Due / Overdue Days,metric,4088755,NA
 ! Assignment Checker,metric,4088761,NA
 ! Last Health Status - Overall,metric,4088765,NA
@@ -4254,23 +4254,23 @@ EAC Hours (Monthly),metric,7721785,NA
 ! Revenue Forecast (All Methods),metric,7721801,NA
 ! On Completion Revenue w/o PF,metric,7721816,NA
 % Allocated by Workday,metric,7814597,NA
-"Forecast % (Allocated, Scheduled) by Workday [Inner]",metric,7814598,NA
+Forecast % (Allocated Scheduled) by Workday [Inner],metric,7814598,NA
 Other Hours,metric,7814611,NA
 Number of Projects OverDue,metric,7881389,NA
 Count of Projects w/o Due Date,metric,7881395,NA
 Count of Projects w/o Start Date,metric,7882005,NA
 Count of Projects w/o Budget,metric,7882009,NA
-"Forecast Hours % (Allocated, Scheduled) [DI]",metric,7908806,NA
-"Forecast Hours % (Allocated, Scheduled) [DI] w/o project PF",metric,7909343,NA
-"Dynamic Input: Hours (Allocated, Scheduled)",metric,8139446,NA
-"Forecast Hours (Allocated, Scheduled) [DI]",metric,8139447,NA
+Forecast Hours % (Allocated Scheduled) [DI],metric,7908806,NA
+Forecast Hours % (Allocated Scheduled) [DI] w/o project PF,metric,7909343,NA
+Dynamic Input: Hours (Allocated Scheduled),metric,8139446,NA
+Forecast Hours (Allocated Scheduled) [DI],metric,8139447,NA
 ͺOld metric,metric,8546644,NA
-"ͺFilter Dynamic Input Options A, B, D Only (Available Values Filter)",metric,8546645,NA
+ͺFilter Dynamic Input Options A B D Only (Available Values Filter),metric,8546645,NA
 ͺUsers [count] with WorkWeek Hours,metric,8546646,NA
-"ͺxxDELETExx_Workday Time in Hours by user, without pf",metric,8546647,NA
+ͺxxDELETExx_Workday Time in Hours by user without pf,metric,8546647,NA
 ͺ! SK 2021 Rev Est New,metric,8546648,NA
-"Forecast Hours (Allocated, Scheduled) [DI]",metric,9014965,NA
-"Forecast Hours (Allocated, Scheduled) [DI] w/o project PF",metric,9015582,NA
+Forecast Hours (Allocated Scheduled) [DI],metric,9014965,NA
+Forecast Hours (Allocated Scheduled) [DI] w/o project PF,metric,9015582,NA
 ! EAC Fees + bill exp or Proj Budget,metric,9224429,NA
 ! Fees + bill exp or Proj Budget,metric,9224430,NA
 Hours Budget Remaining (Global),metric,9309362,NA
@@ -4306,8 +4306,8 @@ Hours Actual: Unapproved,metric,10449095,NA
 # Projects w/Unapproved Time,metric,10449098,NA
 # Users w/Unsubmitted Time,metric,10449101,NA
 Average Billable Bill Rate,metric,10449104,NA
-"Margin: EAC Project Budget, Forecasted",metric,10449107,NA
-"Margin %: EAC Project Budget, Forecasted",metric,10449108,NA
+Margin: EAC Project Budget Forecasted,metric,10449107,NA
+Margin %: EAC Project Budget Forecasted,metric,10449108,NA
 Contractor Expenses: Billable,metric,10449109,NA
 Non-Contractor Billable Expenses,metric,10449110,NA
 Fees Actual + Contractor Expenses,metric,10449112,NA
@@ -4315,7 +4315,7 @@ Project Budget: Fees Burn % (inc. contractor expenses),metric,10449113,NA
 Fees EAC: Actual + Forecasted,metric,10449114,NA
 Fees % Complete (EAC),metric,10449115,NA
 Actual Margin to Date,metric,10449116,NA
-"Forecast Cost (Allocated, Scheduled) [DI]",metric,10449121,NA
+Forecast Cost (Allocated Scheduled) [DI],metric,10449121,NA
 Cost ETC: Forecasted,metric,10449122,NA
 Cost EAC: Actual + Forecasted + Non-Billable Expenses,metric,10449123,NA
 Margin EAC: T&M,metric,10449124,NA
@@ -4326,7 +4326,7 @@ Non-Billing Task Budgets,metric,10449131,NA
 # Billing Tasks Missing Budget,metric,10449140,NA
 Billing Task Budgets,metric,10449145,NA
 # Projects w/Budget Mismatch,metric,10449150,NA
-"! Hours Actual: Non-Billable, [BD] Projects",metric,10513086,NA
+! Hours Actual: Non-Billable [BD] Projects,metric,10513086,NA
 ! Hours Actual: Non-Billable/Productive w/out BD,metric,10513087,NA
 Project Budget: Fees Burn %,metric,10523430,NA
 HP Project Budget: Fees Burn %,metric,10523431,NA
@@ -4346,13 +4346,13 @@ FTE Allocated: Unstaffed Demand,metric,10619821,NA
 ! Fees Actual,metric,10652166,NA
 Unstaffed Utilization,metric,10652743,NA
 Order,metric,10653749,NA
-"Revenue: Actual + Forecast via Forecast Method, TM & FF",metric,10653918,NA
-"Revenue: Actual + Forecast via Sch/Allo, TM",metric,10653923,NA
-"Revenue: Actual + Forecast, FF",metric,10653924,NA
-"Revenue: % of Revenue, Fixed Fee",metric,10653930,NA
-"Revenue: % of Revenue, Time & Material",metric,10653931,NA
-"Margin: Actual + Forecast via Forecast Method, T&M & FF",metric,10656782,NA
-"Margin %: Actual + Forecast via Forecast Method, T&M & FF",metric,10656788,NA
+Revenue: Actual + Forecast via Forecast Method TM & FF,metric,10653918,NA
+Revenue: Actual + Forecast via Sch/Allo TM,metric,10653923,NA
+Revenue: Actual + Forecast FF,metric,10653924,NA
+Revenue: % of Revenue Fixed Fee,metric,10653930,NA
+Revenue: % of Revenue Time & Material,metric,10653931,NA
+Margin: Actual + Forecast via Forecast Method T&M & FF,metric,10656782,NA
+Margin %: Actual + Forecast via Forecast Method T&M & FF,metric,10656788,NA
 Avg Actual Fees,metric,10662522,NA
 Avg Scheduled Fees,metric,10662523,NA
 Avg Allocated Fees,metric,10662524,NA
@@ -4381,11 +4381,11 @@ AUDIT_BLANK_ProjectDue,metric,10676922,NA
 AUDIT_CheckProjectBudget,metric,10676926,NA
 AUDIT_AcctRole,metric,10676927,NA
 AUDIT_User Count with Workday No Actual Hrs,metric,10678027,NA
-"Dynamic Input: Forecast Hours (Allocated, Scheduled)",metric,10682496,NA
-"! Dynamic Input: Forecast Hours (Allocated, Scheduled) Billable",metric,10682497,NA
+Dynamic Input: Forecast Hours (Allocated Scheduled),metric,10682496,NA
+! Dynamic Input: Forecast Hours (Allocated Scheduled) Billable,metric,10682497,NA
 ! Utilization Planned: Billable,metric,10682498,NA
-"! Utilization Planned: Billable, To Date",metric,10682499,NA
-"Utilization Actual: Billable, To Date",metric,10682503,NA
+! Utilization Planned: Billable To Date,metric,10682499,NA
+Utilization Actual: Billable To Date,metric,10682503,NA
 Dynamic Billable Hours Forecast,metric,10682509,NA
 ! Project Health: Last Updated Flag [dynamic],metric,10683063,NA
 ! Project Health Date [current],metric,10683064,NA
@@ -4459,7 +4459,7 @@ CUSTOM_FTE Allocated: Unstaffed Demand,metric,10695954,NA
 CUSTOM_NAMED_ALLOCATIONS,metric,10695955,NA
 CUSTOM_FTE Allocated: NAMED Remaining Availability from Workweek,metric,10695956,NA
 CUSTOM_Availability: Allocated Hours,metric,10695957,NA
-"CUSTOM_Availability: Allocated %, Named Resources",metric,10695960,NA
+CUSTOM_Availability: Allocated % Named Resources,metric,10695960,NA
 CUSTOM_FTE Needed,metric,10695972,NA
 CUSTOM_FTE % Workday,metric,10695975,NA
 ! Out of Office: Time Off + [PTO],metric,10696547,NA
@@ -4482,7 +4482,7 @@ Lifted - Project Health Color: Overall,metric,10705377,NA
 Lifted - Project Health Color: Scope,metric,10705378,NA
 Lifted- Project Health Color: Client,metric,10705379,NA
 Lifted - Project Health Color: Schedule,metric,10705380,NA
-"Dynamic Input: Forecast Hours (Allocated, Scheduled) UNSTAFFED",metric,10708265,NA
+Dynamic Input: Forecast Hours (Allocated Scheduled) UNSTAFFED,metric,10708265,NA
 Dynamic Input: FTE Unstaffed Demand,metric,10708266,NA
 ! Unstaffed Utilization [Dynamic Input],metric,10708274,NA
 ! ! Count of Tasks - Completed,metric,10708295,NA
@@ -4500,14 +4500,14 @@ Projects Starting in next 60 Days,metric,10713488,NA
 Average Task Estimated Hours,metric,10713536,NA
 Average Cost EAC Allocated,metric,10713537,NA
 Average Fees EAC Allocated,metric,10713539,NA
-"! Fees EAC: Allocated, Billable",metric,10713570,NA
+! Fees EAC: Allocated Billable,metric,10713570,NA
 Average Margin % EAC Allocated,metric,10713571,NA
 Average Hours EAC Scheduled,metric,10713572,NA
 Average Hours EAC Allocated,metric,10713573,NA
 Days Until Project Start,metric,10713587,NA
 Hours Forecasted,metric,10715634,NA
-"Availability: Forecasted %, Named Resources",metric,10715659,NA
-"Availability: Forecasted Hours, Named Resources Only",metric,10715661,NA
+Availability: Forecasted % Named Resources,metric,10715659,NA
+Availability: Forecasted Hours Named Resources Only,metric,10715661,NA
 Availability: Remaining Availability FTE,metric,10715666,NA
 Hours Forecasted: Unnamed,metric,10715692,NA
 Hours Forecasted: Named,metric,10715693,NA
@@ -4532,7 +4532,7 @@ Fees EAC [Boolean],metric,10718041,NA
 Hours EAC [Boolean],metric,10718042,NA
 Hours ETC [Boolean],metric,10718043,NA
 !! Utilization Planned: Billable,metric,10718058,NA
-"HP Utilization Actual: Billable, To Date",metric,10718067,NA
+HP Utilization Actual: Billable To Date,metric,10718067,NA
 ͺForecast % (Named Resources),metric,10718074,NA
 ͺUsers < 50% Forecast Capacity by Period,metric,10718075,NA
 ͺUsers 50-75% of Forecast Capacity by Period,metric,10718076,NA
@@ -4579,25 +4579,25 @@ Average Cost EAC {Boolean},metric,10727337,NA
 Average Fees EAC [Boolean],metric,10727338,NA
 Fees Forecasted,metric,10727369,NA
 Cost EAC: Forecasted + Non-Billable Expenses,metric,10727524,NA
-"Copy of Cost ETC: Scheduled, Open Tasks",metric,10727525,NA
+Copy of Cost ETC: Scheduled Open Tasks,metric,10727525,NA
 Project Health Color: All Types Historical,metric,10727996,NA
 Navigate,metric,10729759,NA
 Avg Actual Hours,metric,10729915,NA
 Avg Forecast Hours,metric,10729916,NA
 Copy of Avg Forecast Hours,metric,10729917,NA
 Workday Hours: Net Actual [D],metric,10732969,NA
-"Utilization Actual: Billable, To Date [D]",metric,10732972,NA
-"Utilization Forecasted: Billable, To Date [D]",metric,10732975,NA
+Utilization Actual: Billable To Date [D],metric,10732972,NA
+Utilization Forecasted: Billable To Date [D],metric,10732975,NA
 Forecast Variance [D],metric,10732977,NA
-"Utilization Actual: Productive, To Date [D]",metric,10732980,NA
+Utilization Actual: Productive To Date [D],metric,10732980,NA
 Utilization Actual: To Date [D],metric,10732981,NA
 Workday Hours: Including Holiday & PTO,metric,10732987,NA
 Workday Hours Dynamic Input,metric,10732994,NA
 Hours Forecasted: Billable,metric,10733015,NA
 Utilization Forecasted: Billable [D],metric,10733036,NA
-"hp Availability: Forecasted %, Named Resources",metric,10733655,NA
+hp Availability: Forecasted % Named Resources,metric,10733655,NA
 Workday Time in Hours by user [Filter by Resource Default Role Title],metric,10733657,NA
-"Fixed Fee: Completed, Not Invoiced",metric,10735451,NA
+Fixed Fee: Completed Not Invoiced,metric,10735451,NA
 ! Filter: Users by User Skill Name,metric,10737299,NA
 Top Level Status,metric,10738939,NA
 Count of Blue Projects with no Archive,metric,10739047,NA
@@ -4712,7 +4712,7 @@ Users with workday hours,metric,10800900,NA
 Green Adoption Count,metric,10800909,NA
 Tasks Over Budget EAC,metric,10808184,NA
 hp Number of Days: Task Overdue,metric,10808245,NA
-"Hours EAC: Actual + Scheduled, Billable",metric,10817157,NA
+Hours EAC: Actual + Scheduled Billable,metric,10817157,NA
 ! Task Dates within Shared Date: Weekdays,metric,10817795,NA
 ! Task Active Hours & Budget Flag,metric,10817796,NA
 ! Total Active Days,metric,10817797,NA
@@ -4783,9 +4783,9 @@ Copy of ! Not Started Task Count,metric,10898451,NA
 Task Budgets - Excluding Expense Budgets & Billing,metric,10902117,NA
 PA Recognized All Other,metric,10907342,NA
 PA Record Count,metric,10907343,NA
-"Total Fees EAC: Scheduled, Billable",metric,10907344,NA
+Total Fees EAC: Scheduled Billable,metric,10907344,NA
 Runsum PA Recognized,metric,10907345,NA
-"Runsum Fees EAC: Scheduled, Billable",metric,10907346,NA
+Runsum Fees EAC: Scheduled Billable,metric,10907346,NA
 % Complete Total,metric,10907347,NA
 % Complete Forecast,metric,10907348,NA
 Fixed Fee Forecast,metric,10907349,NA
@@ -4800,7 +4800,7 @@ FF Revenue [Master],metric,10907351,NA
 ! Forecast Month Flag [Project],metric,10907358,NA
 Recognition Start,metric,10907359,NA
 FF % Complete Rev Rec [Master],metric,10907360,NA
-"Revenue: Actual + Forecast via Sch/Allo, TM [FX]",metric,10908462,NA
+Revenue: Actual + Forecast via Sch/Allo TM [FX],metric,10908462,NA
 Fees Allocated [FX],metric,10908463,NA
 Fees Scheduled [FX],metric,10908464,NA
 Fees Forecasted [FX],metric,10908465,NA
@@ -4810,22 +4810,22 @@ Billable Utilization Actual vs. Target [D],metric,10909132,NA
 ! Project Budget on Start Date - JW,metric,10912757,NA
 ! Project Budget: Start Date [FX],metric,10912758,NA
 Straight Line [FX],metric,10912759,NA
-"Revenue: Actual + Forecast, FF [FX]",metric,10912760,NA
+Revenue: Actual + Forecast FF [FX],metric,10912760,NA
 hp test Project Budget on Start Date - JW,metric,10912772,NA
 HP Project Budget: Start Date [FX],metric,10912778,NA
-"Revenue: Actual + Forecast via Forecast Method, TM & FF [FX]",metric,10912791,NA
-"Revenue: % of Revenue, Time & Material [FX]",metric,10912792,NA
-"Revenue: % of Revenue, Fixed Fee [FX]",metric,10912794,NA
-"Bill Rate: Time Entries, Billable [FX]",metric,10912801,NA
+Revenue: Actual + Forecast via Forecast Method TM & FF [FX],metric,10912791,NA
+Revenue: % of Revenue Time & Material [FX],metric,10912792,NA
+Revenue: % of Revenue Fixed Fee [FX],metric,10912794,NA
+Bill Rate: Time Entries Billable [FX],metric,10912801,NA
 Cost EAC: Actual + Forecasted + Non-Billable Expenses [FX],metric,10912803,NA
 Cost Actual [FX],metric,10912804,NA
 Cost Allocated [FX],metric,10912805,NA
-"Forecast Cost (Allocated, Scheduled) [DI] [FX]",metric,10912806,NA
+Forecast Cost (Allocated Scheduled) [DI] [FX],metric,10912806,NA
 Cost Scheduled [FX],metric,10912807,NA
 Cost ETC: Forecasted [FX],metric,10912808,NA
 Non-Billable Expenses [FX],metric,10912809,NA
-"Margin: Actual + Forecast via Forecast Method, T&M & FF [FX]",metric,10912813,NA
-"Margin %: Actual + Forecast via Forecast Method, T&M & FF [FX]",metric,10912816,NA
+Margin: Actual + Forecast via Forecast Method T&M & FF [FX],metric,10912813,NA
+Margin %: Actual + Forecast via Forecast Method T&M & FF [FX],metric,10912816,NA
 Labor Cost EAC: Actual + Forecasted [FX],metric,10912822,NA
 lifted Workday Hours,metric,10913490,NA
 Travel Time Tagged Tasks Flag,metric,10925656,NA
@@ -4835,8 +4835,8 @@ Product Tagged Tasks Flag,metric,10925659,NA
 Top Level?,metric,10925662,NA
 Task Estimated Budget: Travel Time,metric,10925664,NA
 Task Estimated Budget: Product Milestones,metric,10925665,NA
-"Exclude Tags (Bill, Expense,Product)",metric,10925666,NA
-"Exclude All Tags (Bill, Expense, Internal, Product)",metric,10925667,NA
+Exclude Tags (Bill ExpenseProduct),metric,10925666,NA
+Exclude All Tags (Bill Expense Internal Product),metric,10925667,NA
 hp Date: Earliest Task Start Date (MM/DD/YY),metric,10925668,NA
 TOP LEVEL + EXCLUDE,metric,10925669,NA
 MIN Task Start,metric,10925672,NA
@@ -4889,7 +4889,7 @@ Project Snapshot: Allocation Costs Per Project (u) v2,metric,11022090,NA
 Project Snapshot: Project Budget (u),metric,11022091,NA
 Project Snapshot: Project Margin (u),metric,11022092,NA
 Project Snapshot: Baseline Allocations in Hours (u),metric,11022093,NA
-"Margin %: EAC Project Budget, Allocated (u)",metric,11022105,NA
+Margin %: EAC Project Budget Allocated (u),metric,11022105,NA
 Margin %: Target Variance (u),metric,11022107,NA
 Snapshot: Resource Cost Rate,metric,11022206,NA
 Snapshot: Resource Estimated Cost,metric,11022207,NA
@@ -5007,5 +5007,5 @@ Over/Under Assignment Estimated - A+A Method,metric,11155677,NA
 Andrew' Test Metric,metric,11156720,NA
 MAX Status Updated (Yellow Active),metric,11161480,NA
 Go Live Flag,metric,11161481,NA
-"test Revenue: Actual + Forecast, FF",metric,11177213,NA
+test Revenue: Actual + Forecast FF,metric,11177213,NA
 test Straight Line,metric,11177214,NA
