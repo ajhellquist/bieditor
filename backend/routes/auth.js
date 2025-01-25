@@ -34,35 +34,48 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    console.log('Login attempt for email:', req.body.email);
     const { email, password } = req.body;
-    
-    // Find user
+
+    // Add input validation
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Please provide both email and password' });
+    }
+
+    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      console.log('User not found:', email);
-      return res.status(400).json({ msg: 'User not found' });
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Verify password
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      console.log('Invalid password for user:', email);
-      return res.status(401).json({ msg: 'Invalid credentials' });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Create token with consistent userId field
+    // Create token
     const token = jwt.sign(
-      { userId: user._id },  // Use userId consistently
+      { userId: user._id },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    console.log('Login successful for user:', email);
-    res.json({ token });
-  } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ msg: 'Server error during login' });
+    // Send response
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', {
+      message: error.message,
+      stack: error.stack
+    });
+    res.status(500).json({ message: 'Server error during login' });
   }
 });
 

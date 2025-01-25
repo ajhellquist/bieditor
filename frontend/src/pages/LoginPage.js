@@ -38,17 +38,38 @@ function LoginPage() {
         ? { email, password }
         : { email, password, firstName, lastName };
       
-      const { data } = await axios.post(`${API_URL}/auth${endpoint}`, payload);
+      const response = await axios.post(`${API_URL}/auth${endpoint}`, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true
+      });
 
-      console.log('Response:', data);
+      console.log('Response:', response.data);
 
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        navigate('/main');
+      if (response.data.token) {
+        try {
+          localStorage.setItem('token', response.data.token);
+          navigate('/main');
+        } catch (storageError) {
+          console.error('Storage error:', storageError);
+          // If localStorage fails, you might want to use a session cookie instead
+          document.cookie = `token=${response.data.token}; path=/`;
+          navigate('/main');
+        }
       }
     } catch (err) {
-      console.error('Error:', err);
-      setError(err.response?.data?.msg || 'An error occurred');
+      console.error('Detailed login error:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+      
+      if (err.response?.status === 500) {
+        setError('Server error. Please try again later.');
+      } else {
+        setError(err.response?.data?.message || err.response?.data?.msg || 'Login failed. Please try again.');
+      }
     }
   };
 

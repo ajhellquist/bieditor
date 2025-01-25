@@ -58,16 +58,17 @@ app.use(express.json());
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  poolSize: 10,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
 })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-    console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Defined' : 'Undefined');
-  });
+.then(() => {
+  console.log('Connected to MongoDB');
+})
+.catch((err) => {
+  console.error('MongoDB connection error:', err);
+});
 
+// Handle MongoDB connection errors
 mongoose.connection.on('error', (err) => {
   console.error('MongoDB connection error:', err);
 });
