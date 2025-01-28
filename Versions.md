@@ -1,5 +1,13 @@
 # Version Log
 
+## Version 1.2.1 - Jan 25 2025
+
+### Enhancements
+- None
+
+### Bug Fixes
+- Added batching to CSV upload feature to be able to handle large CSVs that were causing crashes
+
 ## Version 1.2.0 - Jan 18 2025
 
 ### Enhancements
