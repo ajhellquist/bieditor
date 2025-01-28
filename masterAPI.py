@@ -55,7 +55,7 @@ SKIP_PATTERNS = [
     "Top Level",
     "Aggregate",
     "Note",
-    "Title",
+    "Resource: Title",
     "ID",
     "Resource Name"
 ]
