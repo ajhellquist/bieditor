@@ -6,7 +6,7 @@ import os
 # 1. BASIC CONFIGURATION
 # ------------------------------------------------------------------------------
 GOODDATA_HOST = "https://prod.mavenlinkreports.com"
-PROJECT_ID = "vyfe74jrhva0hwwcm30y9m8enafaeag9"
+PROJECT_ID = "qurj3o0kcilkzzvhxp9r2wn1bs9xrjdt"
 CSV_FILENAME = "projectvariables.csv"
 
 HEADERS = {
