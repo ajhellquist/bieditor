@@ -153,6 +153,9 @@ console.log('Files in models:', fs.readdirSync(path.join(__dirname, 'models')));
 // Start the Server
 // --------------------------------------------------------------------
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Set timeout to 5 minutes (300000 ms)
+server.timeout = process.env.TIMEOUT || 300000;

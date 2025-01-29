@@ -89,9 +89,12 @@ router.post('/sync', auth, async (req, res) => {
       });
     }
 
-    // 1) Create an Axios instance that handles cookies
+    // 1) Create an Axios instance that handles cookies with longer timeout
     const cookieJar = new tough.CookieJar();
-    const client = wrapper(axios.create({ jar: cookieJar }));
+    const client = wrapper(axios.create({ 
+      jar: cookieJar,
+      timeout: 300000 // 5 minute timeout
+    }));
 
     // 2) Log into GoodData
     await client.post(`${GOODDATA_HOST}/gdc/account/login`, {
