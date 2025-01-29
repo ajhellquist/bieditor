@@ -136,20 +136,33 @@ export default function MainPage() {
     setSyncStatus('syncing');
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API_URL}/gooddata/sync`, 
+      const url = `${API_URL}/gooddata/sync`;
+      console.log('Making sync request to:', url);
+      console.log('Selected PID:', selectedPID);
+      
+      const response = await axios.post(
+        url,
         {
-          projectId: selectedPID.pidId,
+          projectId: selectedPID.pid,
           pidRecordId: selectedPID._id
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
       setSyncStatus('success');
-      await fetchVariables(selectedPID._id); // refresh to see new items
+      await fetchVariables(selectedPID._id);
     } catch (err) {
-      console.error('Error syncing GoodData:', err);
+      console.error('Error syncing GoodData:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        url: err.config?.url
+      });
       setSyncStatus('error');
-    } finally {
-      setTimeout(() => setSyncStatus('idle'), 3000);
     }
   };
 
