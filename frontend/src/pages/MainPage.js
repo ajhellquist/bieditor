@@ -171,7 +171,7 @@ export default function MainPage() {
     if (syncStatus === 'syncing') return 'Syncing...';
     if (syncStatus === 'success') return 'Sync Complete!';
     if (syncStatus === 'error')   return 'Sync Failed';
-    return 'Sync from GoodData';
+    return 'Sync Variables from GoodData';
   };
 
   // --------------------------------------------------------------------------
