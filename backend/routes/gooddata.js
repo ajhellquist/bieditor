@@ -60,11 +60,9 @@ router.use(cors(corsOptions));
 
 /**
  * POST /gooddata/sync
- * Body expects:
- *   {
- *     "projectId": <GoodData project ID>,
- *     "pidRecordId": <MongoDB _id of the selected PID document>
- *   }
+ * Initiates the synchronization process with GoodData.
+ * Responds immediately to avoid Heroku H12 timeout.
+ * Handles the sync process asynchronously.
  */
 router.post('/sync', auth, async (req, res) => {
   // Add CORS headers explicitly for this endpoint
@@ -80,153 +78,158 @@ router.post('/sync', auth, async (req, res) => {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-  
-  try {
-    const { projectId, pidRecordId } = req.body;
-    if (!projectId || !pidRecordId) {
-      return res.status(400).json({ 
-        error: "Missing 'projectId' or 'pidRecordId' in request body." 
-      });
-    }
 
-    // 1) Create an Axios instance that handles cookies with longer timeout
-    const cookieJar = new tough.CookieJar();
-    const client = wrapper(axios.create({ 
-      jar: cookieJar,
-      timeout: 300000 // 5 minute timeout
-    }));
+  // Respond immediately to the client
+  res.status(202).json({ 
+    message: "GoodData sync initiated. You will receive updates once completed." 
+  });
 
-    // 2) Log into GoodData
-    await client.post(`${GOODDATA_HOST}/gdc/account/login`, {
-      postUserLogin: {
-        login: GOODDATA_LOGIN,
-        password: GOODDATA_PASSWORD,
-        remember: "0",
-        verify_level: 0
+  // Start the sync process asynchronously
+  (async () => {
+    try {
+      const { projectId, pidRecordId } = req.body;
+      if (!projectId || !pidRecordId) {
+        console.error("Missing 'projectId' or 'pidRecordId' in request body.");
+        return;
       }
-    });
 
-    // 3) Fetch attributes
-    const attributesUrl = `${GOODDATA_HOST}/gdc/md/${projectId}/query/attributes`;
-    const respAttrList = await client.get(attributesUrl);
-    const attributes = respAttrList.data.query.entries || [];
+      // 1) Create an Axios instance that handles cookies with longer timeout
+      const cookieJar = new tough.CookieJar();
+      const client = wrapper(axios.create({ 
+        jar: cookieJar,
+        timeout: 300000 // 5 minute timeout
+      }));
 
-    for (const attr of attributes) {
-      const attrTitle = attr.title || "";
-      const link = attr.link || "";
-      const objId = link.split("/obj/").pop();
-
-      // Save attribute if not already present
-      const existingAttr = await Variable.findOne({
-        pidId: pidRecordId,
-        name: attrTitle.replace(/,/g, ""),
-        type: "Attribute",
-        value: objId
+      // 2) Log into GoodData
+      await client.post(`${GOODDATA_HOST}/gdc/account/login`, {
+        postUserLogin: {
+          login: GOODDATA_LOGIN,
+          password: GOODDATA_PASSWORD,
+          remember: "0",
+          verify_level: 0
+        }
       });
-      if (!existingAttr) {
-        await Variable.create({
+
+      // 3) Fetch attributes
+      const attributesUrl = `${GOODDATA_HOST}/gdc/md/${projectId}/query/attributes`;
+      const respAttrList = await client.get(attributesUrl);
+      const attributes = respAttrList.data.query.entries || [];
+
+      for (const attr of attributes) {
+        const attrTitle = attr.title || "";
+        const link = attr.link || "";
+        const objId = link.split("/obj/").pop();
+
+        // Save attribute if not already present
+        const existingAttr = await Variable.findOne({
           pidId: pidRecordId,
           name: attrTitle.replace(/,/g, ""),
           type: "Attribute",
-          value: objId,
-          elementId: "NA"
+          value: objId
         });
-      }
+        if (!existingAttr) {
+          await Variable.create({
+            pidId: pidRecordId,
+            name: attrTitle.replace(/,/g, ""),
+            type: "Attribute",
+            value: objId,
+            elementId: "NA"
+          });
+        }
 
-      // Skip attribute values if the title matches skip patterns
-      if (shouldSkipValuesForAttribute(attrTitle)) {
-        continue;
-      }
+        // Skip attribute values if the title matches skip patterns
+        if (shouldSkipValuesForAttribute(attrTitle)) {
+          continue;
+        }
 
-      // Fetch the attribute details for display forms => attribute values
-      const attributeUrl = `${GOODDATA_HOST}${link}`;
-      const respAttrObj = await client.get(attributeUrl);
-      const attributeDetails = respAttrObj.data;
-      const displayForms = attributeDetails.attribute.content?.displayForms || [];
+        // Fetch the attribute details for display forms => attribute values
+        const attributeUrl = `${GOODDATA_HOST}${link}`;
+        const respAttrObj = await client.get(attributeUrl);
+        const attributeDetails = respAttrObj.data;
+        const displayForms = attributeDetails.attribute.content?.displayForms || [];
 
-      for (const dForm of displayForms) {
-        const labelUri = dForm.meta.uri;
-        const labelElementsUrl = `${GOODDATA_HOST}${labelUri}/elements`;
+        for (const dForm of displayForms) {
+          const labelUri = dForm.meta.uri;
+          const labelElementsUrl = `${GOODDATA_HOST}${labelUri}/elements`;
 
-        let offset = 0;
-        const limit = 100;
-        let totalCount = Infinity;
+          let offset = 0;
+          const limit = 100;
+          let totalCount = Infinity;
 
-        while (offset < totalCount) {
-          const pageUrl = `${labelElementsUrl}?limit=${limit}&offset=${offset}`;
-          const pageResp = await client.get(pageUrl);
-          const pageData = pageResp.data.attributeElements;
-          const items = pageData.elements || [];
-          totalCount = parseInt(pageData.paging.total, 10);
+          while (offset < totalCount) {
+            const pageUrl = `${labelElementsUrl}?limit=${limit}&offset=${offset}`;
+            const pageResp = await client.get(pageUrl);
+            const pageData = pageResp.data.attributeElements;
+            const items = pageData.elements || [];
+            totalCount = parseInt(pageData.paging.total, 10);
 
-          for (const elem of items) {
-            const valTitle = elem.title.trim() || "empty value";
-            const valUri = elem.uri;
-            let elementId = "UNKNOWN";
-            if (valUri.includes("?id=")) {
-              elementId = valUri.split("?id=")[1];
-            }
-            const combinedName = `${attrTitle.replace(/,/g, "")}: ${valTitle.replace(/,/g, "")}`;
+            for (const elem of items) {
+              const valTitle = elem.title.trim() || "empty value";
+              const valUri = elem.uri;
+              let elementId = "UNKNOWN";
+              if (valUri.includes("?id=")) {
+                elementId = valUri.split("?id=")[1];
+              }
+              const combinedName = `${attrTitle.replace(/,/g, "")}: ${valTitle.replace(/,/g, "")}`;
 
-            // Insert if not found
-            const existingVal = await Variable.findOne({
-              pidId: pidRecordId,
-              name: combinedName,
-              type: "Attribute Value",
-              value: objId,
-              elementId: elementId
-            });
-            if (!existingVal) {
-              await Variable.create({
+              // Insert if not found
+              const existingVal = await Variable.findOne({
                 pidId: pidRecordId,
                 name: combinedName,
                 type: "Attribute Value",
                 value: objId,
-                elementId
+                elementId: elementId
               });
+              if (!existingVal) {
+                await Variable.create({
+                  pidId: pidRecordId,
+                  name: combinedName,
+                  type: "Attribute Value",
+                  value: objId,
+                  elementId
+                });
+              }
             }
-          }
 
-          offset += items.length;
-          if (offset >= totalCount) break;
+            offset += items.length;
+            if (offset >= totalCount) break;
+          }
         }
       }
-    }
 
-    // 4) Fetch metrics
-    const metricsUrl = `${GOODDATA_HOST}/gdc/md/${projectId}/query/metrics`;
-    const respMetrics = await client.get(metricsUrl);
-    const metrics = respMetrics.data.query.entries || [];
+      // 4) Fetch metrics
+      const metricsUrl = `${GOODDATA_HOST}/gdc/md/${projectId}/query/metrics`;
+      const respMetrics = await client.get(metricsUrl);
+      const metrics = respMetrics.data.query.entries || [];
 
-    for (const m of metrics) {
-      const metricTitle = m.title || "";
-      const metricLink = m.link || "";
-      const metricObjId = metricLink.split("/obj/").pop();
+      for (const m of metrics) {
+        const metricTitle = m.title || "";
+        const metricLink = m.link || "";
+        const metricObjId = metricLink.split("/obj/").pop();
 
-      const existingMetric = await Variable.findOne({
-        pidId: pidRecordId,
-        name: metricTitle.replace(/,/g, ""),
-        type: "Metric",
-        value: metricObjId
-      });
-      if (!existingMetric) {
-        await Variable.create({
+        const existingMetric = await Variable.findOne({
           pidId: pidRecordId,
           name: metricTitle.replace(/,/g, ""),
           type: "Metric",
-          value: metricObjId,
-          elementId: "NA"
+          value: metricObjId
         });
+        if (!existingMetric) {
+          await Variable.create({
+            pidId: pidRecordId,
+            name: metricTitle.replace(/,/g, ""),
+            type: "Metric",
+            value: metricObjId,
+            elementId: "NA"
+          });
+        }
       }
-    }
 
-    return res.json({ 
-      message: "GoodData sync complete. Only new items were inserted." 
-    });
-  } catch (error) {
-    console.error("Error in GoodData sync route:", error);
-    return res.status(500).json({ error: error.message });
-  }
+      console.log("GoodData sync complete for PID:", pidRecordId);
+    } catch (error) {
+      console.error("Error during GoodData sync:", error);
+      // Optionally, implement error notifications or logging
+    }
+  })();
 });
 
 module.exports = router;
