@@ -172,7 +172,7 @@ export default function PIDManager({
             border: '3px solid black',
             borderRadius: '4px',
             cursor: selectedPID ? 'pointer' : 'not-allowed',
-            width: '180px',
+            width: '230px',
             height: '40px',
             display: 'flex',
             justifyContent: 'center',
