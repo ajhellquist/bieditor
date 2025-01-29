@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
+const cors = require('cors');
+const corsOptions = require('../config/cors');
 const Variable = require('../models/Variable');
 const axios = require('axios');
 
@@ -53,6 +55,9 @@ function shouldSkipValuesForAttribute(attrTitle) {
   return SKIP_PATTERNS.some((pattern) => attrTitle.includes(pattern));
 }
 
+// Apply CORS specifically for this route
+router.use(cors(corsOptions));
+
 /**
  * POST /gooddata/sync
  * Body expects:
@@ -62,6 +67,13 @@ function shouldSkipValuesForAttribute(attrTitle) {
  *   }
  */
 router.post('/sync', auth, async (req, res) => {
+  // Add CORS headers explicitly for this endpoint
+  const origin = req.headers.origin;
+  if (corsOptions.origin.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
   try {
     const { projectId, pidRecordId } = req.body;
     if (!projectId || !pidRecordId) {
