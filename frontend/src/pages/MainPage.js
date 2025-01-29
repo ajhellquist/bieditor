@@ -381,20 +381,22 @@ export default function MainPage() {
         marginRight: '5%',
         minHeight: 'calc(100vh - 130px)',
         overflowY: 'auto',
-        paddingBottom: '60px'
+        paddingBottom: '60px',
+        paddingTop: '20px'
       }}>
-        {/* The PID Manager now receives our sync function as props */}
-        <PIDManager
-          pids={pids}
-          selectedPID={selectedPID}
-          onPIDSelect={setSelectedPID}
-          onPIDAdd={handlePIDAdd}
-          onPIDDelete={handlePIDDelete}
-          // NEW props for the sync button:
-          handleSyncFromGoodData={handleSyncFromGoodData}
-          syncStatus={syncStatus}
-          renderSyncButtonText={renderSyncButtonText}
-        />
+        {/* The PID Manager with increased width */}
+        <div style={{ width: '150%' }}>
+          <PIDManager
+            pids={pids}
+            selectedPID={selectedPID}
+            onPIDSelect={setSelectedPID}
+            onPIDAdd={handlePIDAdd}
+            onPIDDelete={handlePIDDelete}
+            handleSyncFromGoodData={handleSyncFromGoodData}
+            syncStatus={syncStatus}
+            renderSyncButtonText={renderSyncButtonText}
+          />
+        </div>
 
         <div style={{ 
           display: 'flex', 
