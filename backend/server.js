@@ -1,3 +1,5 @@
+// backend/server.js
+
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -11,13 +13,22 @@ const variableRoutes = require('./routes/variables');
 const pidRoutes = require('./routes/pids');
 const configRoutes = require('./routes/config');
 const metricsRouter = require('./routes/metrics');
+// ---- ADD THIS: Require the GoodData routes ----
+const goodDataRoutes = require('./routes/gooddata');
+
 const API_URL = process.env.REACT_APP_API_URL;
 
 const app = express();
 
+// --------------------------------------------------------------------
 // CORS Configuration
+// --------------------------------------------------------------------
 app.use(cors({
-  origin: ['https://bieditor-git-main-ajhellquists-projects.vercel.app', 'https://www.maqlexpress.com', 'http://localhost:3000'],
+  origin: [
+    'https://bieditor-git-main-ajhellquists-projects.vercel.app',
+    'https://www.maqlexpress.com',
+    'http://localhost:3000'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -43,7 +54,9 @@ app.options('*', (req, res) => {
   res.status(200).send();
 });
 
-// Add this middleware to log requests
+// --------------------------------------------------------------------
+// Debug request-logging middleware
+// --------------------------------------------------------------------
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   console.log('Origin:', req.headers.origin);
@@ -51,10 +64,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// Then your other middleware
+// --------------------------------------------------------------------
+// Parse incoming JSON bodies
+// --------------------------------------------------------------------
 app.use(express.json());
 
+// --------------------------------------------------------------------
 // Connect to MongoDB
+// --------------------------------------------------------------------
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -72,27 +89,33 @@ mongoose.connect(process.env.MONGODB_URI, {
 mongoose.connection.on('error', (err) => {
   console.error('MongoDB connection error:', err);
 });
-
 mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected');
 });
 
+// --------------------------------------------------------------------
+// Handle Node.js process errors
+// --------------------------------------------------------------------
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
-
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
 });
 
-// Mount routes
+// --------------------------------------------------------------------
+// Mount All Routes
+// --------------------------------------------------------------------
 app.use('/auth', authRoutes);
 app.use('/variables', variableRoutes);
 app.use('/pids', pidRoutes);
 app.use('/config', configRoutes);
 app.use('/metrics', metricsRouter);
 
-// Add debug route to check CORS
+// ---- ADD THIS: Mount the GoodData sync route ----
+app.use('/gooddata', goodDataRoutes);
+
+// Optional debug route
 app.options('/debug-cors', cors());
 app.get('/debug-cors', (req, res) => {
   res.json({
@@ -104,12 +127,14 @@ app.get('/debug-cors', (req, res) => {
   });
 });
 
-// Basic test route
+// Basic health-check route
 app.get('/', (req, res) => {
   res.json({ message: 'Server is running!' });
 });
 
-// Error handler middleware
+// --------------------------------------------------------------------
+// Error Handler
+// --------------------------------------------------------------------
 app.use((err, req, res, next) => {
   console.error('Server error:', err);
   res.status(500).json({ 
@@ -118,9 +143,15 @@ app.use((err, req, res, next) => {
   });
 });
 
+// --------------------------------------------------------------------
+// Debug logs for your folder structure
+// --------------------------------------------------------------------
 console.log('Current directory:', __dirname);
 console.log('Files in models:', fs.readdirSync(path.join(__dirname, 'models')));
 
+// --------------------------------------------------------------------
+// Start the Server
+// --------------------------------------------------------------------
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

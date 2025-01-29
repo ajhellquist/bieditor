@@ -1,3 +1,4 @@
+// frontend/src/pages/MainPage.js
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import CodeEditor from '../components/CodeEditor';
@@ -10,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 const API_URL = process.env.REACT_APP_API_URL || 'https://bi-editor.herokuapp.com';
 
 export default function MainPage() {
-  // State management for application data
+  // State management
   const [code, setCode] = useState('// Start typing...');
   const [variables, setVariables] = useState([]);
   const [pids, setPids] = useState([]);
@@ -20,12 +21,20 @@ export default function MainPage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [metricsCount, setMetricsCount] = useState(0);
   const [user, setUser] = useState({ firstName: '', lastName: '' });
+
+  // 'idle' | 'syncing' | 'success' | 'error'
+  const [syncStatus, setSyncStatus] = useState('idle');
+
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
+  // --------------------------------------------------------------------------
+  //  USEEFFECTS: fetch data, restore selected PID
+  // --------------------------------------------------------------------------
   useEffect(() => {
     fetchPIDs();
     fetchUserInfo();
+    fetchMetricsCount();
   }, []);
 
   useEffect(() => {
@@ -35,23 +44,6 @@ export default function MainPage() {
       setVariables([]);
     }
   }, [selectedPID]);
-
-  useEffect(() => {
-    fetchMetricsCount();
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   useEffect(() => {
     if (pids.length > 0) {
@@ -71,11 +63,33 @@ export default function MainPage() {
     }
   }, [selectedPID]);
 
-  /**
-   * Fetches variables associated with the selected PID
-   * @param {string} pidId - The ID of the selected PID
-   */
-  const fetchVariables = async (pidId) => {
+  // Close user-menu if clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // --------------------------------------------------------------------------
+  //  API Calls
+  // --------------------------------------------------------------------------
+  async function fetchPIDs() {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_URL}/pids`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPids(response.data);
+    } catch (error) {
+      console.error('Error fetching PIDs:', error);
+    }
+  }
+
+  async function fetchVariables(pidId) {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(`${API_URL}/variables/${pidId}`, {
@@ -85,29 +99,21 @@ export default function MainPage() {
     } catch (error) {
       console.error('Error fetching variables:', error);
     }
-  };
+  }
 
-  /**
-   * Fetches all PIDs associated with the current user
-   */
-  const fetchPIDs = async () => {
+  async function fetchUserInfo() {
     try {
       const token = localStorage.getItem('token');
-      console.log('Fetching PIDs with token:', token);
-      const response = await axios.get(`${API_URL}/pids`, {
+      const response = await axios.get(`${API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      console.log('Fetched PIDs from server:', response.data);
-      setPids(response.data);
+      setUser(response.data);
     } catch (error) {
-      console.error('Error fetching PIDs:', error);
+      console.error('Error fetching user info:', error);
     }
-  };
+  }
 
-  /**
-   * Retrieves the total count of metrics created by the user
-   */
-  const fetchMetricsCount = async () => {
+  async function fetchMetricsCount() {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(`${API_URL}/metrics/copy-count`, {
@@ -117,97 +123,113 @@ export default function MainPage() {
     } catch (error) {
       console.error('Error fetching metrics:', error);
     }
-  };
+  }
 
-  /**
-   * Fetches current user's information from the server
-   */
-  const fetchUserInfo = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      console.log('Fetching user info with token:', token);
-      const response = await axios.get(`${API_URL}/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      console.log('Received user data:', response.data);
-      setUser(response.data);
-    } catch (error) {
-      console.error('Error fetching user info:', error.response?.data || error);
-    }
-  };
-
-  // Variable management handlers
-  const handleVariableAdded = (newVariable) => {
-    setVariables([...variables, newVariable]);
-  };
-
-  /**
-   * Deletes a variable and updates the UI
-   * @param {string} variableId - The ID of the variable to delete
-   */
-  const handleDeleteVariable = async (variableId) => {
-    // Add confirmation dialog
-    if (!window.confirm('Are you sure you want to delete this variable?')) {
+  // --------------------------------------------------------------------------
+  //  GOODDATA SYNC
+  // --------------------------------------------------------------------------
+  const handleSyncFromGoodData = async () => {
+    if (!selectedPID) {
+      alert('Please select a PID first!');
       return;
     }
-
+    setSyncStatus('syncing');
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(
-        `${API_URL}/variables/${selectedPID._id}/${variableId}`,
+      await axios.post(`${API_URL}/gooddata/sync`, 
+        {
+          projectId: selectedPID.pidId,
+          pidRecordId: selectedPID._id
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setVariables(variables.filter(v => v._id !== variableId));
+      setSyncStatus('success');
+      await fetchVariables(selectedPID._id); // refresh to see new items
+    } catch (err) {
+      console.error('Error syncing GoodData:', err);
+      setSyncStatus('error');
+    } finally {
+      setTimeout(() => setSyncStatus('idle'), 3000);
+    }
+  };
+
+  const renderSyncButtonText = () => {
+    if (syncStatus === 'syncing') return 'Syncing...';
+    if (syncStatus === 'success') return 'Sync Complete!';
+    if (syncStatus === 'error')   return 'Sync Failed';
+    return 'Sync from GoodData';
+  };
+
+  // --------------------------------------------------------------------------
+  //  LOGOUT
+  // --------------------------------------------------------------------------
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
+  };
+
+  // --------------------------------------------------------------------------
+  //  VARIABLE CRUD
+  // --------------------------------------------------------------------------
+  const handleVariableAdded = (newVariable) => {
+    setVariables(prev => [...prev, newVariable]);
+  };
+  const handleVariablesUploaded = (newVars) => {
+    setVariables(prev => [...prev, ...newVars]);
+  };
+  const handleDeleteVariable = async (variableId) => {
+    if (!window.confirm('Are you sure you want to delete this variable?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API_URL}/variables/${selectedPID._id}/${variableId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setVariables(prev => prev.filter(v => v._id !== variableId));
     } catch (error) {
       console.error('Error deleting variable:', error);
     }
   };
-
-  /**
-   * Creates a new PID and updates the UI
-   * @param {Object} newPID - The PID object containing name and pid
-   */
-  const handlePIDAdd = async (newPID) => {
+  const handleEdit = (variable) => {
+    setEditingVariable(variable);
+  };
+  const handleUpdateVariable = async (updatedVar) => {
     try {
       const token = localStorage.getItem('token');
-      console.log('MainPage - About to send PID data to server:', {
-        name: newPID.name,
-        pid: newPID.pid
-      });
-      
-      const response = await axios.post(`${API_URL}/pids`, newPID, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      console.log('MainPage - Server response for new PID:', response.data);
-      setPids(prevPids => [...prevPids, response.data]);
-      setSelectedPID(response.data);
-    } catch (error) {
-      console.error('Error adding PID:', error.response?.data || error);
-      alert('Error adding PID: ' + (error.response?.data?.message || error.message));
+      await axios.put(
+        `${API_URL}/variables/${selectedPID._id}/${updatedVar._id}`,
+        updatedVar,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setVariables(prev => prev.map(v => v._id === updatedVar._id ? updatedVar : v));
+      setEditingVariable(null);
+    } catch (err) {
+      console.error('Error updating variable:', err);
     }
   };
 
-  /**
-   * Deletes a PID and updates the UI
-   * @param {string} pidId - The ID of the PID to delete
-   */
+  // --------------------------------------------------------------------------
+  //  PID CRUD
+  // --------------------------------------------------------------------------
+  const handlePIDAdd = async (newPID) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(`${API_URL}/pids`, newPID, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPids(prev => [...prev, response.data]);
+      setSelectedPID(response.data);
+    } catch (error) {
+      console.error('Error adding PID:', error);
+      alert('Error adding PID: ' + (error.response?.data?.message || error.message));
+    }
+  };
   const handlePIDDelete = async (pidId) => {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`${API_URL}/pids/${pidId}`, {
-        headers: { 
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
-      
-      // Remove the deleted PID from state
-      setPids(prevPids => prevPids.filter(p => p._id !== pidId));
-      
-      // If the deleted PID was selected, clear the selection
+      setPids(prev => prev.filter(p => p._id !== pidId));
       if (selectedPID?._id === pidId) {
         setSelectedPID(null);
       }
@@ -217,93 +239,19 @@ export default function MainPage() {
     }
   };
 
-  /**
-   * Utility function to extract references from HTML content
-   * @param {string} htmlContent - The HTML content to parse
-   * @returns {Array} Array of reference attributes
-   */
-  const getActualReferences = (htmlContent) => {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlContent;
-    const spans = tempDiv.getElementsByTagName('span');
-    const references = [];
-    
-    for (let span of spans) {
-      references.push(span.getAttribute('data-reference'));
-    }
-    
-    return references;
-  };
-
-  /**
-   * Utility function to extract plain text from HTML content
-   * @param {string} htmlContent - The HTML content to parse
-   * @returns {string} The plain text content
-   */
-  const getDisplayText = (htmlContent) => {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlContent;
-    return tempDiv.textContent;
-  };
-
-  // Variable editing handlers
-  const handleEdit = (variable) => {
-    setEditingVariable(variable);
-  };
-
-  /**
-   * Updates an existing variable and refreshes the UI
-   * @param {Object} updatedVariable - The modified variable object
-   */
-  const handleUpdateVariable = async (updatedVariable) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.put(
-        `${API_URL}/variables/${selectedPID._id}/${updatedVariable._id}`,
-        updatedVariable,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setVariables(variables.map(v => 
-        v._id === updatedVariable._id ? updatedVariable : v
-      ));
-      setEditingVariable(null);
-    } catch (error) {
-      console.error('Error updating variable:', error);
-    }
-  };
-
-  // Filter variables based on search term
-  const filteredVariables = variables.filter(variable => 
+  // --------------------------------------------------------------------------
+  //  SEARCH FILTER
+  // --------------------------------------------------------------------------
+  const filteredVariables = variables.filter(variable =>
     variable.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // CSV upload handler
-  const handleVariablesUploaded = (newVariables) => {
-    setVariables([...variables, ...newVariables]);
-  };
-
-  // Authentication handlers
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/');
-  };
-
-  /**
-   * Updates the metrics count after successful metric creation
-   */
-  const refreshMetricsCount = async () => {
-    await fetchMetricsCount();
-  };
-
+  // --------------------------------------------------------------------------
+  //  RENDER
+  // --------------------------------------------------------------------------
   return (
     <>
-      <style>
-        {`
-          .search-input::placeholder {
-            color: #666;
-          }
-        `}
-      </style>
+      {/* Top Banner */}
       <div style={{ 
         backgroundColor: '#FFFDF8',
         position: 'fixed',
@@ -313,7 +261,7 @@ export default function MainPage() {
         bottom: 0,
         zIndex: -1
       }} />
-      
+
       <div style={{
         height: '60px',
         display: 'flex',
@@ -327,7 +275,7 @@ export default function MainPage() {
             src={require('../assets/MAQLExpressLogo.png')}
             alt="MAQL Express Editor Logo"
             style={{
-              height: '36px', // Match the font size of the banner text
+              height: '36px',
               width: 'auto',
               objectFit: 'contain'
             }}
@@ -362,7 +310,6 @@ export default function MainPage() {
               onClick={() => setShowDropdown(!showDropdown)}
               style={{ cursor: 'pointer', color: '#333' }}
             />
-            
             {showDropdown && (
               <div style={{
                 position: 'absolute',
@@ -394,10 +341,7 @@ export default function MainPage() {
                     textAlign: 'left',
                     cursor: 'pointer',
                     fontSize: '14px',
-                    color: '#333',
-                    ':hover': {
-                      backgroundColor: '#f5f5f5'
-                    }
+                    color: '#333'
                   }}
                 >
                   Log Out
@@ -408,6 +352,7 @@ export default function MainPage() {
         </div>
       </div>
 
+      {/* Horizontal black line */}
       <div style={{ 
         left: 0,
         right: 0,
@@ -416,6 +361,7 @@ export default function MainPage() {
         zIndex: 1
       }} />
 
+      {/* MAIN CONTENT */}
       <div style={{ 
         marginLeft: '5%',
         marginRight: '5%',
@@ -423,24 +369,18 @@ export default function MainPage() {
         overflowY: 'auto',
         paddingBottom: '60px'
       }}>
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '20px',
-          marginTop: '20px',
-          marginBottom: '20px'
-        }}>
-          <div style={{ width: '1000px' }}>
-            <PIDManager
-              pids={pids}
-              selectedPID={selectedPID}
-              onPIDSelect={setSelectedPID}
-              onPIDAdd={handlePIDAdd}
-              onPIDDelete={handlePIDDelete}
-              style={{ width: '200px' }}
-            />
-          </div>
-        </div>
+        {/* The PID Manager now receives our sync function as props */}
+        <PIDManager
+          pids={pids}
+          selectedPID={selectedPID}
+          onPIDSelect={setSelectedPID}
+          onPIDAdd={handlePIDAdd}
+          onPIDDelete={handlePIDDelete}
+          // NEW props for the sync button:
+          handleSyncFromGoodData={handleSyncFromGoodData}
+          syncStatus={syncStatus}
+          renderSyncButtonText={renderSyncButtonText}
+        />
 
         <div style={{ 
           display: 'flex', 
@@ -448,18 +388,21 @@ export default function MainPage() {
           marginBottom: '20px',
           justifyContent: 'flex-start'
         }}>
+          {/* Variable Form */}
           <div style={{ width: '25%' }}>
             <VariableForm 
               onVariableAdded={handleVariableAdded} 
               selectedPID={selectedPID}
             />
           </div>
+          {/* CSV Uploader */}
           <div style={{ width: '25%' }}>
             <CSVUploader 
               selectedPID={selectedPID}
               onVariablesAdded={handleVariablesUploaded}
             />
           </div>
+          {/* Search Box */}
           <div style={{ width: '25%' }}>
             <div style={{ 
               marginTop: '0',
@@ -497,7 +440,6 @@ export default function MainPage() {
                   marginBottom: '10px',
                   fontFamily: 'Times New Roman'
                 }}
-                className="search-input"
               />
 
               <div style={{ 
@@ -509,8 +451,12 @@ export default function MainPage() {
                 backgroundColor: '#FFFFFF'
               }}>
                 {searchTerm ? (
-                  filteredVariables.length > 0 ? (
-                    filteredVariables.map((variable) => (
+                  variables.filter(v => 
+                    v.name.toLowerCase().includes(searchTerm.toLowerCase())
+                  ).length > 0 ? (
+                    variables.filter(v =>
+                      v.name.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).map((variable) => (
                       <div key={variable._id} style={{
                         padding: '8px',
                         marginBottom: '5px',
@@ -563,6 +509,7 @@ export default function MainPage() {
           </div>
         </div>
 
+        {/* Code Editor */}
         <div style={{ display: 'flex' }}>
           <div style={{ flex: 1 }}>
             <div style={{ 
@@ -584,18 +531,19 @@ export default function MainPage() {
               }}>
                 <span style={{ fontWeight: '500', fontFamily: 'Times New Roman' }}>Code Editor</span>
               </div>
-              
+
               <CodeEditor 
                 code={code} 
                 setCode={setCode} 
                 variables={variables} 
                 selectedPID={selectedPID}
-                onCopySuccess={refreshMetricsCount}
+                onCopySuccess={fetchMetricsCount}
               />
             </div>
           </div>
         </div>
 
+        {/* Edit Variable Modal */}
         {editingVariable && (
           <div style={{ 
             position: 'fixed',
@@ -623,8 +571,8 @@ export default function MainPage() {
         )}
       </div>
 
+      {/* Bottom black line */}
       <div style={{ 
-        //position: 'fixed',
         left: 0,
         right: 0,
         bottom: '60px',
@@ -633,6 +581,7 @@ export default function MainPage() {
         zIndex: 1
       }} />
 
+      {/* Footer */}
       <div style={{
         height: '60px',
         display: 'flex',
