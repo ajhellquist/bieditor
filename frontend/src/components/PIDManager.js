@@ -51,7 +51,7 @@ export default function PIDManager({
     }}>
       {/* PID dropdown */}
       <div ref={dropdownRef} style={{ 
-        width: '400px',
+        width: '600px',
         position: 'relative'
       }}>
         <div 
@@ -172,8 +172,13 @@ export default function PIDManager({
             border: '3px solid black',
             borderRadius: '4px',
             cursor: selectedPID ? 'pointer' : 'not-allowed',
-            width: '150px',
-            height: '40px'
+            width: '180px',
+            height: '40px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+            whiteSpace: 'nowrap'
           }}
         >
           {renderSyncButtonText()}
