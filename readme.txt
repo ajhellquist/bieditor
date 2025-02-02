@@ -4,6 +4,7 @@
 
 ### Enhancements
 - Added a variable sync button that connects straight to GoodData. When a PID is selected you can press "Sync Variables from GoodData" and with an appropriate username/password it will retrieve all metrics, attributes, and attribute values from that project. Subsequent syncing will continuously search for new variables not currently stored in your library and sync those only.
+- Added a metric create button that allows a user to directly save the metric in GoodData via API upload. This allows a user to code a metric and give it a name and save as a global metric.
 
 ### Bug Fixes
 - None
