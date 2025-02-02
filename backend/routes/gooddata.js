@@ -11,11 +11,6 @@ const axios = require('axios');
 const { wrapper } = require('axios-cookiejar-support');
 const tough = require('tough-cookie');
 
-// Hard-coded GoodData credentials (or retrieve from ENV):
-const GOODDATA_HOST = "https://prod.mavenlinkreports.com";
-const GOODDATA_LOGIN = "ahellquist+mavenlink@mavenlink.com";
-const GOODDATA_PASSWORD = "EE9pQ@T17@78wH*s";
-
 // Patterns to skip attribute values
 const SKIP_PATTERNS = [
   "Date (",
@@ -87,9 +82,9 @@ router.post('/sync', auth, async (req, res) => {
   // Start the sync process asynchronously
   (async () => {
     try {
-      const { projectId, pidRecordId } = req.body;
-      if (!projectId || !pidRecordId) {
-        console.error("Missing 'projectId' or 'pidRecordId' in request body.");
+      const { projectId, pidRecordId, username, password } = req.body;
+      if (!projectId || !pidRecordId || !username || !password) {
+        console.error("Missing required parameters in request body.");
         return;
       }
 
@@ -103,8 +98,8 @@ router.post('/sync', auth, async (req, res) => {
       // 2) Log into GoodData
       await client.post(`${GOODDATA_HOST}/gdc/account/login`, {
         postUserLogin: {
-          login: GOODDATA_LOGIN,
-          password: GOODDATA_PASSWORD,
+          login: username,
+          password: password,
           remember: "0",
           verify_level: 0
         }

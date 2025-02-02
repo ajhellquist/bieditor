@@ -10,6 +10,94 @@ import { useNavigate } from 'react-router-dom';
 
 const API_URL = process.env.REACT_APP_API_URL || 'https://bi-editor.herokuapp.com';
 
+function CredentialsModal({ onSubmit, onCancel }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(username, password);
+  };
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: '#FFFFFF',
+      padding: '20px',
+      borderRadius: '12px',
+      border: '3px solid black',
+      boxShadow: '5px 5px 10px rgb(0, 0, 0)',
+      zIndex: 1000,
+      width: '400px'
+    }}>
+      <h3>GoodData Credentials</h3>
+      <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={{ display: 'block', marginBottom: '5px' }}>Username:</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '8px',
+              borderRadius: '4px',
+              border: '1px solid #ddd'
+            }}
+            required
+          />
+        </div>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '5px' }}>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '8px',
+              borderRadius: '4px',
+              border: '1px solid #ddd'
+            }}
+            required
+          />
+        </div>
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+          <button
+            type="button"
+            onClick={onCancel}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: '1px solid #ddd',
+              background: '#fff',
+              cursor: 'pointer'
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            style={{
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              background: '#007bff',
+              color: 'white',
+              cursor: 'pointer'
+            }}
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
 export default function MainPage() {
   // State management
   const [code, setCode] = useState('// Start typing...');
@@ -27,6 +115,9 @@ export default function MainPage() {
 
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+
+  // Add this new state
+  const [showCredentialsModal, setShowCredentialsModal] = useState(false);
 
   // --------------------------------------------------------------------------
   //  USEEFFECTS: fetch data, restore selected PID
@@ -128,23 +219,28 @@ export default function MainPage() {
   // --------------------------------------------------------------------------
   //  GOODDATA SYNC
   // --------------------------------------------------------------------------
-  const handleSyncFromGoodData = async () => {
+  const handleSyncFromGoodData = async (username, password) => {
     if (!selectedPID) {
       alert('Please select a PID first!');
       return;
     }
+    setShowCredentialsModal(true);
+  };
+
+  const handleCredentialsSubmit = async (username, password) => {
+    setShowCredentialsModal(false);
     setSyncStatus('syncing');
     try {
       const token = localStorage.getItem('token');
       const url = `${API_URL}/gooddata/sync`;
-      console.log('Making sync request to:', url);
-      console.log('Selected PID:', selectedPID);
       
       const response = await axios.post(
         url,
         {
           projectId: selectedPID.pid,
-          pidRecordId: selectedPID._id
+          pidRecordId: selectedPID._id,
+          username,
+          password
         },
         {
           headers: {
@@ -584,6 +680,14 @@ export default function MainPage() {
               onCancel={() => setEditingVariable(null)}
             />
           </div>
+        )}
+
+        {/* Credentials Modal */}
+        {showCredentialsModal && (
+          <CredentialsModal
+            onSubmit={handleCredentialsSubmit}
+            onCancel={() => setShowCredentialsModal(false)}
+          />
         )}
       </div>
 
