@@ -1,5 +1,6 @@
 // frontend/src/components/PIDManager.js
 import React, { useState, useEffect, useRef } from 'react';
+import { FaInfoCircle } from 'react-icons/fa';
 
 export default function PIDManager({
   pids,
@@ -162,27 +163,69 @@ export default function PIDManager({
           Add PID
         </button>
 
-        <button
-          onClick={handleSyncFromGoodData}
-          disabled={syncStatus === 'syncing' || !selectedPID}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: syncStatus === 'syncing' ? 'gray' : 'lightgreen',
-            color: 'black',
-            border: '3px solid black',
-            borderRadius: '4px',
-            cursor: selectedPID ? 'pointer' : 'not-allowed',
-            width: '230px',
-            height: '40px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            textAlign: 'center',
-            whiteSpace: 'nowrap'
-          }}
-        >
-          {renderSyncButtonText()}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button
+            onClick={handleSyncFromGoodData}
+            disabled={syncStatus === 'syncing' || !selectedPID}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: syncStatus === 'syncing' ? 'gray' : 'lightgreen',
+              color: 'black',
+              border: '3px solid black',
+              borderRadius: '4px',
+              cursor: selectedPID ? 'pointer' : 'not-allowed',
+              width: '230px',
+              height: '40px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              textAlign: 'center',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {renderSyncButtonText()}
+          </button>
+          <div style={{ 
+            position: 'relative', 
+            display: 'inline-block',
+            cursor: 'help'
+          }}>
+            <FaInfoCircle 
+              size={16} 
+              color="#666"
+            />
+            <div style={{
+              position: 'absolute',
+              bottom: '100%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              backgroundColor: '#333',
+              color: 'white',
+              padding: '12px',
+              borderRadius: '4px',
+              width: '300px',
+              textAlign: 'center',
+              fontSize: '14px',
+              visibility: 'hidden',
+              opacity: 0,
+              transition: 'opacity 0.2s',
+              zIndex: 1000
+            }}>
+              <p style={{ margin: '0 0 12px 0' }}>
+                Sync your metrics, attribute and attribute values from GoodData. Subsequent syncing will refresh new variables to your library.
+              </p>
+              <p style={{ margin: 0 }}>
+                Please allow 2-3min for the sync to complete and refresh page to see new variables.
+              </p>
+            </div>
+            <style>{`
+              div[style*="position: relative"]:hover > div[style*="position: absolute"] {
+                visibility: visible !important;
+                opacity: 1 !important;
+              }
+            `}</style>
+          </div>
+        </div>
       </div>
 
       {/* "Add PID" Form Modal */}
