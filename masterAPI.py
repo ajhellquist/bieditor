@@ -16,8 +16,8 @@ HEADERS = {
 
 LOGIN_PAYLOAD = {
     "postUserLogin": {
-        "login":    "ahellquist+mavenlink@mavenlink.com",  # Your actual user
-        "password": "EE9pQ@T17@78wH*s",                    # Your actual password
+        "login":    "ENTERUSERHERE",  # Your actual user
+        "password": "ENTERPASSHERE",                    # Your actual password
         "remember": "0",
         "verify_level": 0
     }
