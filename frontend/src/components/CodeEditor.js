@@ -458,13 +458,20 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         throw new Error('No project selected');
       }
 
-      // Add debug logging
       const maqlCode = getEditorContent();
+      
+      // Basic MAQL validation
+      if (!maqlCode.toLowerCase().includes('select')) {
+        throw new Error('MAQL code must include a SELECT statement');
+      }
+
+      // Add debug logging
       console.log('Sending request with:', {
         projectId: selectedPID.pid,
         metricName,
         maqlCodeLength: maqlCode.length,
-        maqlCodePreview: maqlCode.substring(0, 100) // First 100 chars
+        maqlCodePreview: maqlCode.substring(0, 100), // First 100 chars
+        fullMaqlCode: maqlCode // Log the full MAQL code for debugging
       });
 
       const response = await axios.post(
@@ -490,7 +497,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         message: err.message,
         response: err.response?.data,
         status: err.response?.status,
-        url: err.config?.url
+        url: err.config?.url,
+        maqlCode: err.config?.data ? JSON.parse(err.config.data).maqlCode : null
       });
       throw new Error(err.response?.data?.message || 'Failed to create metric in GoodData');
     }
@@ -527,7 +535,17 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       }
     }
 
-    return finalText.trim();
+    // Clean up the MAQL code
+    return finalText
+      .trim()
+      .replace(/\s+/g, ' ')        // Replace multiple spaces with single space
+      .replace(/\n/g, ' ')         // Replace newlines with spaces
+      .replace(/\t/g, ' ')         // Replace tabs with spaces
+      .replace(/\s*,\s*/g, ', ')   // Ensure proper spacing around commas
+      .replace(/\s*\(\s*/g, '(')   // Remove spaces before opening parentheses
+      .replace(/\s*\)\s*/g, ') ')  // Remove spaces before closing parentheses
+      .replace(/\s+/g, ' ')        // Final cleanup of multiple spaces
+      .trim();                     // Final trim
   };
 
   return (
