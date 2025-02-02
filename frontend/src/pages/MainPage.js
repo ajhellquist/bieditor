@@ -72,9 +72,10 @@ function CredentialsModal({ onSubmit, onCancel }) {
             style={{
               padding: '8px 16px',
               borderRadius: '4px',
-              border: '1px solid #ddd',
-              background: '#fff',
-              cursor: 'pointer'
+              border: '3px solid black',
+              background: '#CCCCCC',
+              cursor: 'pointer',
+              fontWeight: '500'
             }}
           >
             Cancel
@@ -84,10 +85,10 @@ function CredentialsModal({ onSubmit, onCancel }) {
             style={{
               padding: '8px 16px',
               borderRadius: '4px',
-              border: 'none',
-              background: '#007bff',
-              color: 'white',
-              cursor: 'pointer'
+              border: '3px solid black',
+              background: '#FFC480',
+              cursor: 'pointer',
+              fontWeight: '500'
             }}
           >
             Submit
