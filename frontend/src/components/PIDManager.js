@@ -196,7 +196,7 @@ export default function PIDManager({
             />
             <div style={{
               position: 'absolute',
-              bottom: '100%',
+              top: '100%',
               left: '50%',
               transform: 'translateX(-50%)',
               backgroundColor: '#333',
@@ -209,7 +209,8 @@ export default function PIDManager({
               visibility: 'hidden',
               opacity: 0,
               transition: 'opacity 0.2s',
-              zIndex: 1000
+              zIndex: 1000,
+              marginTop: '8px'
             }}>
               <p style={{ margin: '0 0 12px 0' }}>
                 Sync your metrics, attribute and attribute values from GoodData. Subsequent syncing will refresh new variables to your library.
