@@ -234,10 +234,27 @@ router.post('/sync', auth, async (req, res) => {
 router.post('/create-metric', auth, async (req, res) => {
   const { projectId, username, password, metricName, maqlCode } = req.body;
   
+  // Add debug logging
+  console.log('Received create-metric request:', {
+    hasProjectId: !!projectId,
+    hasUsername: !!username,
+    hasPassword: !!password,
+    hasMetricName: !!metricName,
+    hasMAQLCode: !!maqlCode,
+    metricName,
+    maqlCodeLength: maqlCode?.length
+  });
+  
   if (!projectId || !username || !password || !metricName || !maqlCode) {
     return res.status(400).json({ 
       success: false, 
-      message: "Missing required parameters" 
+      message: `Missing required parameters: ${[
+        !projectId && 'projectId',
+        !username && 'username',
+        !password && 'password',
+        !metricName && 'metricName',
+        !maqlCode && 'maqlCode'
+      ].filter(Boolean).join(', ')}` 
     });
   }
 

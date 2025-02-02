@@ -456,10 +456,15 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
         throw new Error('No project selected');
       }
 
-      // Get the MAQL code from the editor
-      const maqlCode = getEditorContent(); // We'll implement this helper function
+      // Add debug logging
+      const maqlCode = getEditorContent();
+      console.log('Sending request with:', {
+        projectId: selectedPID.pid,
+        metricName,
+        maqlCodeLength: maqlCode.length,
+        maqlCodePreview: maqlCode.substring(0, 100) // First 100 chars
+      });
 
-      // Make the API call to create the metric
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/gooddata/create-metric`,
         {
@@ -479,7 +484,11 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
 
       return Promise.resolve(response.data);
     } catch (err) {
-      console.error('Error creating metric:', err);
+      console.error('Error creating metric:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
       throw new Error(err.response?.data?.message || 'Failed to create metric in GoodData');
     }
   };
