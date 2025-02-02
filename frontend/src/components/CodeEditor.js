@@ -22,6 +22,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   // Add these new state variables at the top of the CodeEditor component
   const [showGoodDataModal, setShowGoodDataModal] = useState(false);
   const [metricName, setMetricName] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
+  const [isError, setIsError] = useState(false);
 
   // Helper function to get color based on variable type
   const getVariableColor = (type) => {
@@ -662,14 +664,55 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
           <h3>Create Metric in GoodData</h3>
           <form onSubmit={async (e) => {
             e.preventDefault();
+            setStatusMessage('');
+            setIsError(false);
+            
             const username = e.target.username.value;
             const password = e.target.password.value;
             
+            // Add validation
+            if (!metricName.trim()) {
+              setStatusMessage('Please enter a metric name');
+              setIsError(true);
+              return;
+            }
+
+            if (!selectedPID?.pid) {
+              setStatusMessage('No project selected');
+              setIsError(true);
+              return;
+            }
+
+            const maqlCode = getEditorContent();
+            if (!maqlCode.trim()) {
+              setStatusMessage('Please enter some MAQL code');
+              setIsError(true);
+              return;
+            }
+
+            console.log('Attempting to create metric with:', {
+              hasProjectId: !!selectedPID?.pid,
+              hasUsername: !!username,
+              hasPassword: !!password,
+              hasMetricName: !!metricName,
+              hasMAQLCode: !!maqlCode,
+              projectId: selectedPID?.pid,
+              metricName,
+              maqlCodeLength: maqlCode.length
+            });
+            
             try {
-              await handleCreateInGoodData(username, password);
-              setShowGoodDataModal(false);
+              const result = await handleCreateInGoodData(username, password);
+              setStatusMessage(result.message || 'Metric created successfully!');
+              setIsError(false);
+              // Close modal after success
+              setTimeout(() => {
+                setShowGoodDataModal(false);
+                setStatusMessage('');
+              }, 2000);
             } catch (error) {
-              // Error will be shown in the status message
+              setStatusMessage(error.message);
+              setIsError(true);
             }
           }}>
             <div style={{ marginBottom: '15px' }}>
@@ -715,10 +758,25 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
                 required
               />
             </div>
+            {statusMessage && (
+              <div style={{ 
+                marginBottom: '15px',
+                color: isError ? '#dc3545' : '#28a745',
+                textAlign: 'center',
+                padding: '8px',
+                borderRadius: '4px',
+                backgroundColor: isError ? '#ffe6e6' : '#e6ffe6'
+              }}>
+                {statusMessage}
+              </div>
+            )}
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
               <button
                 type="button"
-                onClick={() => setShowGoodDataModal(false)}
+                onClick={() => {
+                  setShowGoodDataModal(false);
+                  setStatusMessage('');
+                }}
                 style={{
                   padding: '8px 16px',
                   borderRadius: '4px',
