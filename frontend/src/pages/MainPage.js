@@ -5,7 +5,7 @@ import CodeEditor from '../components/CodeEditor';
 import VariableForm from '../components/VariableForm';
 import PIDManager from '../components/PIDManager';
 import CSVUploader from '../components/CSVUploader';
-import { FaLinkedin, FaUserCircle } from 'react-icons/fa';
+import { FaLinkedin, FaUserCircle, FaInfoCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const API_URL = process.env.REACT_APP_API_URL || 'https://bi-editor.herokuapp.com';
@@ -529,7 +529,68 @@ export default function MainPage() {
             handleSyncFromGoodData={handleSyncFromGoodData}
             syncStatus={syncStatus}
             renderSyncButtonText={renderSyncButtonText}
-          />
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                onClick={handleSyncFromGoodData}
+                disabled={syncStatus === 'syncing'}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  border: '3px solid black',
+                  background: '#FFC480',
+                  cursor: syncStatus === 'syncing' ? 'not-allowed' : 'pointer',
+                  fontWeight: '500'
+                }}
+              >
+                {renderSyncButtonText()}
+              </button>
+              <div style={{ 
+                position: 'relative', 
+                display: 'inline-block',
+                cursor: 'help'
+              }}>
+                <FaInfoCircle 
+                  size={16} 
+                  color="#666"
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '100%',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  backgroundColor: '#333',
+                  color: 'white',
+                  padding: '12px',
+                  borderRadius: '4px',
+                  width: '300px',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  visibility: 'hidden',
+                  opacity: 0,
+                  transition: 'opacity 0.2s',
+                  zIndex: 1000,
+                  ':hover': {
+                    visibility: 'visible',
+                    opacity: 1
+                  }
+                }}>
+                  <p style={{ margin: '0 0 12px 0' }}>
+                    Sync your metrics, attribute and attribute values from GoodData. Subsequent syncing will refresh new variables to your library.
+                  </p>
+                  <p style={{ margin: 0 }}>
+                    Please allow 2-3min for the sync to complete and refresh page to see new variables.
+                  </p>
+                </div>
+                <style>{`
+                  div[style*="position: relative"]:hover > div[style*="position: absolute"] {
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                  }
+                `}</style>
+              </div>
+            </div>
+          </PIDManager>
         </div>
 
         <div style={{ 
