@@ -504,21 +504,25 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     }
   };
 
-  // Add this helper function to get clean content from editor
+  // Update getEditorContent to use the same logic as handleCopyCode
   const getEditorContent = () => {
     if (!editorRef.current) return '';
     
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = editorRef.current.innerHTML;
 
-    let finalText = '';
     const walker = document.createTreeWalker(
       tempDiv,
       NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
       {
         acceptNode: (node) => {
-          if (node.nodeType === Node.TEXT_NODE || 
-              (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('variable-reference'))) {
+          if (
+            node.nodeType === Node.TEXT_NODE &&
+            (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))
+          ) {
+            return NodeFilter.FILTER_ACCEPT;
+          }
+          if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('variable-reference')) {
             return NodeFilter.FILTER_ACCEPT;
           }
           return NodeFilter.FILTER_SKIP;
@@ -526,18 +530,28 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       }
     );
 
+    let finalText = '';
     let node;
+
     while ((node = walker.nextNode())) {
-      if (node.nodeType === Node.TEXT_NODE) {
-        finalText += node.textContent;
+      if (
+        node.nodeType === Node.TEXT_NODE &&
+        (!node.parentElement || !node.parentElement.classList.contains('variable-reference'))
+      ) {
+        const text = node.textContent.trim();
+        if (text) {
+          finalText += text + ' ';
+        }
       } else if (node.classList.contains('variable-reference')) {
-        finalText += node.getAttribute('data-reference') || '';
+        const reference = node.getAttribute('data-reference');
+        if (reference) {
+          finalText += reference + ' ';
+        }
       }
     }
 
     // Clean up the MAQL code
     return finalText
-      .trim()
       .replace(/\s+/g, ' ')        // Replace multiple spaces with single space
       .replace(/\n/g, ' ')         // Replace newlines with spaces
       .replace(/\t/g, ' ')         // Replace tabs with spaces
