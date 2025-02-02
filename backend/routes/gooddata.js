@@ -241,6 +241,7 @@ router.post('/create-metric', auth, async (req, res) => {
     hasPassword: !!password,
     hasMetricName: !!metricName,
     hasMAQLCode: !!maqlCode,
+    projectId,
     metricName,
     maqlCodeLength: maqlCode?.length
   });
@@ -266,7 +267,7 @@ router.post('/create-metric', auth, async (req, res) => {
       timeout: 30000
     }));
 
-    // Authenticate
+    // Try to authenticate first
     try {
       await client.post(`${GOODDATA_HOST}/gdc/account/login`, {
         postUserLogin: {
@@ -277,6 +278,10 @@ router.post('/create-metric', auth, async (req, res) => {
         }
       });
     } catch (authError) {
+      console.error('Authentication error:', {
+        status: authError.response?.status,
+        message: authError.response?.data?.message || authError.message
+      });
       return res.status(401).json({
         success: false,
         message: "GoodData authentication failed. Please check your credentials."
@@ -297,11 +302,22 @@ router.post('/create-metric', auth, async (req, res) => {
       }
     };
 
+    console.log('Sending request to GoodData:', {
+      url: createUrl,
+      metricName,
+      maqlCodeLength: maqlCode.length
+    });
+
     const response = await client.post(createUrl, payload, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       }
+    });
+
+    console.log('GoodData response:', {
+      status: response.status,
+      data: response.data
     });
 
     if (response.status === 200 || response.status === 201) {
@@ -315,7 +331,11 @@ router.post('/create-metric', auth, async (req, res) => {
     }
 
   } catch (error) {
-    console.error('Error creating metric:', error);
+    console.error('Error creating metric:', {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message,
+      data: error.response?.data
+    });
     return res.status(error.response?.status || 500).json({
       success: false,
       message: error.response?.data?.message || "Failed to create metric in GoodData"

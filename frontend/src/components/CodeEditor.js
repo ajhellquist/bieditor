@@ -489,7 +489,8 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
       console.error('Error creating metric:', {
         message: err.message,
         response: err.response?.data,
-        status: err.response?.status
+        status: err.response?.status,
+        url: err.config?.url
       });
       throw new Error(err.response?.data?.message || 'Failed to create metric in GoodData');
     }
