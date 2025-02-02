@@ -13,10 +13,25 @@ const API_URL = process.env.REACT_APP_API_URL || 'https://bi-editor.herokuapp.co
 function CredentialsModal({ onSubmit, onCancel }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
+  const [isError, setIsError] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(username, password);
+    setStatusMessage('');
+    setIsError(false);
+    try {
+      await onSubmit(username, password);
+      setStatusMessage('GoodData authentication successful. Starting sync process...');
+      setIsError(false);
+      // Close modal after 2 seconds on success
+      setTimeout(() => {
+        onCancel();
+      }, 2000);
+    } catch (error) {
+      setStatusMessage(error.message || 'Failed to sync with GoodData. Please check your credentials.');
+      setIsError(true);
+    }
   };
 
   return (
@@ -50,7 +65,7 @@ function CredentialsModal({ onSubmit, onCancel }) {
             required
           />
         </div>
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '15px' }}>
           <label style={{ display: 'block', marginBottom: '5px' }}>Password:</label>
           <input
             type="password"
@@ -65,6 +80,18 @@ function CredentialsModal({ onSubmit, onCancel }) {
             required
           />
         </div>
+        {statusMessage && (
+          <div style={{ 
+            marginBottom: '15px',
+            color: isError ? '#dc3545' : '#28a745',
+            textAlign: 'center',
+            padding: '8px',
+            borderRadius: '4px',
+            backgroundColor: isError ? '#ffe6e6' : '#e6ffe6'
+          }}>
+            {statusMessage}
+          </div>
+        )}
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
           <button
             type="button"
@@ -229,13 +256,11 @@ export default function MainPage() {
   };
 
   const handleCredentialsSubmit = async (username, password) => {
-    setShowCredentialsModal(false);
     setSyncStatus('syncing');
     try {
       const token = localStorage.getItem('token');
       const url = `${API_URL}/gooddata/sync`;
       
-      // Make sure we're using the correct PID from the selected project
       if (!selectedPID?.pid) {
         throw new Error('No project selected');
       }
@@ -258,11 +283,9 @@ export default function MainPage() {
       );
 
       if (response.data.success) {
-        // Show success message
-        alert(response.data.message);
         setSyncStatus('success');
-        // Refresh variables after successful sync initiation
         await fetchVariables(selectedPID._id);
+        return Promise.resolve();
       } else {
         throw new Error(response.data.message || 'Sync failed');
       }
@@ -274,15 +297,13 @@ export default function MainPage() {
         url: err.config?.url
       });
       setSyncStatus('error');
-      
-      // Show error message to user
-      alert(err.response?.data?.message || 'Failed to sync with GoodData. Please check your credentials and try again.');
+      throw new Error(err.response?.data?.message || 'Failed to sync with GoodData. Please check your credentials and try again.');
     }
   };
 
   const renderSyncButtonText = () => {
     if (syncStatus === 'syncing') return 'Syncing...';
-    if (syncStatus === 'success') return 'Sync Complete!';
+    if (syncStatus === 'success') return 'Sync Started!';
     if (syncStatus === 'error')   return 'Sync Failed';
     return 'Sync Variables from GoodData';
   };
