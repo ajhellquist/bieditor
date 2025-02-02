@@ -19,6 +19,10 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
   const editorRef = useRef(null);           // Reference to main editor element
   const cursorRangeRef = useRef(null);      // Stores cursor position for accurate suggestion insertion
 
+  // Add these new state variables at the top of the CodeEditor component
+  const [showGoodDataModal, setShowGoodDataModal] = useState(false);
+  const [metricName, setMetricName] = useState('');
+
   // Helper function to get color based on variable type
   const getVariableColor = (type) => {
     switch (type) {
@@ -444,6 +448,76 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
     setCurrentWord('');
   };
 
+  // Add this new function in the CodeEditor component
+  const handleCreateInGoodData = async (username, password) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!selectedPID?.pid) {
+        throw new Error('No project selected');
+      }
+
+      // Get the MAQL code from the editor
+      const maqlCode = getEditorContent(); // We'll implement this helper function
+
+      // Make the API call to create the metric
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/gooddata/create-metric`,
+        {
+          projectId: selectedPID.pid,
+          username,
+          password,
+          metricName,
+          maqlCode
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      return Promise.resolve(response.data);
+    } catch (err) {
+      console.error('Error creating metric:', err);
+      throw new Error(err.response?.data?.message || 'Failed to create metric in GoodData');
+    }
+  };
+
+  // Add this helper function to get clean content from editor
+  const getEditorContent = () => {
+    if (!editorRef.current) return '';
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = editorRef.current.innerHTML;
+
+    let finalText = '';
+    const walker = document.createTreeWalker(
+      tempDiv,
+      NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+      {
+        acceptNode: (node) => {
+          if (node.nodeType === Node.TEXT_NODE || 
+              (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('variable-reference'))) {
+            return NodeFilter.FILTER_ACCEPT;
+          }
+          return NodeFilter.FILTER_SKIP;
+        }
+      }
+    );
+
+    let node;
+    while ((node = walker.nextNode())) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        finalText += node.textContent;
+      } else if (node.classList.contains('variable-reference')) {
+        finalText += node.getAttribute('data-reference') || '';
+      }
+    }
+
+    return finalText.trim();
+  };
+
   return (
     <div style={{ 
       position: 'relative',
@@ -545,8 +619,125 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
           >
             Clear Code
           </button>
+          <button 
+            onClick={() => setShowGoodDataModal(true)}
+            style={{
+              padding: '6px 12px',
+              backgroundColor: '#FFC480',
+              color: 'black',
+              border: '3px solid black',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Create in GoodData
+          </button>
         </div>
       </div>
+
+      {/* Add the GoodData Modal */}
+      {showGoodDataModal && (
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: '#FFFFFF',
+          padding: '20px',
+          borderRadius: '12px',
+          border: '3px solid black',
+          boxShadow: '5px 5px 10px rgb(0, 0, 0)',
+          zIndex: 1000,
+          width: '400px'
+        }}>
+          <h3>Create Metric in GoodData</h3>
+          <form onSubmit={async (e) => {
+            e.preventDefault();
+            const username = e.target.username.value;
+            const password = e.target.password.value;
+            
+            try {
+              await handleCreateInGoodData(username, password);
+              setShowGoodDataModal(false);
+            } catch (error) {
+              // Error will be shown in the status message
+            }
+          }}>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Metric Name:</label>
+              <input
+                type="text"
+                value={metricName}
+                onChange={(e) => setMetricName(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  borderRadius: '4px',
+                  border: '1px solid #ddd'
+                }}
+                required
+              />
+            </div>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Username:</label>
+              <input
+                name="username"
+                type="text"
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  borderRadius: '4px',
+                  border: '1px solid #ddd'
+                }}
+                required
+              />
+            </div>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Password:</label>
+              <input
+                name="password"
+                type="password"
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  borderRadius: '4px',
+                  border: '1px solid #ddd'
+                }}
+                required
+              />
+            </div>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                onClick={() => setShowGoodDataModal(false)}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  border: '3px solid black',
+                  background: '#CCCCCC',
+                  cursor: 'pointer',
+                  fontWeight: '500'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  border: '3px solid black',
+                  background: '#FFC480',
+                  cursor: 'pointer',
+                  fontWeight: '500'
+                }}
+              >
+                Create Metric
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

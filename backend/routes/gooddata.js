@@ -231,4 +231,79 @@ router.post('/sync', auth, async (req, res) => {
   }
 });
 
+router.post('/create-metric', auth, async (req, res) => {
+  const { projectId, username, password, metricName, maqlCode } = req.body;
+  
+  if (!projectId || !username || !password || !metricName || !maqlCode) {
+    return res.status(400).json({ 
+      success: false, 
+      message: "Missing required parameters" 
+    });
+  }
+
+  try {
+    // Create an Axios instance that handles cookies
+    const cookieJar = new tough.CookieJar();
+    const client = wrapper(axios.create({ 
+      jar: cookieJar,
+      timeout: 30000
+    }));
+
+    // Authenticate
+    try {
+      await client.post(`${GOODDATA_HOST}/gdc/account/login`, {
+        postUserLogin: {
+          login: username,
+          password: password,
+          remember: "0",
+          verify_level: 0
+        }
+      });
+    } catch (authError) {
+      return res.status(401).json({
+        success: false,
+        message: "GoodData authentication failed. Please check your credentials."
+      });
+    }
+
+    // Create the metric
+    const createUrl = `${GOODDATA_HOST}/gdc/md/${projectId}/obj`;
+    const payload = {
+      metric: {
+        meta: {
+          title: metricName,
+          category: "metric"
+        },
+        content: {
+          expression: maqlCode
+        }
+      }
+    };
+
+    const response = await client.post(createUrl, payload, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+
+    if (response.status === 200 || response.status === 201) {
+      return res.json({
+        success: true,
+        message: "Metric created successfully",
+        uri: response.data.uri
+      });
+    } else {
+      throw new Error(`Failed to create metric: ${response.statusText}`);
+    }
+
+  } catch (error) {
+    console.error('Error creating metric:', error);
+    return res.status(error.response?.status || 500).json({
+      success: false,
+      message: error.response?.data?.message || "Failed to create metric in GoodData"
+    });
+  }
+});
+
 module.exports = router;
