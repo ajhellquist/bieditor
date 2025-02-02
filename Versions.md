@@ -1,5 +1,13 @@
 # Version Log
 
+## Version 1.3.0 - Feb 2 2025
+
+### Enhancements
+- Added a variable sync button that connects straight to GoodData. When a PID is selected you can press "Sync Variables from GoodData" and with an appropriate username/password it will retrieve all metrics, attributes, and attribute values from that project. Subsequent syncing will continuously search for new variables not currently stored in your library and sync those only.
+
+### Bug Fixes
+- None
+
 ## Version 1.2.1 - Jan 25 2025
 
 ### Enhancements

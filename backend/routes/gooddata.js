@@ -11,6 +11,8 @@ const axios = require('axios');
 const { wrapper } = require('axios-cookiejar-support');
 const tough = require('tough-cookie');
 
+const GOODDATA_HOST = "https://prod.mavenlinkreports.com";
+
 // Patterns to skip attribute values
 const SKIP_PATTERNS = [
   "Date (",
@@ -60,42 +62,25 @@ router.use(cors(corsOptions));
  * Handles the sync process asynchronously.
  */
 router.post('/sync', auth, async (req, res) => {
-  // Add CORS headers explicitly for this endpoint
-  const origin = req.headers.origin;
-  if (corsOptions.origin.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  const { projectId, pidRecordId, username, password } = req.body;
   
-  // Handle preflight OPTIONS request
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  if (!projectId || !pidRecordId || !username || !password) {
+    return res.status(400).json({ 
+      success: false, 
+      message: "Missing required parameters" 
+    });
   }
 
-  // Respond immediately to the client
-  res.status(202).json({ 
-    message: "GoodData sync initiated. You will receive updates once completed." 
-  });
+  try {
+    // Create an Axios instance that handles cookies
+    const cookieJar = new tough.CookieJar();
+    const client = wrapper(axios.create({ 
+      jar: cookieJar,
+      timeout: 300000 // 5 minute timeout
+    }));
 
-  // Start the sync process asynchronously
-  (async () => {
+    // Try to authenticate first
     try {
-      const { projectId, pidRecordId, username, password } = req.body;
-      if (!projectId || !pidRecordId || !username || !password) {
-        console.error("Missing required parameters in request body.");
-        return;
-      }
-
-      // 1) Create an Axios instance that handles cookies with longer timeout
-      const cookieJar = new tough.CookieJar();
-      const client = wrapper(axios.create({ 
-        jar: cookieJar,
-        timeout: 300000 // 5 minute timeout
-      }));
-
-      // 2) Log into GoodData
       await client.post(`${GOODDATA_HOST}/gdc/account/login`, {
         postUserLogin: {
           login: username,
@@ -104,127 +89,146 @@ router.post('/sync', auth, async (req, res) => {
           verify_level: 0
         }
       });
+    } catch (authError) {
+      return res.status(401).json({
+        success: false,
+        message: "GoodData authentication failed. Please check your credentials."
+      });
+    }
 
-      // 3) Fetch attributes
-      const attributesUrl = `${GOODDATA_HOST}/gdc/md/${projectId}/query/attributes`;
-      const respAttrList = await client.get(attributesUrl);
-      const attributes = respAttrList.data.query.entries || [];
+    // If authentication succeeded, send success response
+    res.status(202).json({ 
+      success: true,
+      message: "GoodData authentication successful. Starting sync process..." 
+    });
 
-      for (const attr of attributes) {
-        const attrTitle = attr.title || "";
-        const link = attr.link || "";
-        const objId = link.split("/obj/").pop();
+    // Continue with sync process asynchronously
+    (async () => {
+      try {
+        // 3) Fetch attributes
+        const attributesUrl = `${GOODDATA_HOST}/gdc/md/${projectId}/query/attributes`;
+        const respAttrList = await client.get(attributesUrl);
+        const attributes = respAttrList.data.query.entries || [];
 
-        // Save attribute if not already present
-        const existingAttr = await Variable.findOne({
-          pidId: pidRecordId,
-          name: attrTitle.replace(/,/g, ""),
-          type: "Attribute",
-          value: objId
-        });
-        if (!existingAttr) {
-          await Variable.create({
+        for (const attr of attributes) {
+          const attrTitle = attr.title || "";
+          const link = attr.link || "";
+          const objId = link.split("/obj/").pop();
+
+          // Save attribute if not already present
+          const existingAttr = await Variable.findOne({
             pidId: pidRecordId,
             name: attrTitle.replace(/,/g, ""),
             type: "Attribute",
-            value: objId,
-            elementId: "NA"
+            value: objId
           });
-        }
+          if (!existingAttr) {
+            await Variable.create({
+              pidId: pidRecordId,
+              name: attrTitle.replace(/,/g, ""),
+              type: "Attribute",
+              value: objId,
+              elementId: "NA"
+            });
+          }
 
-        // Skip attribute values if the title matches skip patterns
-        if (shouldSkipValuesForAttribute(attrTitle)) {
-          continue;
-        }
+          // Skip attribute values if the title matches skip patterns
+          if (shouldSkipValuesForAttribute(attrTitle)) {
+            continue;
+          }
 
-        // Fetch the attribute details for display forms => attribute values
-        const attributeUrl = `${GOODDATA_HOST}${link}`;
-        const respAttrObj = await client.get(attributeUrl);
-        const attributeDetails = respAttrObj.data;
-        const displayForms = attributeDetails.attribute.content?.displayForms || [];
+          // Fetch the attribute details for display forms => attribute values
+          const attributeUrl = `${GOODDATA_HOST}${link}`;
+          const respAttrObj = await client.get(attributeUrl);
+          const attributeDetails = respAttrObj.data;
+          const displayForms = attributeDetails.attribute.content?.displayForms || [];
 
-        for (const dForm of displayForms) {
-          const labelUri = dForm.meta.uri;
-          const labelElementsUrl = `${GOODDATA_HOST}${labelUri}/elements`;
+          for (const dForm of displayForms) {
+            const labelUri = dForm.meta.uri;
+            const labelElementsUrl = `${GOODDATA_HOST}${labelUri}/elements`;
 
-          let offset = 0;
-          const limit = 100;
-          let totalCount = Infinity;
+            let offset = 0;
+            const limit = 100;
+            let totalCount = Infinity;
 
-          while (offset < totalCount) {
-            const pageUrl = `${labelElementsUrl}?limit=${limit}&offset=${offset}`;
-            const pageResp = await client.get(pageUrl);
-            const pageData = pageResp.data.attributeElements;
-            const items = pageData.elements || [];
-            totalCount = parseInt(pageData.paging.total, 10);
+            while (offset < totalCount) {
+              const pageUrl = `${labelElementsUrl}?limit=${limit}&offset=${offset}`;
+              const pageResp = await client.get(pageUrl);
+              const pageData = pageResp.data.attributeElements;
+              const items = pageData.elements || [];
+              totalCount = parseInt(pageData.paging.total, 10);
 
-            for (const elem of items) {
-              const valTitle = elem.title.trim() || "empty value";
-              const valUri = elem.uri;
-              let elementId = "UNKNOWN";
-              if (valUri.includes("?id=")) {
-                elementId = valUri.split("?id=")[1];
-              }
-              const combinedName = `${attrTitle.replace(/,/g, "")}: ${valTitle.replace(/,/g, "")}`;
+              for (const elem of items) {
+                const valTitle = elem.title.trim() || "empty value";
+                const valUri = elem.uri;
+                let elementId = "UNKNOWN";
+                if (valUri.includes("?id=")) {
+                  elementId = valUri.split("?id=")[1];
+                }
+                const combinedName = `${attrTitle.replace(/,/g, "")}: ${valTitle.replace(/,/g, "")}`;
 
-              // Insert if not found
-              const existingVal = await Variable.findOne({
-                pidId: pidRecordId,
-                name: combinedName,
-                type: "Attribute Value",
-                value: objId,
-                elementId: elementId
-              });
-              if (!existingVal) {
-                await Variable.create({
+                // Insert if not found
+                const existingVal = await Variable.findOne({
                   pidId: pidRecordId,
                   name: combinedName,
                   type: "Attribute Value",
                   value: objId,
-                  elementId
+                  elementId: elementId
                 });
+                if (!existingVal) {
+                  await Variable.create({
+                    pidId: pidRecordId,
+                    name: combinedName,
+                    type: "Attribute Value",
+                    value: objId,
+                    elementId
+                  });
+                }
               }
-            }
 
-            offset += items.length;
-            if (offset >= totalCount) break;
+              offset += items.length;
+              if (offset >= totalCount) break;
+            }
           }
         }
-      }
 
-      // 4) Fetch metrics
-      const metricsUrl = `${GOODDATA_HOST}/gdc/md/${projectId}/query/metrics`;
-      const respMetrics = await client.get(metricsUrl);
-      const metrics = respMetrics.data.query.entries || [];
+        // 4) Fetch metrics
+        const metricsUrl = `${GOODDATA_HOST}/gdc/md/${projectId}/query/metrics`;
+        const respMetrics = await client.get(metricsUrl);
+        const metrics = respMetrics.data.query.entries || [];
 
-      for (const m of metrics) {
-        const metricTitle = m.title || "";
-        const metricLink = m.link || "";
-        const metricObjId = metricLink.split("/obj/").pop();
+        for (const m of metrics) {
+          const metricTitle = m.title || "";
+          const metricLink = m.link || "";
+          const metricObjId = metricLink.split("/obj/").pop();
 
-        const existingMetric = await Variable.findOne({
-          pidId: pidRecordId,
-          name: metricTitle.replace(/,/g, ""),
-          type: "Metric",
-          value: metricObjId
-        });
-        if (!existingMetric) {
-          await Variable.create({
+          const existingMetric = await Variable.findOne({
             pidId: pidRecordId,
             name: metricTitle.replace(/,/g, ""),
             type: "Metric",
-            value: metricObjId,
-            elementId: "NA"
+            value: metricObjId
           });
+          if (!existingMetric) {
+            await Variable.create({
+              pidId: pidRecordId,
+              name: metricTitle.replace(/,/g, ""),
+              type: "Metric",
+              value: metricObjId,
+              elementId: "NA"
+            });
+          }
         }
-      }
 
-      console.log("GoodData sync complete for PID:", pidRecordId);
-    } catch (error) {
-      console.error("Error during GoodData sync:", error);
-      // Optionally, implement error notifications or logging
-    }
-  })();
+        console.log("GoodData sync complete for PID:", pidRecordId);
+      } catch (error) {
+        console.error("Error during GoodData sync:", error);
+        // Optionally, implement error notifications or logging
+      }
+    })();
+  } catch (error) {
+    console.error("Error during GoodData sync:", error);
+    // Optionally, implement error notifications or logging
+  }
 });
 
 module.exports = router;

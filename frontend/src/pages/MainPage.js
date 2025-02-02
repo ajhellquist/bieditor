@@ -219,8 +219,8 @@ export default function MainPage() {
   // --------------------------------------------------------------------------
   //  GOODDATA SYNC
   // --------------------------------------------------------------------------
-  const handleSyncFromGoodData = async (username, password) => {
-    if (!selectedPID) {
+  const handleSyncFromGoodData = () => {
+    if (!selectedPID?.pid) {
       alert('Please select a PID first!');
       return;
     }
@@ -234,6 +234,11 @@ export default function MainPage() {
       const token = localStorage.getItem('token');
       const url = `${API_URL}/gooddata/sync`;
       
+      // Make sure we're using the correct PID from the selected project
+      if (!selectedPID?.pid) {
+        throw new Error('No project selected');
+      }
+
       const response = await axios.post(
         url,
         {
@@ -250,8 +255,16 @@ export default function MainPage() {
           timeout: 120000
         }
       );
-      setSyncStatus('success');
-      await fetchVariables(selectedPID._id);
+
+      if (response.data.success) {
+        // Show success message
+        alert(response.data.message);
+        setSyncStatus('success');
+        // Refresh variables after successful sync initiation
+        await fetchVariables(selectedPID._id);
+      } else {
+        throw new Error(response.data.message || 'Sync failed');
+      }
     } catch (err) {
       console.error('Error syncing GoodData:', {
         message: err.message,
@@ -260,6 +273,9 @@ export default function MainPage() {
         url: err.config?.url
       });
       setSyncStatus('error');
+      
+      // Show error message to user
+      alert(err.response?.data?.message || 'Failed to sync with GoodData. Please check your credentials and try again.');
     }
   };
 
@@ -731,7 +747,7 @@ export default function MainPage() {
           </a>
         </div>
         <div style={{ fontSize: '12px', color: '#666' }}>
-          Version 1.2.1
+          Version 1.3.0
         </div>
       </div>
     </>
