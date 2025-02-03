@@ -667,7 +667,7 @@ export default function CodeEditor({ code, setCode, variables, selectedPID }) {
             onClick={() => setShowGoodDataModal(true)}
             style={{
               padding: '6px 12px',
-              backgroundColor: '#FFC480',
+              backgroundColor: '#90EE90',
               color: 'black',
               border: '3px solid black',
               borderRadius: '4px',
