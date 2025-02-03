@@ -749,6 +749,7 @@ export default function MainPage() {
                 variables={variables} 
                 selectedPID={selectedPID}
                 onCopySuccess={fetchMetricsCount}
+                buttonColor="#FFC480"
               />
             </div>
           </div>
